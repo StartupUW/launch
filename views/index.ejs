@@ -1,0 +1,48 @@
+<html>
+<head>
+	<meta charset="UTF-8">
+<!-- 	<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">	
+	<link rel="stylesheet" type="text/css" href="bootstrap/css/bootstrap.min.css">
+	<script type="text/javascript" src = "/javascripts/jquery.min.js"></script>
+	<script type="text/javascript" src = "bootstarp/js/bootstrap.js"></script>
+	<link rel="stylesheet" type="text/css" href="css/style.css">
+	<link href='http://fonts.googleapis.com/css?family=Lato&subset=latin,latin-ext' rel='stylesheet' type='text/css'> -->
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+	<title>Test Form</title>
+</head>
+<body>
+
+<div class = "navbar navbar-default"><p>Traction</p></div>
+
+<div class = "button">
+	<button class ="btn btn-primary createNew"><i class = "fa fa-plus fa-2x"> </i><p> Create New</p></button>
+</div>
+
+<div class = "form">
+	<p> Type your message: </p>
+	<input id = "text" name = "message">
+	<br>
+	<button id = "submit" value = "Submit"> Submit </button>
+	<p id = "hidden1" hidden = true>Done</p>
+</div>
+
+<script>
+	$('#submit').on('click', function() {
+		$.post( "/myaction", { message: $('#text').val() , time: "2pm" }, function(data) {
+			if(data == "DONE") {
+				$('#hidden1').attr('hidden', false);
+			}
+		});
+	});
+	// $(".createNew").click( function() {
+	// 	if($(".form").is(":hidden")) {
+	// 		$(".form").slideDown("slow");
+	// 	} else {
+	// 		$(".form").hide();
+	// 	}
+	// });
+
+
+</script>
+</body>
+</html>
