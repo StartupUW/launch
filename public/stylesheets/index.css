@@ -85,11 +85,12 @@ a, a:hover, a:visited, a:active {
 }
 
 .project-info {
-  margin: 0 20px;
+  padding: 0 40px;
 }
 
 .project-members {
   color: #aaa; 
+  font-size: 12px;
 }
 
 .project:nth-child(even) {
@@ -144,7 +145,7 @@ a, a:hover, a:visited, a:active {
   background-color: #33ccff;
   color: white;
   border: none;
-  margin-top: 10px;
+  margin-top: 20px;
   transition: all .1s linear;
 }
 
@@ -154,14 +155,25 @@ a, a:hover, a:visited, a:active {
 }
 
 hr {
-  margin: 50px 0;
+  margin: 45px 0;
   border-color: #ddd;
-
 }
 
 .project-logo {
     position: absolute;
     top: 20px;
+}
+
+.project-labels {
+  display: inline-block;
+  font-size: 15px;
+  vertical-align: middle;
+  margin-left: 10px;
+  padding-bottom: 5px;
+}
+
+.project-labels .label {
+  margin: 2px;
 }
 
 @media screen and (max-width: 768px) { 
