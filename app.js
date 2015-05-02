@@ -6,6 +6,8 @@ var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var mongoose = require('mongoose')
 
+mongoose.connect('mongodb://127.0.0.1/traction');
+
 var index = require('./routes/index');
 var users = require('./routes/users');
 var admin = require('./routes/admin');
