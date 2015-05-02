@@ -10,16 +10,17 @@ router.get('/', function(req, res, next) {
 
 router.post('/create', function(req, res){
 	var project = new Projects();
-	project.name = req.body.project.name;
-	project.website = req.body.project.website;
-	project.description = req.body.project.desc;
-	project.contact.email = req.body.project.email;
-	project.contact.phone = req.body.project.phone;
-	project.type = req.body.project.type;
+	project.name = req.body.name;
+	project.website = req.body.website;
+	project.description = req.body.desc;
+	project.contact.email = req.body.email;
+	project.contact.phone = req.body.phone;
+	project.type = req.body.type;
 
 	project.save(function(err){
-		if(err)
+		if(err) {
 			res.send(err);
+		}
 		res.json(project);
 	});
 });
