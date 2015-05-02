@@ -55,7 +55,7 @@ a, a:hover, a:visited, a:active {
 }
 
 #title-you {
-  color: #8e44ad;
+  color: #33ccff;
   text-decoration: underline;
 }
 
@@ -81,19 +81,44 @@ a, a:hover, a:visited, a:active {
 }
 
 .project {
-  padding: 35px;
+  padding: 0 35px;
+}
+
+.project-info {
+  margin: 0 20px;
+}
+
+.project-members {
+  color: #aaa; 
 }
 
 .project:nth-child(even) {
   text-align: left;
 }
 
+.project:nth-child(even) .member {
+  margin-right: 5px;
+}
+
+.project:nth-child(even) img {
+    right: 60px;
+}
+
 .project:nth-child(odd) {
   text-align: right;
-  background-color: #eee;
 }
+
+.project:nth-child(odd) .member {
+    margin-left: 5px;
+}
+
+.project:nth-child(odd) img {
+    left: 60px;
+}
+
 .project-title {
-  font-size: 28px;
+  font-size: 32px;
+  font-weight: 600;
 }
 
 #control-panel {
@@ -104,4 +129,35 @@ a, a:hover, a:visited, a:active {
   margin: 0 5px;
   padding: 5px 10px;
   border: 1px solid #ccc;
+  border-radius: 3px;
+  cursor: pointer;
+}
+
+.control {
+  margin-bottom: 12px;
+}
+
+.more {
+  padding: 10px;
+  background-color: #33ccff;
+  color: white;
+  border: none;
+  margin-top: 10px;
+  transition: all .1s linear;
+}
+
+.more:hover {
+  color: #33ccff;
+  background-color: white;
+}
+
+hr {
+  margin: 50px 0;
+  border-color: #ddd;
+
+}
+
+.project-logo {
+    position: absolute;
+    top: 20px;
 }
