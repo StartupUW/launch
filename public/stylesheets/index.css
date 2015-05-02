@@ -1,0 +1,107 @@
+@import url(http://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600);
+
+html, body {
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: "Source Sans Pro", sans-serif;
+  color: #21272d;
+}
+
+a, a:hover, a:visited, a:active {
+  text-decoration: none;
+}
+
+#header {
+  height: 70px;
+  padding: 20px 45px;
+  border-bottom: 1px solid #ddd;
+}
+
+#logo {
+  text-align: center;
+  font-size: 25px;
+  font-weight: 600;
+}
+
+#login-bar {
+  text-align: right;
+}
+
+#content-container {
+  padding: 0;
+}
+
+#splash {
+  min-height: 500px;
+  position: relative;
+  background-size: cover;
+  background-repeat: no-repeat;
+  padding: 0;
+  background-color: #eee;
+}
+
+#title-container {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 200px;
+  width: 600px;
+  margin: auto;
+}
+
+#title-you {
+  color: #8e44ad;
+  text-decoration: underline;
+}
+
+#title {
+  font-size: 55px;
+  font-weight: 600;
+}
+
+#login-bar {
+  margin-top: 5px;
+}
+
+#login-button {
+  padding: 20px;
+  color: #21272d;
+}
+
+#showcase {
+  padding-top: 50px;
+  max-width: 900px;
+  text-align: center;
+  margin: auto;
+}
+
+.project {
+  padding: 35px;
+}
+
+.project:nth-child(even) {
+  text-align: left;
+}
+
+.project:nth-child(odd) {
+  text-align: right;
+  background-color: #eee;
+}
+.project-title {
+  font-size: 28px;
+}
+
+#control-panel {
+  padding: 20px 0;
+}
+
+.sort-option, .tag {
+  margin: 0 5px;
+  padding: 5px 10px;
+  border: 1px solid #ccc;
+}

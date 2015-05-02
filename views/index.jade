@@ -1,0 +1,50 @@
+extends ./layout.jade
+
+block append content
+    #content-container.container-fluid
+        section#splash 
+            #title-container
+                h1#title What are 
+                    span#title-you you
+                    span#title-verb  creating
+                    | ?
+                h2#subtitle The best of UW Startups.
+        if featured
+            section#featured Featured
+        section#showcase 
+            h1 Showcase
+
+            #control-panel.row
+                #sort.col-md-3
+                    p SORT BY:
+                    span.sort-option New
+                    span.sort-option Top
+                    span.sort-option Hot
+                #filter-container.col-md-3
+                    p SEARCH:
+                    input#filter(type='text' placeholder='Filter results')
+                #tags.col-md-6
+                    p TAGS
+                    span.tag iOS
+                    span.tag Beta
+                    span.tag Series A
+                    span.tag Web
+                    span.tag Education
+
+            mixin project(name, description, ...members)
+                .project.col-md-12
+                    h2.project-title= name
+                    p.project-members
+                        each member in members
+                            span.member= member
+                    p.project-description= description
+ 
+            .row
+                +project('Traction UW', 'Ipsum Lorem...', 'Daniel', 'Ayush', 'Vardhman')
+                +project('Traction UW', 'Ipsum Lorem...', 'Daniel', 'Ayush', 'Vardhman')
+                +project('Traction UW', 'Ipsum Lorem...', 'Daniel', 'Ayush', 'Vardhman')
+                +project('Traction UW', 'Ipsum Lorem...', 'Daniel', 'Ayush', 'Vardhman')
+                +project('Traction UW', 'Ipsum Lorem...', 'Daniel', 'Ayush', 'Vardhman')
+                +project('Traction UW', 'Ipsum Lorem...', 'Daniel', 'Ayush', 'Vardhman')
+                +project('Traction UW', 'Ipsum Lorem...', 'Daniel', 'Ayush', 'Vardhman')
+ 
