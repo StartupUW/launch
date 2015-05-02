@@ -55,7 +55,7 @@ a, a:hover, a:visited, a:active {
 }
 
 #title-you {
-  color: #8e44ad;
+  color: #33ccff;
   text-decoration: underline;
 }
 
@@ -81,27 +81,121 @@ a, a:hover, a:visited, a:active {
 }
 
 .project {
-  padding: 35px;
+  padding: 0 35px;
+}
+
+.project-info {
+  padding: 0 40px;
+}
+
+.project-members {
+  color: #aaa; 
+  font-size: 12px;
 }
 
 .project:nth-child(even) {
   text-align: left;
 }
 
+.project:nth-child(even) .member {
+  margin-right: 5px;
+}
+
+.project:nth-child(even) img {
+    right: 60px;
+}
+
 .project:nth-child(odd) {
   text-align: right;
-  background-color: #eee;
 }
+
+.project:nth-child(odd) .member {
+    margin-left: 5px;
+}
+
+.project:nth-child(odd) img {
+    left: 60px;
+}
+
 .project-title {
-  font-size: 28px;
+  font-size: 32px;
+  font-weight: 600;
 }
 
 #control-panel {
   padding: 20px 0;
+  margin-bottom: 45px;
+  background-color: #ecf0f1;
+  border-radius: 5px;
+  font-weight: 600;
+  font-size: 12px;
 }
 
-.sort-option, .tag {
-  margin: 0 5px;
-  padding: 5px 10px;
-  border: 1px solid #ccc;
+#filter-container .input-group {
+  width: 90%;
+  margin: auto;
+}
+
+.control {
+  margin-bottom: 12px;
+}
+
+.more {
+  padding: 10px;
+  background-color: #33ccff;
+  color: white;
+  border: none;
+  margin-top: 20px;
+  transition: all .1s linear;
+}
+
+.more:hover {
+  color: #33ccff;
+  background-color: white;
+}
+
+hr {
+  margin: 45px 0;
+  border-color: #ddd;
+}
+
+.project-logo {
+    position: absolute;
+    top: 20px;
+}
+
+.project-labels {
+  display: inline-block;
+  font-size: 15px;
+  vertical-align: middle;
+  margin-left: 10px;
+  padding-bottom: 5px;
+}
+
+.project-labels .label {
+  margin: 2px;
+}
+
+@media screen and (max-width: 768px) { 
+    .project-logo {
+      top: 10px;
+      width: 80px;
+    }
+
+    #splash {
+      min-height: 400px;
+    }
+
+    #title-container {
+      height: 150px;
+      padding: 10px;
+    }
+
+    #title {
+      font-size: 35px;
+    }
+
+    #subtitle {
+      font-size: 24px;
+    }
 }
