@@ -4,7 +4,8 @@ var favicon = require('serve-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
-var mongoose = require('mongoose')
+var mongoose = require('mongoose');
+var port = 8080;
 
 var index = require('./routes/index');
 var users = require('./routes/users');
@@ -65,4 +66,5 @@ app.use(function(err, req, res, next) {
 
 module.exports = app;
 
-app.listen(8080);
+app.listen(port);
+console.log('Magic happens on port: ' + port);
