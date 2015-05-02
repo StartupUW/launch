@@ -1,6 +1,6 @@
 var mongoose = require('mongoose');
 	Schema = mongoose.Schema;
-
+var Users = require('./users')
 
 var ProjectSchema = new Schema ({
 	name: {type: String, required: true},
@@ -11,9 +11,9 @@ var ProjectSchema = new Schema ({
 	date: {type: Date, default: Date.now },
 	hiring: {type: Boolean, default: false },
 	contact: [{
-		email: {type: String, required: true},,
-		phone: {type: String, required: false},
-	]},
+		email: {type: String, required: true},
+		phone: {type: String, required: false}
+	}],
 	type: {type: String, required: true},
 	tags: [String],
 	approved: { type: Boolean, default: false}

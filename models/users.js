@@ -10,9 +10,9 @@ var UserSchema = new Schema({
 	major: {type: String, required: true},
 	gradyr: {type: String, required: true},
 	links: [{
-		label: {type: String required: false},
-		url: {type: String required: false},
-		visible: {type: String required: false}
+		label: {type: String, required: false},
+		url: {type: String, required: false},
+		visible: {type: String, required: false}
 	}],
 	username: {type: String, required: true, index: { unique: true }},
 	password: { type: String, required: true, select: false }

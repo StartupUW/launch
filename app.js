@@ -14,8 +14,6 @@ var admin = require('./routes/admin');
 var fs = require('fs');
 var app = express();
 
-var User = require('.models/users');
-
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
