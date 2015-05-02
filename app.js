@@ -7,6 +7,8 @@ var bodyParser = require('body-parser');
 var mongoose = require('mongoose');
 var port = 8080;
 
+mongoose.connect('mongodb://127.0.0.1/traction');
+
 var index = require('./routes/index');
 var users = require('./routes/users');
 var admin = require('./routes/admin');
