@@ -13,7 +13,7 @@ var UserSchema = new Schema({
 		label: String,
 		url: String,
 		visible: Boolean
-	}]
+	}],
 	username: {type: String, required: true, index: { unique: true }},
 	password: { type: String, required: true, select: false }
 });
