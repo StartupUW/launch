@@ -25,7 +25,7 @@ router.post('/projects/create', function(req, res){
 	project.contact.email = req.body.email;
 	project.contact.phone = req.body.phone;
 	project.type = req.body.type;
-	project.tags = req.body.tags;
+	project.tags = req.body.tags.split(/,[ \t]*/);
 
 	project.save(function(err){
 		if(err) {
