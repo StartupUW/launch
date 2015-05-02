@@ -15,21 +15,25 @@ block append content
             h1 Showcase
 
             #control-panel.row
-                #sort.control.col-md-3
+                #sort.control.col-xs-6.col-md-3
                     p SORT BY
-                    span.sort-option New
-                    span.sort-option Top
-                    span.sort-option Hot
-                #filter-container.control.col-md-3
+                    .btn-group
+                        button.btn.btn-primary(type="button") Hot
+                        button.btn.btn-default(type="button") New
+                        button.btn.btn-default(type="button") Top
+                #filter-container.control.col-xs-6.col-md-3
                     p SEARCH
-                    input#filter(type='text' placeholder='Filter results')
+                    .input-group
+                        input.form-control(type="text" class="form-control" placeholder="Filter results")
                 #tags.control.col-md-6
                     p TAGS
-                    span.tag iOS
-                    span.tag Beta
-                    span.tag Series A
-                    span.tag Web
-                    span.tag Education
+                    .btn-group
+                        button.btn.btn-default(type="button") Beta
+                        button.btn.btn-default(type="button") iOS
+                        button.btn.btn-default(type="button") Series A
+                        button.btn.btn-default(type="button") Web
+                        button.btn.btn-default(type="button") Education
+                        button.btn.btn-default(type="button") Productivity
 
             mixin project(name, description, ...members)
                 .project.col-md-12
