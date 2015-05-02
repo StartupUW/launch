@@ -166,7 +166,24 @@ hr {
 
 @media screen and (max-width: 768px) { 
     .project-logo {
-      top: 50px;
+      top: 10px;
       width: 80px;
+    }
+
+    #splash {
+      min-height: 400px;
+    }
+
+    #title-container {
+      height: 150px;
+      padding: 10px;
+    }
+
+    #title {
+      font-size: 35px;
+    }
+
+    #subtitle {
+      font-size: 24px;
     }
 }
