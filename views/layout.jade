@@ -12,7 +12,7 @@ html(lang="en")
         block header
             #header
                 .row
-                    p#logo.col-md-3 Traction UW
+                    p#logo.col-md-3 Startup UW | Launch
                     #login-bar.col-md-9
                         a(href="#")
                             span#login-button LOGIN
@@ -20,7 +20,38 @@ html(lang="en")
         block content
 
         block footer
-            #footer
+            #footer.container-fluid
+                .row
+                    .col-md-4
+                        h4 About
+                        p Startup UW is an official RSO (Registered Student Organization) at the University of Washington.  Our mission is to connect students with the opportunities, resources and most importantly the people they need to fully pursue their entrepreneurial dreams.
+                    .col-md-4
+                        h4 Press
+                        p For additional inquiries, please reach us at 
+                            a(href="mailto:team@startupuw.com") press@startupuw.com
+                    .col-md-4
+                        h4 Social Media
+                        h4 Contact
+                        p You can reach the Startup UW team by contacting: 
+                            a(href="mailto:team@startupuw.com") team@startupuw.com
+            #about.container-fluid
+                .row
+                    .col-md-3
+                        p#footer-brand STARTUP UW | LAUNCH BETA
+                    .col-md-9#footer-links-container
+                        ul#footer-links
+                            li 
+                                a(href="/") HOME
+                            li 
+                                a(href="#") GET INVOLVED
+                            li 
+                                a(href="#") MEET THE TEAM
+                            li 
+                                a(href="#") WHAT WE'RE ABOUT
+                            li 
+                                a(href="#") EVENTS
+                            li 
+                                a(href="#") CONTACT
 
         block scripts
             script(src="https://code.jquery.com/jquery-2.1.1.min.js")    
