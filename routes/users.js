@@ -33,11 +33,17 @@ router.route('/users')
 			if(err) {
 				res.send(err);
 			}
-				res.json(user);
+				res.render('index', {user: user});
 		});	
 	})
 
 router.route('users/:user_id')
+	.get(function(req,res)) {
+		Users.findById(req.params.user_id, function(err, user) {
+			if(err)  res.render('user', {err: err})
+			res.render('user', {users: user});
+		});
+	});
 	.put(function(req,res) {
 		Users.findById(req.params.user_id, function(err, user) {
 			if(err) res.send(err);
