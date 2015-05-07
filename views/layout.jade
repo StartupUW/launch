@@ -2,7 +2,7 @@ doctype html
 html(lang="en")
     head
         block title
-            title Traction | StartupUW
+            title Launch by StartupUW
         meta(name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0, user-scalable=no") 
         link(rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css")
         link(href="/stylesheets/index.css" type="text/css" rel="stylesheet" media="screen,projection")
@@ -16,9 +16,43 @@ html(lang="en")
                         p#logo.col-md-3 Startup UW | Launch
                     #login-bar.col-md-9
                         a(href="#")
-                            span#login-button LOGIN
-    
+                            .fb-login-button(data-max-rows="1" data-scope="public_profile,email" data-size="medium" onlogin="checkLoginState();" data-show-faces="true" data-auto-logout-link="true")
+                            // .fb-login-button(data-max-rows="1" data-scope="public_profile,email" data-size="medium" onlogin="checkLoginState();" data-show-faces="true" data-auto-logout-link="true")
+
         block content
+            script(src='/js/fb.js')
+
+            #create-profile.modal.fade
+                .modal-dialog
+                    .modal-content
+                        .modal-header
+                            h2.modal-title Finish Your Profile
+                        .modal-body
+                            form(action="/profile/create" method="post")
+                                .input-group
+                                    label First Name
+                                    input#fname.form-control(type="text" name="fname" required)
+                                .input-group
+                                    label Last Name
+                                    input#lname.form-control(type="text" name="lname" required)
+                                .input-group
+                                    label Email Address
+                                    input#email.form-control(type="email" name="email" required)
+                                .input-group
+                                    label Bio (optional)
+                                    textarea.form-control(type="text" name="bio")
+                                .input-group
+                                    label Major
+                                    input.form-control(type="text" name="major" required)
+                                .input-group
+                                    label Graduation Year
+                                    input.form-control(type="number" name="gradyr" required)
+                                .input-group
+                                    button.btn.btn-primary(type="submit") Finish Profile
+                        .modal-footer
+                            button.btn.btn-default(data-dismiss="create-profile") Close
+
+
 
         block footer
             #footer.container-fluid
@@ -56,3 +90,4 @@ html(lang="en")
 
         block scripts
             script(src="https://code.jquery.com/jquery-2.1.1.min.js")    
+            script(src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js")

@@ -1,7 +1,8 @@
 var express = require('express');
 var router = express.Router();
-var Users = require('../models/users');
+
 // Models
+var Users = require('../models/users');
 var Projects = require('../models/projects');
 
 router.get('/', function(req, res, next) {
@@ -17,7 +18,7 @@ router.get('/project/:pid', function(req, res){
 	});
 });
 
-router.route('/users')
+router.route('/create')
 	.post(function(req,res) {
 		var user = new Users();
 		user.fname = req.body.fname;
@@ -26,14 +27,16 @@ router.route('/users')
 		user.bio = req.body.bio;
 		user.major = req.body.bio;
 		user.gradyr = req.body.gradyr;
-		user.link.label = req.body.link.label;
-		user.link.url = req.body.link.url;
-		user.link.visible = req.body.link.visible;
+        // user.link.label = req.body.link.label;
+		// user.link.url = req.body.link.url;
+		// user.link.visible = req.body.link.visible;
+        user._id = req.session.token;
 		user.save(function(err){
 			if(err) {
 				res.send(err);
-			}
+			} else {
 				res.json(user);
+            }
 		});	
 	})
 

@@ -83,4 +83,12 @@ block append content
                     +project(index, p.name, p.description, p.contact, p.tags, '', p._id)
                     - index += 1
 
- 
+ block append scripts
+    script.
+        $(document).ready(function() {
+            $("#seemore").click(function() {
+                $('html, body').animate({
+                    scrollTop: $("#showcase").offset().top
+                }, 1000);
+            });
+        });

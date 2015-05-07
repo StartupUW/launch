@@ -28,7 +28,6 @@ a, a:hover, a:visited, a:active {
 
 #login-bar {
   text-align: right;
-  margin-top: 5px;
 }
 
 #login-button {
@@ -95,7 +94,8 @@ a, a:hover, a:visited, a:active {
 #showcase {
   max-width: 950px;
   text-align: center;
-  margin: 50px auto;
+  padding: 50px 0;
+  margin: auto;
 }
 
 /* Control Panel */
@@ -183,11 +183,6 @@ hr {
 .project-title {
   font-size: 32px;
   font-weight: 600;
-}
-
-.project-logo {
-    position: absolute;
-    top: 20px;
 }
 
 .project-labels {
