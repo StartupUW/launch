@@ -38,7 +38,6 @@ router.route('/console')
     })
     .post(function(req, res) {
         if (req.body.hasOwnProperty("id")) {
-            console.log('yea');
             Projects.update({ _id: req.body.id }, { approved: true }, function(err, updated) {
                 var errors = [];
                 if (err) errors.append(err);

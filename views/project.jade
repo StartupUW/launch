@@ -1,1 +1,7 @@
-h1 #{project.name}
+extends ./layout.jade
+
+block append content
+
+    #project-container.container
+        h1 #{project.name}
+        p #{project.description}
