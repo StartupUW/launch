@@ -26,9 +26,9 @@ router.route('/create')
 
 router.route('/:user_id')
     .get(function(req, res) {
-        Users.findOne({ uid: req.params.user_id }, function(err, user) {
+        Users.findOne({ uid: req.params.user_id }, function(err, profile) {
             if(err) res.send(err);
-            res.json(user);
+            res.render('profile', { profile: profile, user: req.session.user });
         });
     })
 	.put(function(req,res) {

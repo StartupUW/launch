@@ -18,10 +18,11 @@ a, a:hover, a:visited, a:active {
   height: 70px;
   padding: 20px 45px;
   border-bottom: 1px solid #ddd;
+  margin: auto;
+  max-width: 1200px;
 }
 
 #logo {
-  text-align: center;
   font-size: 25px;
   font-weight: 600;
 }
@@ -103,6 +104,18 @@ a, a:hover, a:visited, a:active {
   margin: auto;
 }
 
+#showcase h1 {
+  font-size: 22px;
+  font-weight: 600;
+  color: #555;
+}
+
+#showcase h1 .glyphicon {
+  font-size: 15px;
+  top: 0;
+  margin-right: 5px;
+}
+
 /* Control Panel */
 
 #control-panel.row {
@@ -127,13 +140,26 @@ a, a:hover, a:visited, a:active {
   margin-bottom: 12px;
 }
 
-.more {
+.more, .like {
   padding: 10px;
-  background-color: #33ccff;
   color: white;
   border: none;
   margin-top: 20px;
   transition: all .1s linear;
+  display: inline-block;
+  cursor: pointer;
+}
+
+.more {
+  background-color: #33ccff;
+}
+
+.like {
+    background-color: #E08283;
+}
+
+.like:hover {
+  background-color: #e74c3c;
 }
 
 .more:hover {
@@ -282,6 +308,27 @@ hr {
   margin-top: 20px;
 }
 
+/* USER PROFILES */
+
+#profile-container {
+  margin: 50px auto;
+}
+
+#profile-container .glyphicon {
+  margin-right: 5px;
+  top: 2px;
+}
+
+#profile-container h2 {
+  font-size: 18px;
+  font-weight: 600;
+}
+
+#profile-container h1 {
+  font-size: 24px;
+  font-weight: 600;
+}
+
 /* MEDIA QUERIES */
 
 @media screen and (max-width: 768px) { 
@@ -295,7 +342,7 @@ hr {
   }
 
   #title-container {
-    height: 150px;
+    height: 225px;
     padding: 10px;
     left: 10px;
   }

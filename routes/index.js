@@ -1,58 +1,71 @@
 var express = require('express');
-var router = express.Router();
 var request = require('request');
 var Projects = require('../models/projects');
 var Users = require('../models/users');
 
+var router = express.Router();
+
 var FB_URL = 'https://graph.facebook.com/me?access_token=';
 
-
 /* GET home page. */
-router.get('/', function(req, res, next) {
+router.get('/', function(req, res) {
 	Projects.find({ approved: true }, function(err, projects){
 		if(err) res.send(err);
-		res.render('index', { projects : projects, user : req.session.user });
+		res.render('index', { projects: projects, user: req.session.user });
 	});
 });
 
+/* GET projects (JSON format) */
+router.get('/projects', function(req, res) {
+	Projects.find({ approved: true }, function(err, projects){
+		if(err) res.send(err);
+		res.json({ projects: projects });
+	});
+});
+
+/* Login via FB User Token */
 router.post('/login', function(req, res) {
     if (req.body.token) {
         var token = req.body.token;
         request(FB_URL + token, function(err, response, data) {
-            if (response.statusCode != 200) res.json({error: err})
+            if (response.statusCode != 200) res.json({ error: err })
+
+            // User exists, either login or create a new account.
             var userData = JSON.parse(data);
             Users.count({ uid: userData.id }, function(err, count) {
-                if (err) res.json({error: err});
+                if (err) res.json({ error: err });
                 // Check whether user exists in our system.
                 if (count == 1) {
                     req.session.user = userData;
-                    res.json({user: true});
+                    res.json({ user: true });
                 } else {
                     req.session.newUser = userData;
-                    res.json({user: false});
+                    res.json({ user: false });
                 }
             });
         });
     } else {
-        res.json({success: false});
+        res.json({ success: false });
     }
 });
 
+/* Logout */
 router.get('/logout', function(req, res) {
     req.session.destroy();
     res.redirect('/');
 });
 
+
+/* Project display page */
 router.get('/project/:pid', function(req, res){
 	Projects.findById(req.params.pid, function(err, project){
-		if(err) {
-			res.send(err);
-		}
+		if(err) res.send(err);
 		res.render('project', { project : project, user : req.session.user });
 	});
 });
 
-router.post('/projects/create', function(req, res) {
+/* Create a new project */
+router.post('/project/create', function(req, res) {
 	var project = new Projects();
 	project.name = req.body.name;
 	project.website = req.body.website;
@@ -70,6 +83,7 @@ router.post('/projects/create', function(req, res) {
 	});
 });
 
+/* Update an existing project */
 router.put('/project/:pid/update', function(req, res) {
 	Projects.findById(req.params.pid, function(err, project){
 		if(err) {

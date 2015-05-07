@@ -12,12 +12,12 @@ html(lang="en")
         block header
             #header
                 .row
-                    a(href='/')
-                        p#logo.col-md-3.hidden-sm.hidden-xs Startup UW | Launch
-                    #login-bar.col-md-9
+                    p#logo.col-xs-6.hidden-xs Startup UW | 
+                        a(href='/') Launch
+                    #login-bar.col-xs-12.col-sm-6
                         if user
                             span Hello, 
-                                a(href="/profile/#{user.id}") #{user.first_name}
+                                a(href="/profile/#{user.id}") #{user.first_name}!
                             a(href="/profile")
                                 span.glyphicon.glyphicon-cog
                             a(href="/logout")
