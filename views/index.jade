@@ -15,6 +15,7 @@ block append content
 
         if featured
             section#featured Featured
+
         section#showcase.container-fluid
             h1 Showcase
 
@@ -39,49 +40,47 @@ block append content
                         button.btn.btn-default(type="button") Education
                         button.btn.btn-default(type="button") Productivity
 
-            mixin project(name, description, ...members)
+            mixin project-info(name, description, members, tags, url)
                 .project-info.col-sm-9
                     h2.project-title= name
-                        .project-labels
-                            span.label.label-default iOS
-                            span.label.label-default Series A
-                            span.label.label-default Hiring
-                    if block
-                        block
-                    p.project-description
-                        | Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec porta erat non turpis elementum, eget tristique lorem dignissim. Aenean justo dui, bibendum non consequat ac.
-                    button.more SEE MORE
 
-            mixin project-img
+                        if tags.length
+                            .project-labels
+                                each tag in tags
+                                    span.label.label-default= tag
+
+                    if members.length
+                        p.project-members Members: 
+                            each member in members
+                               span.member= member
+
+                    p.project-description= description
+                    a(href= '/project/' + url)
+                        button.more SEE MORE
+
+            mixin project-img(url)
                 .img-container.col-sm-3.hidden-xs
-                    img.project-logo(src='https://fbcdn-profile-a.akamaihd.net/hprofile-ak-xpa1/v/t1.0-1/p160x160/1907816_539701799463497_3942861624024256331_n.png?oh=b57ed5b154a86606f5a7982cc27f0113&oe=556E8470&__gda__=1432292943_e72da182ed70511a9bb5f5e996ad2ac1')
+                    img.project-logo(src= url ? url : 'https://fbcdn-profile-a.akamaihd.net/hprofile-ak-xpa1/v/t1.0-1/p160x160/1907816_539701799463497_3942861624024256331_n.png?oh=b57ed5b154a86606f5a7982cc27f0113&oe=556E8470&__gda__=1432292943_e72da182ed70511a9bb5f5e996ad2ac1')
 
-            mixin project-left(name, description, ...members)
+            mixin project(index, name, description, members, tags, img, url)
                 .project.col-md-12
                     .row
-                        +project-img
-                        +project(name, description)
-                           p.project-members Members: 
-                               each member in members
-                                   span.member= member
-                    hr
-
-            mixin project-right(name, description, ...members)
-                .project.col-md-12
-                    .row
-                        +project(name, description)
-                           p.project-members Members: 
-                               each member in members
-                                   span.member= member
-                        +project-img
+                        if index % 2 == 0
+                            +project-img(img)
+                            +project-info(name, description, members, tags, url)
+                        else
+                            +project-info(name, description, members, tags, url)
+                            +project-img(img)
                     hr
  
             .row
-                +project-left('Launch UW', 'Ipsum Lorem...', 'Daniel', 'Ayush', 'Vardhman')
-                +project-right('Launch UW', 'Ipsum Lorem...', 'Daniel', 'Ayush', 'Vardhman')
-                +project-left('Launch UW', 'Ipsum Lorem...', 'Daniel', 'Ayush', 'Vardhman')
-                +project-right('Launch UW', 'Ipsum Lorem...', 'Daniel', 'Ayush', 'Vardhman')
-                +project-left('Launch UW', 'Ipsum Lorem...', 'Daniel', 'Ayush', 'Vardhman')
-                +project-right('Launch UW', 'Ipsum Lorem...', 'Daniel', 'Ayush', 'Vardhman')
-                +project-left('Launch UW', 'Ipsum Lorem...', 'Daniel', 'Ayush', 'Vardhman')
+                if projects.length == 0
+                    h3 No projects to show currently! Be the 
+                        a(href='/project/create') first
+                        | .
+                - var index = 0;
+                each p in projects
+                    +project(index, p.name, p.description, p.contact, p.tags, '', p._id)
+                    - index += 1
+
  

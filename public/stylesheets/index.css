@@ -62,7 +62,6 @@ a, a:hover, a:visited, a:active {
 
 #title-you {
   color: #33ccff;
-  text-decoration: underline;
 }
 
 #title {
@@ -94,10 +93,9 @@ a, a:hover, a:visited, a:active {
 /* SHOWCASE */
 
 #showcase {
-  padding-top: 50px;
   max-width: 950px;
   text-align: center;
-  margin: auto;
+  margin: 50px auto;
 }
 
 /* Control Panel */
@@ -257,6 +255,31 @@ hr {
 
 #footer-links li a:hover {
   color: #33ccff;
+}
+
+/* Admin */
+
+#admin-content {
+  height: 400px;
+  width: 500px;
+  margin: 100px auto;
+}
+
+.alert, #admin-content h1, #admin-console h1 {
+  text-align: center;
+}
+
+#admin-console {
+  margin: 50px 0;  
+  min-height: 400px;
+}
+
+#admin-login {
+  margin: 30px;
+}
+
+#admin-login button, #admin-projects button {
+  margin-top: 20px;
 }
 
 /* MEDIA QUERIES */
