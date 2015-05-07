@@ -33,14 +33,14 @@ router.route('/users')
 			if(err) {
 				res.send(err);
 			}
-				res.render('index', {user: user});
+				res.render('user', {user: user});
 		});	
 	})
 
 router.route('users/:user_id')
 	.get(function(req,res) {
 		Users.findById(req.params.user_id, function(err, user) {
-			if(err)  res.render('user', {err: err});
+			if(err) {res.render('user', {err: err})};
 			res.render('user', {user: user});
 		});
 	})
