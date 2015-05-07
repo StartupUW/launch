@@ -30,6 +30,11 @@ a, a:hover, a:visited, a:active {
   text-align: right;
 }
 
+#login-bar span {
+  margin-left: 15px;
+  margin-top: 5px;
+}
+
 #login-button {
   padding: 20px;
   color: #21272d;

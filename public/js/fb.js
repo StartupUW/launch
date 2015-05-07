@@ -39,8 +39,7 @@
                 if (data.user) {
                     location.reload();
                 } else {
-                    $("#fname").val(response.first_name);
-                    $("#lname").val(response.last_name);
+                    $("#name").html(response.name);
                     $("#email").val(response.email);
                     $("#create-profile").modal('show');
                 }
