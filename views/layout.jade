@@ -5,6 +5,8 @@ html(lang="en")
             title Launch by StartupUW
         meta(name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0, user-scalable=no") 
         link(rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css")
+        link(rel="shortcut icon" href="http://startupuw.com/wp-content/uploads/2015/03/fbphoto.png")
+        link(rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css")
         link(href="/stylesheets/index.css" type="text/css" rel="stylesheet" media="screen,projection")
 
     body
@@ -17,7 +19,8 @@ html(lang="en")
                     #login-bar.col-xs-12.col-sm-6
                         if user
                             span Hello, 
-                                a(href="/profile/#{user.id}") #{user.first_name}!
+                                a(href="/profile/#{user.id}") #{user.first_name}
+                                | !
                             a(href="/profile")
                                 span.glyphicon.glyphicon-cog
                             a(href="/logout")
@@ -56,38 +59,54 @@ html(lang="en")
 
 
         block footer
-            #footer.container-fluid
-                .row
-                    .col-md-4
-                        h4 About
-                        p Startup UW is an official RSO (Registered Student Organization) at the University of Washington.  Our mission is to connect students with the opportunities, resources and most importantly the people they need to fully pursue their entrepreneurial dreams.
-                    .col-md-4
-                        h4 Press
-                        p For additional inquiries, please reach us at 
-                            a(href="mailto:team@startupuw.com") press@startupuw.com
-                    .col-md-4
-                        h4 Social Media
-                        h4 Contact
-                        p You can reach the Startup UW team by contacting: 
-                            a(href="mailto:team@startupuw.com") team@startupuw.com
-            #about.container-fluid
-                .row
-                    .col-md-3
-                        p#footer-brand STARTUP UW | LAUNCH BETA
-                    .col-md-9#footer-links-container
-                        ul#footer-links
-                            li 
-                                a(href="/") HOME
-                            li 
-                                a(href="#") GET INVOLVED
-                            li 
-                                a(href="#") MEET THE TEAM
-                            li 
-                                a(href="#") WHAT WE'RE ABOUT
-                            li 
-                                a(href="#") EVENTS
-                            li 
-                                a(href="#") CONTACT
+            #footer
+                .container
+                    .row
+                        .col-md-4
+                            h4 About
+                            p Startup UW is an official RSO (Registered Student Organization) at the University of Washington.  Our mission is to connect students with the opportunities, resources and most importantly the people they need to fully pursue their entrepreneurial dreams.
+                        .col-md-4
+                            h4 Press
+                            p For additional inquiries, please reach us at 
+                                a(href="mailto:team@startupuw.com") press@startupuw.com
+                        .col-md-4
+                            h4 Social Media
+                            .row#social-media
+                                .col-xs-3
+                                    a(href="https://www.facebook.com/StartupUW")
+                                        i.fa.fa-2x.fa-facebook
+                                .col-xs-3
+                                    a(href="https://twitter.com/StartupUW")
+                                        i.fa.fa-2x.fa-twitter
+                                .col-xs-3
+                                    a(href="http://instagram.com/startupuw")
+                                        i.fa.fa-2x.fa-instagram
+                                .col-xs-3
+                                    a(href="http://www.youtube.com/channel/UCfrYpuwncGqQ5P8yMgLX5KQ")
+                                        i.fa.fa-2x.fa-youtube
+
+                            h4 Contact
+                            p You can reach the Startup UW team by contacting: 
+                                a(href="mailto:team@startupuw.com") team@startupuw.com
+            #about
+                .container
+                    .row
+                        .col-md-3
+                            p#footer-brand STARTUP UW | LAUNCH BETA
+                        .col-md-9#footer-links-container
+                            ul#footer-links
+                                li 
+                                    a(href="http://startupuw.com") HOME
+                                li 
+                                    a(href="http://startupuw.com/get-involved/") GET INVOLVED
+                                li 
+                                    a(href="http://startupuw.com/meet-the-team/") MEET THE TEAM
+                                li 
+                                    a(href="http://startupuw.com/what-were-about/") WHAT WE'RE ABOUT
+                                li 
+                                    a(href="http://startupuw.com/events/") EVENTS
+                                li 
+                                    a(href="http://startupuw.com/contact/") CONTACT
 
         block scripts
             script(src="https://code.jquery.com/jquery-2.1.1.min.js")    

@@ -44,7 +44,7 @@ block append content
 
             mixin project-info(name, description, members, tags, votes, url)
                 .project-info.col-sm-9
-                    h2.project-title= name
+                    h2.project-title #{name} 
 
                         if tags.length
                             .project-labels
@@ -81,7 +81,7 @@ block append content
                             +project-img(img)
                     hr
  
-            .row
+            #projects-container.row
                 if projects.length == 0
                     h3 No projects to show currently! Be the 
                         a(href='/project/create') first

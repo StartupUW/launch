@@ -14,6 +14,11 @@ a, a:hover, a:visited, a:active {
   text-decoration: none;
 }
 
+.row {
+  margin-left: 0;
+  margin-right: 0;
+}
+
 #header {
   height: 70px;
   padding: 20px 45px;
@@ -25,6 +30,10 @@ a, a:hover, a:visited, a:active {
 #logo {
   font-size: 25px;
   font-weight: 600;
+}
+
+#logo a {
+  color: #33ccff;
 }
 
 #login-bar {
@@ -178,10 +187,6 @@ hr {
   padding: 0 35px;
 }
 
-.project-info {
-  padding: 0 40px;
-}
-
 .project-members {
   color: #aaa; 
   font-size: 12px;
@@ -220,7 +225,6 @@ hr {
   display: inline-block;
   font-size: 15px;
   vertical-align: middle;
-  margin-left: 10px;
   padding-bottom: 5px;
 }
 
@@ -231,26 +235,37 @@ hr {
 /* FOOTER */
 
 #footer {
-  padding: 30px 100px;
+  padding: 30px 0;
   background-color: #30393e;
   color: #999;
-}
-
-#footer .row {
-  margin: 0;
 }
 
 #footer p {
   color: #ccc;
   font-size: 14px;
+  font-weight: 300;
 }
 
 #footer a {
   color: #999;
+  transition: all .1s linear;
 }
 
-#footer .col-md-4 {
-  padding: 0 50px;
+#footer a:hover, #social-media .fa:hover {
+  color: #33ccff;
+}
+
+#footer .row > div {
+  margin-bottom: 20px;
+}
+
+#social-media {
+  margin-top: 20px;
+}
+
+#social-media .fa {
+  color: white;
+  transition: all .1s linear;
 }
 
 #footer-brand {
@@ -258,7 +273,7 @@ hr {
 }
 
 #about {
-  padding: 30px 150px;
+  padding: 30px 0;
   background-color: #262e31;
   color: #eee;
   font-size: 12px;
@@ -329,13 +344,30 @@ hr {
   font-weight: 600;
 }
 
+/* Project page */
+#project-container {
+  max-width: 1000px;
+  padding: 55px;
+  margin: auto;
+}
 /* MEDIA QUERIES */
 
+@media screen and (max-width: 992px) {
+  #footer {
+    padding: 30px 0;
+  }
+
+  #about {
+    text-align: left;
+    line-height: 25px;
+  }
+}
+
 @media screen and (max-width: 768px) { 
-   .project-logo {
-     top: 10px;
-     width: 80px;
-   }
+  .project-logo {
+    top: 10px;
+    width: 80px;
+  }
 
   #splash {
     min-height: 400px;
@@ -355,12 +387,4 @@ hr {
     font-size: 24px;
   }
 
-  #footer {
-    padding: 30px 0;
-  }
-
-  #about {
-    padding: 30px 55px;
-    text-align: left;
-  }
 }
