@@ -18,7 +18,10 @@ router.route('/create')
 		user.major = req.body.major;
 		user.gradyr = req.body.gradyr;
 		user.save(function(err) {
-			if(err) res.send(err);
+			if(err) { 
+                res.send(err); 
+                return; 
+            }
             req.session.user = userData;
             res.redirect('/');
 		});	
@@ -27,13 +30,19 @@ router.route('/create')
 router.route('/:user_id')
     .get(function(req, res) {
         Users.findOne({ uid: req.params.user_id }, function(err, profile) {
-            if(err) res.send(err);
+            if(err) { 
+                res.send(err);
+                return;
+            }
             res.render('profile', { profile: profile, user: req.session.user });
         });
     })
 	.put(function(req,res) {
 		Users.findById(req.params.user_id, function(err, user) {
-			if(err) res.send(err);
+			if(err) { 
+                res.send(err);
+                return;
+            }
 			if(req.body.fname) user.fname = req.body.fname;
 			if(req.body.lname) user.lname = req.body.lname;
 			if(req.body.email) user.email = req.body.email;
@@ -54,7 +63,10 @@ router.route('/:user_id')
 		Users.remove({
 			_id : req.params.user_id
 		}, function(err, user) {
-			if(err) res.send(err);
+			if(err) { 
+                res.send(err);
+                return;
+            }
 			res.json({message: 'User deleted'});
 		});
 	});

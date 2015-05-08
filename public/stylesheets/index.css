@@ -12,6 +12,7 @@ body {
 
 a, a:hover, a:visited, a:active {
   text-decoration: none;
+  transition: all .1s linear;
 }
 
 .row {
@@ -141,7 +142,6 @@ a, a:hover, a:visited, a:active {
 }
 
 #filter-container .input-group {
-  width: 90%;
   margin: auto;
 }
 
@@ -248,7 +248,6 @@ hr {
 
 #footer a {
   color: #999;
-  transition: all .1s linear;
 }
 
 #footer a:hover, #social-media .fa:hover {
