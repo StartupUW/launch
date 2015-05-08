@@ -1,0 +1,16 @@
+extends ./layout.jade
+
+block content
+
+    if error
+        .alert.alert-danger(role="alert") Incorrect admin password!
+    
+    #admin-content
+        h1 Administrator Login
+
+        #admin-login
+            form(method='post' action='/admin')
+                label(for='admin-pass') Administrator Password
+                input#admin-pass.form-control(type='password' name='password')
+
+                button.btn.btn-primary(type='submit') Sign In

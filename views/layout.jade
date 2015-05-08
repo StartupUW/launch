@@ -2,9 +2,11 @@ doctype html
 html(lang="en")
     head
         block title
-            title Traction | StartupUW
+            title Launch by StartupUW
         meta(name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0, user-scalable=no") 
         link(rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css")
+        link(rel="shortcut icon" href="http://startupuw.com/wp-content/uploads/2015/03/fbphoto.png")
+        link(rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css")
         link(href="/stylesheets/index.css" type="text/css" rel="stylesheet" media="screen,projection")
 
     body
@@ -12,46 +14,100 @@ html(lang="en")
         block header
             #header
                 .row
-                    p#logo.col-md-3 Startup UW | Launch
-                    #login-bar.col-md-9
-                        a(href="#")
-                            span#login-button LOGIN
-    
+                    p#logo.col-xs-6.hidden-xs Startup UW | 
+                        a(href='/') Launch
+                    #login-bar.col-xs-12.col-sm-6
+                        if user
+                            span Hello, 
+                                a(href="/profile/#{user.id}") #{user.first_name}
+                                | !
+                            a(href="/profile")
+                                span.glyphicon.glyphicon-cog
+                            a(href="/logout")
+                                span.glyphicon.glyphicon-log-out
+                        else
+                            .fb-login-button(data-scope="public_profile,email" data-size="medium" onlogin="checkLoginState();")
+
         block content
+            script(src='/js/fb.js')
+
+            #create-profile.modal.fade
+                .modal-dialog
+                    .modal-content
+                        form(action="/profile/create" method="post")
+                            .modal-header
+                                h2.modal-title Finish Your Profile
+                            .modal-body
+                                label Name
+                                p#name
+                                .input-group
+                                    label Email Address
+                                    input#email.form-control(type="email" name="email" required)
+                                .input-group
+                                    label Bio (optional)
+                                    textarea.form-control(type="text" name="bio")
+                                .input-group
+                                    label Major
+                                    input.form-control(type="text" name="major" required)
+                                .input-group
+                                    label Graduation Year
+                                    input.form-control(type="number" name="gradyr" value="2014" required)
+                            .modal-footer
+                                .btn.btn-default(data-dismiss="modal") Close
+                                button.btn.btn-primary(type="submit") Finish Profile
+
+
 
         block footer
-            #footer.container-fluid
-                .row
-                    .col-md-4
-                        h4 About
-                        p Startup UW is an official RSO (Registered Student Organization) at the University of Washington.  Our mission is to connect students with the opportunities, resources and most importantly the people they need to fully pursue their entrepreneurial dreams.
-                    .col-md-4
-                        h4 Press
-                        p For additional inquiries, please reach us at 
-                            a(href="mailto:team@startupuw.com") press@startupuw.com
-                    .col-md-4
-                        h4 Social Media
-                        h4 Contact
-                        p You can reach the Startup UW team by contacting: 
-                            a(href="mailto:team@startupuw.com") team@startupuw.com
-            #about.container-fluid
-                .row
-                    .col-md-3
-                        p#footer-brand STARTUP UW | LAUNCH BETA
-                    .col-md-9#footer-links-container
-                        ul#footer-links
-                            li 
-                                a(href="/") HOME
-                            li 
-                                a(href="#") GET INVOLVED
-                            li 
-                                a(href="#") MEET THE TEAM
-                            li 
-                                a(href="#") WHAT WE'RE ABOUT
-                            li 
-                                a(href="#") EVENTS
-                            li 
-                                a(href="#") CONTACT
+            #footer
+                .container
+                    .row
+                        .col-md-4
+                            h4 About
+                            p Startup UW is an official RSO (Registered Student Organization) at the University of Washington.  Our mission is to connect students with the opportunities, resources and most importantly the people they need to fully pursue their entrepreneurial dreams.
+                        .col-md-4
+                            h4 Press
+                            p For additional inquiries, please reach us at 
+                                a(href="mailto:team@startupuw.com") press@startupuw.com
+                        .col-md-4
+                            h4 Social Media
+                            .row#social-media
+                                .col-xs-3
+                                    a(href="https://www.facebook.com/StartupUW")
+                                        i.fa.fa-2x.fa-facebook
+                                .col-xs-3
+                                    a(href="https://twitter.com/StartupUW")
+                                        i.fa.fa-2x.fa-twitter
+                                .col-xs-3
+                                    a(href="http://instagram.com/startupuw")
+                                        i.fa.fa-2x.fa-instagram
+                                .col-xs-3
+                                    a(href="http://www.youtube.com/channel/UCfrYpuwncGqQ5P8yMgLX5KQ")
+                                        i.fa.fa-2x.fa-youtube
+
+                            h4 Contact
+                            p You can reach the Startup UW team by contacting: 
+                                a(href="mailto:team@startupuw.com") team@startupuw.com
+            #about
+                .container
+                    .row
+                        .col-md-3
+                            p#footer-brand STARTUP UW | LAUNCH BETA
+                        .col-md-9#footer-links-container
+                            ul#footer-links
+                                li 
+                                    a(href="http://startupuw.com") HOME
+                                li 
+                                    a(href="http://startupuw.com/get-involved/") GET INVOLVED
+                                li 
+                                    a(href="http://startupuw.com/meet-the-team/") MEET THE TEAM
+                                li 
+                                    a(href="http://startupuw.com/what-were-about/") WHAT WE'RE ABOUT
+                                li 
+                                    a(href="http://startupuw.com/events/") EVENTS
+                                li 
+                                    a(href="http://startupuw.com/contact/") CONTACT
 
         block scripts
             script(src="https://code.jquery.com/jquery-2.1.1.min.js")    
+            script(src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js")

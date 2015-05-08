@@ -12,22 +12,37 @@ body {
 
 a, a:hover, a:visited, a:active {
   text-decoration: none;
+  transition: all .1s linear;
+}
+
+.row {
+  margin-left: 0;
+  margin-right: 0;
 }
 
 #header {
   height: 70px;
   padding: 20px 45px;
   border-bottom: 1px solid #ddd;
+  margin: auto;
+  max-width: 1200px;
 }
 
 #logo {
-  text-align: center;
   font-size: 25px;
   font-weight: 600;
 }
 
+#logo a {
+  color: #33ccff;
+}
+
 #login-bar {
   text-align: right;
+}
+
+#login-bar span {
+  margin-left: 15px;
   margin-top: 5px;
 }
 
@@ -62,7 +77,6 @@ a, a:hover, a:visited, a:active {
 
 #title-you {
   color: #33ccff;
-  text-decoration: underline;
 }
 
 #title {
@@ -94,10 +108,22 @@ a, a:hover, a:visited, a:active {
 /* SHOWCASE */
 
 #showcase {
-  padding-top: 50px;
   max-width: 950px;
   text-align: center;
+  padding: 50px 0;
   margin: auto;
+}
+
+#showcase h1 {
+  font-size: 22px;
+  font-weight: 600;
+  color: #555;
+}
+
+#showcase h1 .glyphicon {
+  font-size: 15px;
+  top: 0;
+  margin-right: 5px;
 }
 
 /* Control Panel */
@@ -116,7 +142,6 @@ a, a:hover, a:visited, a:active {
 }
 
 #filter-container .input-group {
-  width: 90%;
   margin: auto;
 }
 
@@ -124,13 +149,26 @@ a, a:hover, a:visited, a:active {
   margin-bottom: 12px;
 }
 
-.more {
+.more, .like {
   padding: 10px;
-  background-color: #33ccff;
   color: white;
   border: none;
   margin-top: 20px;
   transition: all .1s linear;
+  display: inline-block;
+  cursor: pointer;
+}
+
+.more {
+  background-color: #33ccff;
+}
+
+.like {
+    background-color: #E08283;
+}
+
+.like:hover {
+  background-color: #e74c3c;
 }
 
 .more:hover {
@@ -147,10 +185,6 @@ hr {
 
 .project {
   padding: 0 35px;
-}
-
-.project-info {
-  padding: 0 40px;
 }
 
 .project-members {
@@ -187,16 +221,10 @@ hr {
   font-weight: 600;
 }
 
-.project-logo {
-    position: absolute;
-    top: 20px;
-}
-
 .project-labels {
   display: inline-block;
   font-size: 15px;
   vertical-align: middle;
-  margin-left: 10px;
   padding-bottom: 5px;
 }
 
@@ -207,26 +235,36 @@ hr {
 /* FOOTER */
 
 #footer {
-  padding: 30px 100px;
+  padding: 30px 0;
   background-color: #30393e;
   color: #999;
-}
-
-#footer .row {
-  margin: 0;
 }
 
 #footer p {
   color: #ccc;
   font-size: 14px;
+  font-weight: 300;
 }
 
 #footer a {
   color: #999;
 }
 
-#footer .col-md-4 {
-  padding: 0 50px;
+#footer a:hover, #social-media .fa:hover {
+  color: #33ccff;
+}
+
+#footer .row > div {
+  margin-bottom: 20px;
+}
+
+#social-media {
+  margin-top: 20px;
+}
+
+#social-media .fa {
+  color: white;
+  transition: all .1s linear;
 }
 
 #footer-brand {
@@ -234,7 +272,7 @@ hr {
 }
 
 #about {
-  padding: 30px 150px;
+  padding: 30px 0;
   background-color: #262e31;
   color: #eee;
   font-size: 12px;
@@ -259,20 +297,83 @@ hr {
   color: #33ccff;
 }
 
+/* Admin */
+
+#admin-content {
+  height: 400px;
+  width: 500px;
+  margin: 100px auto;
+}
+
+.alert, #admin-content h1, #admin-console h1 {
+  text-align: center;
+}
+
+#admin-console {
+  margin: 50px 0;  
+  min-height: 400px;
+}
+
+#admin-login {
+  margin: 30px;
+}
+
+#admin-login button, #admin-projects button {
+  margin-top: 20px;
+}
+
+/* USER PROFILES */
+
+#profile-container {
+  margin: 50px auto;
+}
+
+#profile-container .glyphicon {
+  margin-right: 5px;
+  top: 2px;
+}
+
+#profile-container h2 {
+  font-size: 18px;
+  font-weight: 600;
+}
+
+#profile-container h1 {
+  font-size: 24px;
+  font-weight: 600;
+}
+
+/* Project page */
+#project-container {
+  max-width: 1000px;
+  padding: 55px;
+  margin: auto;
+}
 /* MEDIA QUERIES */
 
+@media screen and (max-width: 992px) {
+  #footer {
+    padding: 30px 0;
+  }
+
+  #about {
+    text-align: left;
+    line-height: 25px;
+  }
+}
+
 @media screen and (max-width: 768px) { 
-   .project-logo {
-     top: 10px;
-     width: 80px;
-   }
+  .project-logo {
+    top: 10px;
+    width: 80px;
+  }
 
   #splash {
     min-height: 400px;
   }
 
   #title-container {
-    height: 150px;
+    height: 225px;
     padding: 10px;
     left: 10px;
   }
@@ -285,12 +386,4 @@ hr {
     font-size: 24px;
   }
 
-  #footer {
-    padding: 30px 0;
-  }
-
-  #about {
-    padding: 30px 55px;
-    text-align: left;
-  }
 }

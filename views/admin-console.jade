@@ -1,0 +1,56 @@
+extends ./layout.jade
+
+block header
+    #header
+        .row
+            a(href='/')
+                p#logo.col-md-3 Startup UW | Launch
+            #login-bar.col-md-9
+                a(href="/admin/logout")
+                    span#login-button ADMIN LOGOUT
+
+block content
+
+    each error in errors
+        .alert.alert-danger(role="alert")= error
+ 
+    #admin-console
+        h1 Administrator Console
+
+        #admin-projects.container
+
+            if projects.length == 0
+                h2 No unapproved projects!
+
+            .row
+                each project in projects
+                    .admin-project.col-md-4
+                        h3= project.name
+                        p Description: #{project.description}
+                        p Type: #{project.type}
+                        p Website: #{project.website}
+                        p Hiring: #{project.hiring ? "Yes" : "No"}
+                        p Date: #{project.date}
+
+                        if project.images.length
+                            span Images: 
+                            each image in project.images
+                                p= image
+                            br
+
+                        if project.tags.length
+                            span Tags: 
+                            each tag in project.tags
+                                span #{tag} 
+                            br
+
+                        if project.contact.length
+                            span Members: 
+                            each member in project.contact
+                                span #{member}
+                            br
+
+                        form(action="/admin/console" method="post")
+                            button.btn.btn-primary(type="submit") Approve
+                            input(type="hidden" name="id" value="#{project._id}")
+
