@@ -1,9 +1,11 @@
 var express = require('express');
-var router = express.Router();
 var Projects = require('../models/projects');
+
+var router = express.Router();
 
 var ADMIN_PASS = process.env.ADMIN_PASS;
 
+/* Admin Login Page */
 router.route('/')
     .all(function(req, res, next) {
         if (req.session.admin) {
@@ -21,10 +23,10 @@ router.route('/')
             res.redirect('/admin/console');
             return;
         }
-        res.render('admin', {error: true});
+        res.render('admin', { error: true });
     });
     
-
+/* Admin console */
 router.route('/console')
     .all(function(req, res, next) {
         if (!req.session.admin) {
@@ -42,12 +44,13 @@ router.route('/console')
                 var errors = [];
                 if (err) errors.append(err);
                 renderProjects(errors, res);
-            })
+            });
         } else {
             renderProjects(['Did not receive a project id to delete'], res);
         }
    });
 
+/* Admin logout */
 router.route('/logout')
     .get(function(req, res) {
         req.session.destroy();
@@ -57,7 +60,7 @@ router.route('/logout')
 var renderProjects = function(errors, res) {
      Projects.find({ approved: false }, function(err, projects){
         if (err) errors.append(err);
-        res.render('admin-console', { projects : projects, errors : errors });
+        res.render('admin-console', { projects: projects, errors: errors });
         return;
     });
 }

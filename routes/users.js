@@ -36,11 +36,14 @@ router.route('users/:user_id')
 		});
 	})
 		user.save(function(err) {
-			if(err) res.send(err);
+			if(err) { 
+                res.send(err); 
+                return; 
+            }
             req.session.user = userData;
             res.redirect('/');
 		});	
-	})
+	});
 
 router.route('/:user_id')
     .get(function(req, res) {
@@ -68,11 +71,22 @@ router.route('/:user_id')
 		});
 	})
 
+        Users.findOne({ uid: req.params.user_id }, function(err, profile) {
+            if(err) { 
+                res.send(err);
+                return;
+            }
+            res.render('profile', { profile: profile, user: req.session.user });
+        });
+    })
 	.delete(function(req,res) {
 		Users.remove({
 			_id : req.params.user_id
 		}, function(err, user) {
-			if(err) res.send(err);
+			if(err) { 
+                res.send(err);
+                return;
+            }
 			res.json({message: 'User deleted'});
 		});
 	});

@@ -2,14 +2,11 @@
   // Button.  See the onlogin handler attached to it in the sample
   // code below.
   function checkLoginState() {
-    FB.login(function(response) {
-        if (response.authResponse) {
-          // Logged into your app and Facebook.
+    FB.getLoginStatus(function(response) {
+        if (response.status == 'connected') {
           APILogin(response.authResponse.accessToken);
-        } else {
-          console.log('Please log into Facebook.');
         }
-    }, {scope: 'public_profile,email'});
+    });
   }
 
   window.fbAsyncInit = function() {
