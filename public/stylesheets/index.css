@@ -15,6 +15,17 @@ a, a:hover, a:visited, a:active {
   transition: all .1s linear;
 }
 
+button {
+  transition: all .1s linear;
+}
+
+.btn:focus {
+  outline: none;
+}
+.alert {
+  margin-bottom: 0;
+}
+
 .row {
   margin-left: 0;
   margin-right: 0;
@@ -46,9 +57,22 @@ a, a:hover, a:visited, a:active {
   margin-top: 5px;
 }
 
-#login-button {
-  padding: 20px;
-  color: #21272d;
+#fb-login {
+  background-color: #3B5998;
+  border: none;
+  border-radius: 5px;
+  color: white;
+  font-weight: 600;
+  padding: 10px 20px;
+}
+
+#fb-login:hover {
+  background-color: #5890ff;
+}
+
+#fb-login span {
+  border-left: 1px solid #ddd;
+  padding-left: 10px;
 }
 
 #content-container {
