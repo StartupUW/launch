@@ -17,7 +17,8 @@ var ProjectSchema = new Schema ({
 	}],
 	type: {type: String, required: true},
 	tags: [String],
-	approved: { type: Boolean, default: false}
+	approved: { type: Boolean, default: false},
+	contributors: [{type: Schema.Types.ObjectId, ref: 'Users'}]
 });
 
 module.exports = mongoose.model('Projects', ProjectSchema);

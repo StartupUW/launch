@@ -2,7 +2,8 @@ var express = require('express');
 var request = require('request');
 var Projects = require('../models/projects');
 var Users = require('../models/users');
-
+var fs = require('fs');
+var path = require('path');
 var router = express.Router();
 
 var FB_URL = 'https://graph.facebook.com/me?access_token=';
@@ -74,14 +75,29 @@ router.post('/project/create', function(req, res) {
 	project.contact.phone = req.body.phone;
 	project.type = req.body.type;
 	project.tags = req.body.tags.split(/,[ \t]*/);
-
-	project.save(function(err){
-		if(err) {
+	uploadImg(req, res, function(err, newFile) {
+		if(!err) {
+			project.images = newFile;
+			project.save(function(err){
+				if(err) {
+					res.send(err);
+				}
+				res.json(project);
+			});
+		} else {
 			res.send(err);
 		}
-		res.json(project);
-	});
+	})
 });
+
+var uploadImg = function(req, res, handle) {
+	fs.readFile(req.files.image.path, function (err, data) {
+	  	var newPath = __dirname + "/public/uploads/" + Projects.id;
+	  	fs.writeFile(newPath, data, function (err) {
+    		handle(err, newPath)
+	  	});
+	});
+};
 
 /* Update an existing project */
 router.put('/project/:pid/update', function(req, res) {
@@ -96,7 +112,6 @@ router.put('/project/:pid/update', function(req, res) {
 		project.contact.phone = req.body.phone || project.contact.phone;
 		project.type = req.body.type || project.type;
 		project.tags = req.body.tags || project.tags;
-
 		project.save(function(err){
 			if(err) {
 				res.send(err);

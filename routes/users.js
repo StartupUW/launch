@@ -26,7 +26,7 @@ router.route('/create')
 			}
 				res.render('user', {user: user});
 		});	
-	})
+	});
 
 router.route('users/:user_id')
 	.get(function(req,res) {
@@ -34,7 +34,6 @@ router.route('users/:user_id')
 			if(err) {res.render('user', {err: err})};
 			res.render('user', {user: user});
 		});
-	})
 		user.save(function(err) {
 			if(err) { 
                 res.send(err); 
@@ -69,9 +68,8 @@ router.route('/:user_id')
 				res.json({message: 'User updated!'});
 			});
 		});
-	})
 
-        Users.findOne({ uid: req.params.user_id }, function(err, profile) {
+        users.findOne({ uid: req.params.user_id }, function(err, profile) {
             if(err) { 
                 res.send(err);
                 return;
@@ -79,17 +77,16 @@ router.route('/:user_id')
             res.render('profile', { profile: profile, user: req.session.user });
         });
     })
+
 	.delete(function(req,res) {
 		Users.remove({
 			_id : req.params.user_id
 		}, function(err, user) {
-			if(err) { 
+			if(err) {
                 res.send(err);
                 return;
             }
 			res.json({message: 'User deleted'});
 		});
-	});
-
-
+	})
 module.exports = router;
