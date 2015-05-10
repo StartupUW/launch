@@ -46,7 +46,7 @@ router.route('/:user_id')
     .get(function(req, res) {
         Users.findOne({ uid: req.params.user_id }, function(err, user) {
             if(err) res.send(err);
-            res.json(user);
+            res.render('user', {user: user});
         });
     })
 	.put(function(req,res) {
