@@ -43,62 +43,16 @@ block append content
                         button.btn.btn-default(type="button") Web
                         button.btn.btn-default(type="button") Education
                         button.btn.btn-default(type="button") Productivity
-
-            mixin project-info(name, description, members, tags, votes, url)
-                .project-info.col-sm-9
-                    h2.project-title #{name} 
-
-                        if tags.length
-                            .project-labels
-                                each tag in tags
-                                    span.label.label-default= tag
-
-                    if members.length
-                        p.project-members Members: 
-                            each member in members
-                               span.member= member
-
-                    p.project-description= description
-                    a(href= '/project/' + url)
-                        .more SEE MORE
-
-                    .like
-                        span.glyphicon.glyphicon-heart
-                        .like-count
-                        if votes.length > 0
-                            | #{votes.length} 
-
-            mixin project-img(url)
-                .img-container.col-sm-3.hidden-xs
-                    img.project-logo(src= url ? url : '/img/suw-logo.png')
-
-            mixin project(index, name, description, members, tags, votes, img, url)
-                .project.col-md-12
-                    .row
-                        if index % 2 == 0
-                            +project-img(img)
-                            +project-info(name, description, members, tags, votes, url)
-                        else
-                            +project-info(name, description, members, tags, votes, url)
-                            +project-img(img)
-                    hr
  
             #projects-container.row
-                if projects.length == 0
-                    h3 No projects to show currently! Be the 
-                        a(href='/project/create') first
-                        | .
-                - var index = 0;
-                each p in projects
-                    +project(index, p.name, p.description, p.contact, p.tags, p.votes, '', p._id)
-                    - index += 1
 
  block append scripts
+    script(type="text/jsx" src="/js/projects.jsx")
     script.
         $(document).ready(function() {
             $("#seemore").click(function() {
                 $('html, body').animate({
                     scrollTop: $("#showcase").offset().top
-                }, 1000);
+                }, 700);
             });
         });

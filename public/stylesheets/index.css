@@ -173,7 +173,7 @@ button {
   margin-bottom: 12px;
 }
 
-.more, .like {
+.more, .votes {
   padding: 10px;
   color: white;
   border: none;
@@ -183,15 +183,24 @@ button {
   cursor: pointer;
 }
 
+.votes .glyphicon {
+  top: 2px;
+}
+
 .more {
   background-color: #33ccff;
 }
 
-.like {
+.votes {
     background-color: #E08283;
 }
 
-.like:hover {
+.votes.user-voted {
+  background-color: #D91E18;
+}
+
+
+.votes.can-vote.user-not-voted:hover {
   background-color: #e74c3c;
 }
 

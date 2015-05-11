@@ -7,8 +7,11 @@ var ProjectSchema = new Schema ({
 	website: {type: String, required: true},
 	description: {type: String, required: true},
 	images: [String],
-	//votes: [{type: Schema.Types.ObjectId, ref: 'Users'}],
-	votes: [String],
+	votes: [{
+        uid: {type:String, required: true},
+        name: {type: String, required: true},
+        date: {type: Date, default: Date.now}
+    }],
 	date: {type: Date, default: Date.now },
 	hiring: {type: Boolean, default: false },
 	contact: [{

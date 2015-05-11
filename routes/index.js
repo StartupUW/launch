@@ -14,7 +14,7 @@ var FB_URL = 'https://graph.facebook.com/me?access_token=';
 router.get('/', function(req, res) {
 	Projects.find({ approved: true }, function(err, projects){
         var errors = req.session.errs;
-		if (err) errors.append(err);
+		if (err) errors.push(err);
         delete req.session.errs;
 		res.render('index', { 
             projects: projects,
@@ -31,7 +31,7 @@ router.get('/projects', function(req, res) {
             res.send(err);
             return;
         }
-		res.json({ projects: projects });
+		res.json({ projects: projects, user: req.session.user || null });
 	});
 });
 
@@ -72,12 +72,46 @@ router.get('/logout', function(req, res) {
 
 
 /* Project display page */
-router.get('/project/:pid', function(req, res){
+router.get('/project/:pid', function(req, res) {
 	Projects.findById(req.params.pid, function(err, project){
 		res.render('project', { 
             project: project,
             user: req.session.user,
             err: err ? 'Could not load project' : null
+        });
+	});
+});
+
+router.get('/project/:pid/vote', function(req, res) {
+    var user = req.session.user;
+    if (!user) {
+        res.status(401).json({err: 'Must be logged in to vote!'});
+        return;
+    }
+	Projects.findById(req.params.pid, function(err, project){
+        if (!project || err) {
+            res.status(404).json({err: err ? err : 'No project found'});
+            return;
+        }
+        var voted = false;
+        for (index in project.votes) {
+            if (project.votes[index].uid === user.id) {
+                voted = true;
+            }
+        }
+        if (!voted) {
+            project.votes.push({ uid: user.id, name: user.name });
+        } else {
+            project.votes = project.votes.filter(function(el) {
+                return el.uid !== user.id;
+            });
+        }
+        project.save(function(err) {
+            if (err) {
+                res.json({success: false, error: err});
+            } else {
+                res.json({voteStatus: !voted, votes: project.votes.length});
+            }
         });
 	});
 });
