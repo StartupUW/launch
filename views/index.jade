@@ -2,16 +2,18 @@ extends ./layout.jade
 
 block append content
     #content-container.container-fluid
-        section#splash 
-            #title-container
-                h1#title What are 
-                    span#title-you you
-                    span#title-verb  creating
-                    | ?
-                h2#subtitle The best of UW Startups.
-                #seemore-container
-                    span#seemore SEE MORE
-                        span.glyphicon.glyphicon-triangle-bottom
+        
+        if !user
+            section#splash 
+                #title-container
+                    h1#title What are 
+                        span#title-you you
+                        span#title-verb  creating
+                        | ?
+                    h2#subtitle The best of UW Startups.
+                    #seemore-container
+                        span#seemore SEE MORE
+                            span.glyphicon.glyphicon-triangle-bottom
 
         if featured
             section#featured Featured
@@ -23,80 +25,30 @@ block append content
 
             #control-panel.row
                 #sort.control.col-md-3
-                    p SORT BY
-                    .btn-group
-                        button.btn.btn-primary(type="button") Hot
-                        button.btn.btn-default(type="button") New
-                        button.btn.btn-default(type="button") Top
-                #filter-container.control.col-md-3
+                #filter-container.control.col-md-9
                     p SEARCH
                     .input-group
-                        input.form-control(type="text" class="form-control" placeholder="Filter results")
-                #tags.control.col-md-6
-                    p TAGS
-                    .btn-group
-                        button.btn.btn-default(type="button") Beta
-                        button.btn.btn-default(type="button") iOS
-                        button.btn.btn-default(type="button") Series A
-                        button.btn.btn-default(type="button") Web
-                        button.btn.btn-default(type="button") Education
-                        button.btn.btn-default(type="button") Productivity
-
-            mixin project-info(name, description, members, tags, votes, url)
-                .project-info.col-sm-9
-                    h2.project-title #{name} 
-
-                        if tags.length
-                            .project-labels
-                                each tag in tags
-                                    span.label.label-default= tag
-
-                    if members.length
-                        p.project-members Members: 
-                            each member in members
-                               span.member= member
-
-                    p.project-description= description
-                    a(href= '/project/' + url)
-                        .more SEE MORE
-
-                    .like
-                        span.glyphicon.glyphicon-heart
-                        .like-count
-                        if votes.length > 0
-                            | #{votes.length} 
-
-            mixin project-img(url)
-                .img-container.col-sm-3.hidden-xs
-                    img.project-logo(src= url ? url : '/img/suw-logo.png')
-
-            mixin project(index, name, description, members, tags, votes, img, url)
-                .project.col-md-12
-                    .row
-                        if index % 2 == 0
-                            +project-img(img)
-                            +project-info(name, description, members, tags, votes, url)
-                        else
-                            +project-info(name, description, members, tags, votes, url)
-                            +project-img(img)
-                    hr
+                        input#project-filter.form-control(type="text" class="form-control" placeholder="Filter results")
+                //-
+                    #tags.control.col-md-6
+                        p TAGS
+                        .btn-group
+                            button.btn.btn-default(type="button") Beta
+                            button.btn.btn-default(type="button") iOS
+                            button.btn.btn-default(type="button") Series A
+                            button.btn.btn-default(type="button") Web
+                            button.btn.btn-default(type="button") Education
+                            button.btn.btn-default(type="button") Productivity
  
             #projects-container.row
-                if projects.length == 0
-                    h3 No projects to show currently! Be the 
-                        a(href='/project/create') first
-                        | .
-                - var index = 0;
-                each p in projects
-                    +project(index, p.name, p.description, p.contact, p.tags, p.votes, '', p._id)
-                    - index += 1
 
  block append scripts
+    script(type="text/jsx" src="/js/projects.jsx")
     script.
         $(document).ready(function() {
             $("#seemore").click(function() {
                 $('html, body').animate({
                     scrollTop: $("#showcase").offset().top
-                }, 1000);
+                }, 700);
             });
         });

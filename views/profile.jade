@@ -23,9 +23,17 @@ block append content
                     if !projects
                         .panel
                             .panel-body This user has no public projects yet.
-                    h2#profile-voted Liked
+                    h2#profile-voted Upvoted
                     if !votes
                         .panel 
                             .panel-body This user has not voted on any projects yet.
+                    else
+                        .row
+                            each vote in votes
+                                a(href="/project/#{vote.project._id}")
+                                    .col-md-4
+                                        .vote-card
+                                            p.name #{vote.project.name}
+                                                span.date #{(new Date(vote.date)).toLocaleDateString()}
         else
             h1 No such user exists!

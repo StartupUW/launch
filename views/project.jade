@@ -3,5 +3,8 @@ extends ./layout.jade
 block append content
 
     #project-container
-        h1 #{project.name}
-        p #{project.description}
+        if project
+            h1 #{project.name}
+            p #{project.description}
+        else 
+            h1 Project not found.

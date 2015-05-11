@@ -4,6 +4,9 @@ html(lang="en")
         block title
             title Launch by StartupUW
         meta(name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0, user-scalable=no") 
+        script(src="https://fb.me/react-0.13.3.js")
+        script(src="https://fb.me/JSXTransformer-0.13.3.js")
+
         link(rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css")
         link(rel="shortcut icon" href="http://startupuw.com/wp-content/uploads/2015/03/fbphoto.png")
         link(rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css")
@@ -26,10 +29,19 @@ html(lang="en")
                             a(href="/logout")
                                 span.glyphicon.glyphicon-log-out
                         else
-                            .fb-login-button(data-scope="public_profile,email" data-size="medium" onlogin="checkLoginState();")
+                            button.btn#fb-login(onclick="fbLogin();")
+                                .fa.lg.fa-facebook 
+                                span Continue with Facebook
 
         block content
             script(src='/js/fb.js')
+
+            if errs
+                each err in errs
+                    .alert.alert-danger.alert-dismissable(role="alert")
+                        button.close(type="button" data-dismiss="alert" aria-label="Close")
+                            span &times;
+                        | #{err}
 
             #create-profile.modal.fade
                 .modal-dialog
@@ -68,7 +80,7 @@ html(lang="en")
                         .col-md-4
                             h4 Press
                             p For additional inquiries, please reach us at 
-                                a(href="mailto:team@startupuw.com") press@startupuw.com
+                                a(href="mailto:press@startupuw.com") press@startupuw.com
                         .col-md-4
                             h4 Social Media
                             .row#social-media

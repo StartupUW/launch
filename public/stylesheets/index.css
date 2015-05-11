@@ -15,6 +15,17 @@ a, a:hover, a:visited, a:active {
   transition: all .1s linear;
 }
 
+button {
+  transition: all .1s linear;
+}
+
+.btn:focus {
+  outline: none;
+}
+.alert {
+  margin-bottom: 0;
+}
+
 .row {
   margin-left: 0;
   margin-right: 0;
@@ -46,9 +57,22 @@ a, a:hover, a:visited, a:active {
   margin-top: 5px;
 }
 
-#login-button {
-  padding: 20px;
-  color: #21272d;
+#fb-login {
+  background-color: #3B5998;
+  border: none;
+  border-radius: 5px;
+  color: white;
+  font-weight: 600;
+  padding: 10px 20px;
+}
+
+#fb-login:hover {
+  background-color: #5890ff;
+}
+
+#fb-login span {
+  border-left: 1px solid #ddd;
+  padding-left: 10px;
 }
 
 #content-container {
@@ -130,7 +154,7 @@ a, a:hover, a:visited, a:active {
 
 #control-panel.row {
   padding: 20px 0;
-  margin: 45px 0;
+  margin-top: 45px;
   background-color: #ecf0f1;
   border-radius: 5px;
   font-weight: 600;
@@ -143,13 +167,15 @@ a, a:hover, a:visited, a:active {
 
 #filter-container .input-group {
   margin: auto;
+  width: 100%;
+  max-width: 400px;
 }
 
 .control {
   margin-bottom: 12px;
 }
 
-.more, .like {
+.more, .votes {
   padding: 10px;
   color: white;
   border: none;
@@ -159,15 +185,24 @@ a, a:hover, a:visited, a:active {
   cursor: pointer;
 }
 
+.votes .glyphicon {
+  top: 2px;
+}
+
 .more {
   background-color: #33ccff;
 }
 
-.like {
+.votes {
     background-color: #E08283;
 }
 
-.like:hover {
+.votes.user-voted {
+  background-color: #D91E18;
+}
+
+
+.votes.can-vote.user-not-voted:hover {
   background-color: #e74c3c;
 }
 
@@ -178,13 +213,14 @@ a, a:hover, a:visited, a:active {
 
 /* PROJECTS */
 
-hr {
-  margin: 45px 0;
-  border-color: #ddd;
+#projects-container .pagination-showing  {
+  margin: 7px 15px;
+  display: inline-block;
 }
 
 .project {
-  padding: 0 35px;
+  padding: 50px 35px;
+  border-bottom: 1px solid #ddd;
 }
 
 .project-members {
@@ -226,10 +262,11 @@ hr {
   font-size: 15px;
   vertical-align: middle;
   padding-bottom: 5px;
+  margin-left: 8px;
 }
 
 .project-labels .label {
-  margin: 2px;
+  margin-right: 5px;
 }
 
 /* FOOTER */
@@ -309,9 +346,18 @@ hr {
   text-align: center;
 }
 
+span#admin-logout {
+  background-color: #3B5998;
+  border-radius: 5px;
+  color: white;
+  padding: 10px 20px;
+  margin-top: -3px;
+  display: inline-block;
+}
+
 #admin-console {
-  margin: 50px 0;  
   min-height: 400px;
+  padding: 50px;
 }
 
 #admin-login {
@@ -341,6 +387,23 @@ hr {
 #profile-container h1 {
   font-size: 24px;
   font-weight: 600;
+}
+
+.vote-card {
+  padding: 10px 20px 5px 20px;
+  background-color: #eeeeee;
+  border-radius: 3px;
+}
+
+.vote-card .name {
+  font-weight: 600;
+  font-size: 20px;
+}
+
+.vote-card .date {
+  font-size: 12px;
+  color: #34495e;
+  margin-left: 10px;
 }
 
 /* Project page */
