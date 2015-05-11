@@ -146,7 +146,10 @@ var Project = React.createClass({
 
 var ProjectList = React.createClass({
     getInitialState: function() {
-        return {projects: [], user: {}, filter: '', sort: DEFAULT_SORT};
+        return {
+            projects: [], user: {}, filter: '',
+            sort: DEFAULT_SORT, pageLimit: 1, currentPage: 0
+        };
     },
     componentDidMount: function() {
         var topSort = function(a, b) { return b.votes.length - a.votes.length; };
@@ -161,7 +164,7 @@ var ProjectList = React.createClass({
             success: function(data) {
                 this.setState({projects: data.projects.sort(topSort), user: data.user});
                 $('#project-filter').keyup(this, function(event) {
-                    event.data.setState({filter: $(this).val()});
+                    event.data.setState({currentPage: 0, filter: $(this).val()});
                 });
                 $('#sort-method').change(this, function(event) {
                     var sort = $(this).val();
@@ -180,20 +183,51 @@ var ProjectList = React.createClass({
             }.bind(this)
         });
     },
+    handleClick: function(i) {
+        this.setState({currentPage: i});
+    },
     render: function() {
         var user = this.state.user;
         var filter = this.state.filter.toLowerCase();
         var sort = this.state.sort;
+        var pageLimit = this.state.pageLimit;
+        var firstEl = this.state.currentPage * pageLimit;
+
+        // Filter out projects that match the search bar, then sort
+        // by sorting option, then finally cut by page size.
         var projectNodes = this.state.projects.filter(function(project) {
             return !filter || project.name.toLowerCase().indexOf(filter) != -1 ||
                 project.description.toLowerCase().indexOf(filter) != -1 ||
                 project.tags.join(' ').toLowerCase().indexOf(filter) != -1;
         }).map(function(project, index) {
-            return (<Project key={project._id} project={project} index={index} user={user} />);
+            return (<Project key={project._id} project={project} index={index % pageLimit} user={user} />);
         });
+        
+        var totalLength = projectNodes.length;
+        projectNodes = projectNodes.slice(firstEl, firstEl + pageLimit);
+
+        var pageNodes = [];
+        for (var i = 0; i < totalLength / pageLimit; i++) {
+            var className = i == this.state.currentPage ? "active": "";
+            pageNodes.push(
+                (<li className={className} onClick={this.handleClick.bind(this, i)}>
+                    <a href="#"> {i + 1} </a>
+                </li>)
+            );
+        }
 
         if (projectNodes.length > 0) {
-            return (<div>{projectNodes}</div>);
+            return (
+                <div>
+                    {projectNodes}
+                    <nav>
+                        <ul className="pagination">
+                            {pageNodes}
+                            <span className="pagination-showing">Showing {firstEl + 1} of {totalLength}</span>
+                        </ul>
+                    </nav>
+                </div>
+            );
         } 
         return (<div><h1>No projects found</h1></div>);
     }

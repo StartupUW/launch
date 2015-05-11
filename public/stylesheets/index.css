@@ -213,6 +213,11 @@ button {
 
 /* PROJECTS */
 
+#projects-container .pagination-showing  {
+  margin: 7px 15px;
+  display: inline-block;
+}
+
 .project {
   padding: 50px 35px;
   border-bottom: 1px solid #ddd;
