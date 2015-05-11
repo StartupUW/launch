@@ -6,6 +6,8 @@ var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var mongoose = require('mongoose');
 var session = require('express-session');
+var multer  = require('multer')
+
 var port = 8080;
 
 mongoose.connect('mongodb://127.0.0.1/traction');
@@ -28,6 +30,7 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
+app.use(multer({ dest: __dirname + 'public/uploads/'}))
 
 // TODO: Change to redis
 app.use(session({

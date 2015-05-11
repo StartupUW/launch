@@ -2,8 +2,11 @@ var express = require('express');
 var request = require('request');
 var Projects = require('../models/projects');
 var Users = require('../models/users');
+
 var fs = require('fs');
-var path = require('path');
+var Util = require('../util/util');
+var checkLogin = Util.checkLogin;
+
 var router = express.Router();
 
 var FB_URL = 'https://graph.facebook.com/me?access_token=';
@@ -11,15 +14,24 @@ var FB_URL = 'https://graph.facebook.com/me?access_token=';
 /* GET home page. */
 router.get('/', function(req, res) {
 	Projects.find({ approved: true }, function(err, projects){
-		if(err) res.send(err);
-		res.render('index', { projects: projects, user: req.session.user });
+        var errors = req.session.errs;
+		if (err) errors.append(err);
+        delete req.session.errs;
+		res.render('index', { 
+            projects: projects,
+            user: req.session.user,
+            errs: errors
+        });
 	});
 });
 
 /* GET projects (JSON format) */
 router.get('/projects', function(req, res) {
 	Projects.find({ approved: true }, function(err, projects){
-		if(err) res.send(err);
+		if (err) {
+            res.send(err);
+            return;
+        }
 		res.json({ projects: projects });
 	});
 });
@@ -29,7 +41,10 @@ router.post('/login', function(req, res) {
     if (req.body.token) {
         var token = req.body.token;
         request(FB_URL + token, function(err, response, data) {
-            if (response.statusCode != 200) res.json({ error: err })
+            if (response.statusCode != 200) {
+                res.json({ error: err });
+                return;
+            }
 
             // User exists, either login or create a new account.
             var userData = JSON.parse(data);
@@ -60,41 +75,52 @@ router.get('/logout', function(req, res) {
 /* Project display page */
 router.get('/project/:pid', function(req, res){
 	Projects.findById(req.params.pid, function(err, project){
-		if(err) res.send(err);
-		res.render('project', { project : project, user : req.session.user });
+		res.render('project', { 
+            project: project,
+            user: req.session.user,
+            err: err ? 'Could not load project' : null
+        });
 	});
 });
 
-/* Create a new project */
-router.post('/project/create', function(req, res) {
-	var project = new Projects();
-	project.name = req.body.name;
-	project.website = req.body.website;
-	project.description = req.body.desc;
-	project.contact.email = req.body.email;
-	project.contact.phone = req.body.phone;
-	project.type = req.body.type;
-	project.tags = req.body.tags.split(/,[ \t]*/);
-	uploadImg(req, res, function(err, newFile) {
-		if(!err) {
-			project.images = newFile;
-			project.save(function(err){
-				if(err) {
-					res.send(err);
-				}
-				res.json(project);
-			});
-		} else {
-			res.send(err);
-		}
-	})
-});
+router.route('/project')
+    .all(function(req, res, next) {
+        //if (checkLogin('You must be logged in to create a project', req, res, '/')) return;
+        next();
+    })
+    .get(function(req, res) {
+        res.render('create-project', { user: req.session.user });
+    })
+    .post(function(req, res) {
+		var project = new Projects();
+		project.name = req.body.name;
+		project.website = req.body.website;
+		project.description = req.body.desc;
+		project.contact.email = req.body.email;
+		project.contact.phone = req.body.phone;
+		project.type = req.body.type;
+		console.log(req.files);
+		project.tags = 'asdf';
+		uploadImg(req.files.image, project.id, function(err, newFile) {
+			if(!err) {
+				project.images.push(newFile);
+				project.save(function(err){
+					if(err) {
+						res.send(err);
+					}
+					res.json(project);
+				});
+			} else {
+				res.send(err);
+			}
+		})
+    });
 
-var uploadImg = function(req, res, handle) {
-	fs.readFile(req.files.image.path, function (err, data) {
-	  	var newPath = __dirname + "/public/uploads/" + Projects.id;
-	  	fs.writeFile(newPath, data, function (err) {
-    		handle(err, newPath)
+var uploadImg = function(image, id, handle) {
+	fs.readFile(image.path, function (err, data) {
+	  	var newPath = "./public/uploads/" + id + "." + image.extension;
+	  	fs.writeFile(newPath, data, function(err) {
+    		handle(err, newPath);
 	  	});
 	});
 };

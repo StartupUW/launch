@@ -2,16 +2,18 @@ extends ./layout.jade
 
 block append content
     #content-container.container-fluid
-        section#splash 
-            #title-container
-                h1#title What are 
-                    span#title-you you
-                    span#title-verb  creating
-                    | ?
-                h2#subtitle The best of UW Startups.
-                #seemore-container
-                    span#seemore SEE MORE
-                        span.glyphicon.glyphicon-triangle-bottom
+        
+        if !user
+            section#splash 
+                #title-container
+                    h1#title What are 
+                        span#title-you you
+                        span#title-verb  creating
+                        | ?
+                    h2#subtitle The best of UW Startups.
+                    #seemore-container
+                        span#seemore SEE MORE
+                            span.glyphicon.glyphicon-triangle-bottom
 
         if featured
             section#featured Featured

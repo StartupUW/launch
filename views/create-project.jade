@@ -1,0 +1,33 @@
+extends ./layout.jade
+
+block append content
+    #create-project-container.container
+        form(action="/project" method="post" enctype="multipart/form-data")
+            .input-group
+                label Project Name
+                input.form-control(type="text" name="name")
+            .input-group
+                label Website
+                input.form-control(type="text" name="website")
+            .input-group
+                label Description
+                input.form-control(type="text" name="desc")
+            .input-group
+                label Email
+                input.form-control(type="email" name="email")
+            .input-group
+                label Phone Number
+                input.form-control(type="tel" name="phone")
+            .input-group
+                label Type
+                input.form-control(type="text" name="type")
+            .input-group
+                label Tags
+                input.form-control(type="text" name="tags")
+            .input-group
+                label Image
+                input.form-control(type="file" name="image")
+            .input-group
+                button.btn.btn-primary(type="submit") Submit
+
+
