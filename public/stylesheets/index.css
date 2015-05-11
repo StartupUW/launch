@@ -262,10 +262,11 @@ button {
   font-size: 15px;
   vertical-align: middle;
   padding-bottom: 5px;
+  margin-left: 8px;
 }
 
 .project-labels .label {
-  margin: 2px;
+  margin-right: 5px;
 }
 
 /* FOOTER */
@@ -345,9 +346,18 @@ button {
   text-align: center;
 }
 
+span#admin-logout {
+  background-color: #3B5998;
+  border-radius: 5px;
+  color: white;
+  padding: 10px 20px;
+  margin-top: -3px;
+  display: inline-block;
+}
+
 #admin-console {
-  margin: 50px 0;  
   min-height: 400px;
+  padding: 50px;
 }
 
 #admin-login {
@@ -377,6 +387,23 @@ button {
 #profile-container h1 {
   font-size: 24px;
   font-weight: 600;
+}
+
+.vote-card {
+  padding: 10px 20px 5px 20px;
+  background-color: #eeeeee;
+  border-radius: 3px;
+}
+
+.vote-card .name {
+  font-weight: 600;
+  font-size: 20px;
+}
+
+.vote-card .date {
+  font-size: 12px;
+  color: #34495e;
+  margin-left: 10px;
 }
 
 /* Project page */

@@ -2,6 +2,7 @@ var express = require('express');
 var request = require('request');
 var Projects = require('../models/projects');
 var Users = require('../models/users');
+var Votes = require('../models/votes');
 
 var Util = require('../util/util');
 var checkLogin = Util.checkLogin;
@@ -31,7 +32,23 @@ router.get('/projects', function(req, res) {
             res.send(err);
             return;
         }
-		res.json({ projects: projects, user: req.session.user || null });
+        Votes.find({}).populate('user').exec(function(err, votes) {
+            if (err) {
+                res.send(err);
+                return;
+            }
+            var votesObj = {};
+            for (index in projects) {
+                var project = projects[index];
+                votesObj[project._id] = [];
+            }
+
+            for (index in votes) {
+                var vote = votes[index];
+                votesObj[vote.project].push(vote);
+            }
+            res.json({votes: votesObj, projects: projects, user: req.session.user || null });
+        });
 	});
 });
 
@@ -47,7 +64,7 @@ router.post('/login', function(req, res) {
 
             // User exists, either login or create a new account.
             var userData = JSON.parse(data);
-            Users.count({ uid: userData.id }, function(err, count) {
+            Users.count({ _id: userData.id }, function(err, count) {
                 if (err) res.json({ error: err });
                 // Check whether user exists in our system.
                 if (count == 1) {
@@ -66,7 +83,7 @@ router.post('/login', function(req, res) {
 
 /* Logout */
 router.get('/logout', function(req, res) {
-    req.session.destroy();
+    delete req.session.user;
     res.redirect('/');
 });
 
@@ -93,25 +110,19 @@ router.get('/project/:pid/vote', function(req, res) {
             res.status(404).json({err: err ? err : 'No project found'});
             return;
         }
-        var voted = false;
-        for (index in project.votes) {
-            if (project.votes[index].uid === user.id) {
-                voted = true;
-            }
-        }
-        if (!voted) {
-            project.votes.push({ uid: user.id, name: user.name });
-        } else {
-            project.votes = project.votes.filter(function(el) {
-                return el.uid !== user.id;
-            });
-        }
-        project.save(function(err) {
+        Votes.findOneAndRemove(
+            { user: user.id, project: project._id }, function(err, vote) {
             if (err) {
                 res.json({success: false, error: err});
-            } else {
-                res.json({voteStatus: !voted, votes: project.votes.length});
+                return;
+            } 
+            var voted = false;
+            if (!vote) {
+                vote = new Votes({ user: user.id, project: project._id });
+                vote.save();
+                voted = true;
             }
+            res.json({voteStatus: voted });
         });
 	});
 });

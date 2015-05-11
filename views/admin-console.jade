@@ -3,24 +3,24 @@ extends ./layout.jade
 block header
     #header
         .row
-            a(href='/')
-                p#logo.col-md-3 Startup UW | Launch
-            #login-bar.col-md-9
+            p#logo.col-xs-6.hidden-xs Startup UW | 
+                a(href='/') Launch
+            #login-bar.col-xs-12.col-sm-6
                 a(href="/admin/logout")
-                    span#login-button ADMIN LOGOUT
+                    span#admin-logout ADMIN LOGOUT
 
 block content
 
     each error in errors
         .alert.alert-danger(role="alert")= error
  
-    #admin-console
+    #admin-console.container
         h1 Administrator Console
 
-        #admin-projects.container
+        #admin-projects
 
             if projects.length == 0
-                h2 No unapproved projects!
+                h3 No unapproved projects!
 
             .row
                 each project in projects

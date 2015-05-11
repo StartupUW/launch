@@ -1,32 +1,23 @@
 var DEFAULT_SORT = 'top';
-
-var changeSort = function(sort) {
-    return function() {
-        this.setState({selected: sort});
-        $('#sort-method').val(sort).trigger('change');
-    }
-}
+var DEFAULT_PAGE_LIMIT = 5;
 
 var SortControl = React.createClass({
     getInitialState: function() {
         return {selected: DEFAULT_SORT};
     },
-    newClick: changeSort('new'),
-    topClick: changeSort('top'),
+    handleClick: function(sort) {
+        this.setState({selected: sort});
+        $('#sort-method').val(sort).trigger('change');
+    },
+    getBtn: function(match) {
+        return "btn" + (this.state.selected == match ? ' btn-primary': ' btn-default');
+    },
     render: function() {
-        var selected = this.state.selected;
-
-        var getBtn = function(match) {
-            return "btn" + (selected == match ? ' btn-primary': ' btn-default');
-        }
-
-        var newClassName  = getBtn('new');
-        var topClassName = getBtn('top');
         return (
             <div>
                 <p>SORT BY</p>
-                <button onClick={this.newClick} className={newClassName}>New</button>
-                <button onClick={this.topClick} className={topClassName}>Top</button>
+                <button onClick={this.handleClick.bind(this, 'new')} className={this.getBtn('new')}>New</button>
+                <button onClick={this.handleClick.bind(this, 'top')} className={this.getBtn('top')}>Top</button>
                 <input id="sort-method" type="hidden" />
             </div>
         );
@@ -54,7 +45,7 @@ var VoteButton = React.createClass({
         var loggedIn = this.props.user != null;
         var userId = loggedIn ? this.props.user.id : -1;
         var voted = this.props.votes.filter(function(el) {
-            return el.uid === userId;
+            return el.user._id === userId;
         }).length === 1;
         return { canVote: loggedIn, voted: voted, numVotes: this.props.votes.length };
     },
@@ -67,7 +58,10 @@ var VoteButton = React.createClass({
             $.get('/project/' + this.props.id + '/vote')
                 .done(function(data) {
                     var voteStatus = data.voteStatus;
-                    reactButton.setState({voted: data.voteStatus, numVotes: data.votes});
+                    reactButton.setState(function(prevState) {
+                        var incCount = voteStatus ? 1: -1;
+                        return {voted: voteStatus, numVotes: prevState.numVotes + incCount};
+                    });
                 })
                 .fail(function(data) {
                     var data = JSON.parse(data.responseText);
@@ -105,7 +99,7 @@ var ProjectInfo = React.createClass({
 
         return (
             <div className="project-info col-sm-9">
-                <h2 className="project-title"> {this.props.project.name} 
+                <h2 className="project-title"> {this.props.project.name}  
                     <div className="project-labels">
                         {labelNodes}
                     </div>
@@ -148,7 +142,7 @@ var ProjectList = React.createClass({
     getInitialState: function() {
         return {
             projects: [], user: {}, filter: '',
-            sort: DEFAULT_SORT, pageLimit: 1, currentPage: 0
+            sort: DEFAULT_SORT, pageLimit: DEFAULT_PAGE_LIMIT, currentPage: 0
         };
     },
     componentDidMount: function() {
@@ -162,10 +156,16 @@ var ProjectList = React.createClass({
             dataType: 'json',
             cache: false,
             success: function(data) {
+                for (index in data.projects) {
+                    var project = data.projects[index];
+                    project.votes = data.votes[project._id];
+                }
                 this.setState({projects: data.projects.sort(topSort), user: data.user});
+
                 $('#project-filter').keyup(this, function(event) {
                     event.data.setState({currentPage: 0, filter: $(this).val()});
                 });
+
                 $('#sort-method').change(this, function(event) {
                     var sort = $(this).val();
                     var sortProjects = function(a, b) {
@@ -211,7 +211,7 @@ var ProjectList = React.createClass({
             var className = i == this.state.currentPage ? "active": "";
             pageNodes.push(
                 (<li className={className} onClick={this.handleClick.bind(this, i)}>
-                    <a href="#"> {i + 1} </a>
+                    <a href="#!"> {i + 1} </a>
                 </li>)
             );
         }
@@ -223,7 +223,7 @@ var ProjectList = React.createClass({
                     <nav>
                         <ul className="pagination">
                             {pageNodes}
-                            <span className="pagination-showing">Showing {firstEl + 1} of {totalLength}</span>
+                            <span className="pagination-showing">Showing {firstEl + projectNodes.length} of {totalLength}</span>
                         </ul>
                     </nav>
                 </div>
