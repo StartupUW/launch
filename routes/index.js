@@ -32,7 +32,7 @@ router.get('/projects', function(req, res) {
             res.send(err);
             return;
         }
-        Votes.find({}).populate('user').exec(function(err, votes) {
+        Votes.find({}).populate('user', '_id').exec(function(err, votes) {
             if (err) {
                 res.send(err);
                 return;
