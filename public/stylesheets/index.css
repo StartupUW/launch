@@ -238,6 +238,10 @@ textarea {
 
 /* PROJECTS */
 
+#projects-container {
+    padding-top: 25px;
+}
+
 #projects-container .pagination-showing  {
     margin: 7px 15px;
     display: inline-block;
@@ -398,9 +402,8 @@ span#admin-logout {
     margin: 50px auto;
 }
 
-#profile-container .glyphicon {
-    margin-right: 5px;
-    top: 2px;
+#profile-container .fa {
+    margin-right: 10px;
 }
 
 #profile-container h2 {
@@ -410,18 +413,37 @@ span#admin-logout {
 
 #profile-container h1 {
     font-size: 24px;
-    font-weight: 600;
+    margin-bottom: 15px;
+}
+
+#profile-img img {
+    width: 100%;
+}
+
+#profile-info {
+    margin-top: 25px;
+    border: 1px solid #ddd;
+    padding: 10px 20px;
+}
+
+#profile-feed {
+    padding: 0 50px;
 }
 
 .vote-card {
     padding: 10px 20px 5px 20px;
-    background-color: #eeeeee;
+    margin: 10px 0;
     border-radius: 3px;
+    border: 1px solid #eee;
 }
 
 .vote-card .name {
     font-weight: 600;
     font-size: 20px;
+}
+
+.vote-card .description {
+    color: #565a5c;
 }
 
 .vote-card .date {
@@ -522,6 +544,10 @@ span#admin-logout {
 
     #create-form .input-field, #create-form input, #create-form textarea {
         width: 100%;
+    }
+
+    #profile-feed {
+        padding: 0 20px;
     }
 
 

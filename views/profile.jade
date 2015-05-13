@@ -7,18 +7,20 @@ block append content
                 .col-md-3
                     #profile-img.img-responsive
                         img(src="/img/default-profile.png")
-                    h1 #{profile.fname} #{profile.lname}
-                    p
-                        span.glyphicon.glyphicon-envelope
-                        | #{profile.email}
-                    p
-                        span.glyphicon.glyphicon-pencil
-                        | #{profile.bio}
-                    p
-                        span.glyphicon.glyphicon-book
-                        | #{profile.major} - Class of #{profile.gradyr}
 
-                .col-md-9
+                    #profile-info
+                        h1 #{profile.fname} #{profile.lname}
+                        p
+                            i.fa.fa-envelope
+                            | #{profile.email}
+                        p
+                            i.fa.fa-quote-left
+                            | #{profile.bio}
+                        p
+                            i.fa.fa-graduation-cap
+                            | #{profile.major} &bull; Class of #{profile.gradyr}
+
+                #profile-feed.col-md-9
                     h2#profile-projects Projects
                     if !projects
                         .panel
@@ -31,9 +33,9 @@ block append content
                         .row
                             each vote in votes
                                 a(href="/project/#{vote.project._id}")
-                                    .col-md-4
-                                        .vote-card
-                                            p.name #{vote.project.name}
-                                                span.date #{(new Date(vote.date)).toLocaleDateString()}
+                                    .vote-card
+                                        p.name #{vote.project.name}
+                                            span.date #{(new Date(vote.date)).toLocaleDateString()}
+                                        p.description #{vote.project.description}
         else
             h1 No such user exists!
