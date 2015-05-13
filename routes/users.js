@@ -36,7 +36,6 @@ router.route('/:user_id')
                 return;
             }
             Votes.find({ user: profile._id }).populate('project', '_id name description').exec(function(err, votes) {
-                console.log(votes);
                 res.render('profile', { votes: votes, profile: profile, user: req.session.user });
             });
         });

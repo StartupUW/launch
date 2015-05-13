@@ -21,13 +21,18 @@ html(lang="en")
                         a(href='/') Launch
                     #login-bar.col-xs-12.col-sm-6
                         if user
-                            span Hello, 
-                                a(href="/profile/#{user.id}") #{user.first_name}
-                                | !
-                            a(href="/profile")
-                                span.glyphicon.glyphicon-cog
-                            a(href="/logout")
-                                span.glyphicon.glyphicon-log-out
+                            .btn-group
+                                button.button.btn.btn-default.dropdown-toggle(data-toggle="dropdown" aria-expanded="false")
+                                    span Hello, #{user.first_name}!
+                                    span.caret
+                                ul.dropdown-menu(role="menu")
+                                    li
+                                        a(href="/profile/#{user.id}") My Profile
+                                    li
+                                        a(href="/logout") Log Out
+
+                                a#add-project.hidden-xs(href="/project")
+                                    button.btn.btn-primary Add Your Project
                         else
                             button.btn#fb-login(onclick="fbLogin();")
                                 .fa.lg.fa-facebook 

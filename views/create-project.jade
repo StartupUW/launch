@@ -2,29 +2,26 @@ extends ./layout.jade
 
 block append content
     #create-project-container.container
-        form(action="/project" method="post")
-            .input-group
-                label Project Name
-                input.form-control(type="text" name="name")
-            .input-group
-                label Website
-                input.form-control(type="text" name="website")
-            .input-group
-                label Description
-                input.form-control(type="text" name="desc")
-            .input-group
-                label Email
-                input.form-control(type="email" name="email")
-            .input-group
-                label Phone Number
-                input.form-control(type="tel" name="phone")
-            .input-group
-                label Type
-                input.form-control(type="text" name="type")
-            .input-group
-                label Tags
-                input.form-control(type="text" name="tags")
-            .input-group
+        h1 Add Your Project
+        h2 Show everyone what you've been working hard on.
+
+        #create-form
+            mixin input(fieldName)
+                .row
+                    span.input-field= fieldName
+                    block
+
+            form(action="/project" method="post")
+                +input('Project Name')
+                    input(type="text" name="name")
+                +input('Website')
+                    input(type="text" name="website")
+                +input('Description')
+                    textarea(rows="5" type="text" name="desc")
+                +input('Type')
+                    input(type="text" name="type")
+                +input('Tags')
+                    input(type="text" name="tags")
                 button.btn.btn-primary(type="submit") Submit
 
 
