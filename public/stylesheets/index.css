@@ -20,11 +20,30 @@ a, a:hover, a:visited, a:active {
     outline: none;
 }
 
-textarea {
-    resize: none;
+.btn-primary,  .btn-primary:focus {
+    background-color: white;
+    border: 1px solid #e08282;
+    color: #e08282;
 }
 
-.btn:focus {
+.btn-primary:hover {
+    border-color: #e74c3c;
+    color: #e74c3c;
+    background-color: white;
+}
+
+.btn-default:hover {
+    background-color: white;
+}
+
+.pagination .active a, .pagination .active a:hover, .pagination .active a:focus { 
+    background-color: white;
+    border: 1px solid #e08282;
+    color: #e08282;
+}
+
+textarea {
+    resize: none;
 }
 
 .alert {
@@ -90,6 +109,12 @@ textarea {
 #fb-login span {
     border-left: 1px solid #ddd;
     padding-left: 10px;
+}
+
+.profile-picture.small {
+    height: 30px;
+    width: 30px;
+    margin-right: 10px;
 }
 
 #content-container {
@@ -202,8 +227,6 @@ textarea {
 
 .more, .votes {
     padding: 10px;
-    color: white;
-    border: none;
     margin-top: 20px;
     transition: all .1s linear;
     display: inline-block;
@@ -214,25 +237,32 @@ textarea {
     top: 2px;
 }
 
-.more {
+.more:hover {
     background-color: #33ccff;
+    color: white;
 }
 
 .votes {
+    background-color: white;
+    border: 1px solid #E08283;
+    border-left: none;
+    color: #E08283;
+}
+
+.votes.can-vote.user-not-voted:hover {
     background-color: #E08283;
+    border: 1px solid #E08283;
+    color: white;
 }
 
 .votes.user-voted {
-    background-color: #D91E18;
-}
-
-
-.votes.can-vote.user-not-voted:hover {
     background-color: #e74c3c;
+    color: white;
 }
 
-.more:hover {
+.more {
     color: #33ccff;
+    border: 1px solid #33ccff;
     background-color: white;
 }
 
@@ -416,14 +446,12 @@ span#admin-logout {
     margin-bottom: 15px;
 }
 
-#profile-img img {
-    width: 100%;
+#profile-container .thumbnail {
+    border: 1px solid #ddd;
+    padding: 30px 10px 10px 10px;
 }
 
 #profile-info {
-    margin-top: 25px;
-    border: 1px solid #ddd;
-    padding: 10px 20px;
 }
 
 #profile-feed {

@@ -14,6 +14,7 @@ router.route('/create')
         user._id = userData.id;
 		user.fname = userData.first_name;
 		user.lname = userData.last_name;
+        user.picture = userData.picture;
 		user.email = req.body.email;
 		user.bio = req.body.bio;
 		user.major = req.body.major;
@@ -23,7 +24,7 @@ router.route('/create')
                 res.send(err); 
                 return; 
             }
-            req.session.user = userData;
+            req.session.user = user;
             res.redirect('/');
 		});	
 	});
@@ -31,8 +32,8 @@ router.route('/create')
 router.route('/:user_id')
     .get(function(req, res) {
         Users.findOne({ _id: req.params.user_id }, function(err, profile) {
-            if(err) { 
-                res.send(err);
+            if(err || !profile) { 
+                res.json(err);
                 return;
             }
             Votes.find({ user: profile._id }).populate('project', '_id name description').exec(function(err, votes) {

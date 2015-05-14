@@ -43,7 +43,7 @@ var ProjectImage = React.createClass({
 var VoteButton = React.createClass({
     getInitialState: function() {
         var loggedIn = this.props.user != null;
-        var userId = loggedIn ? this.props.user.id : -1;
+        var userId = loggedIn ? this.props.user._id : -1;
         var voted = this.props.votes.filter(function(el) {
             return el.user._id === userId;
         }).length === 1;
@@ -223,7 +223,7 @@ var ProjectList = React.createClass({
                     <nav>
                         <ul className="pagination">
                             {pageNodes}
-                            <span className="pagination-showing">Showing {firstEl + projectNodes.length} of {totalLength}</span>
+                            <span className="pagination-showing">Showing {firstEl + 1} - {firstEl + projectNodes.length} of {totalLength}</span>
                         </ul>
                     </nav>
                 </div>

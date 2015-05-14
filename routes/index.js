@@ -9,7 +9,11 @@ var checkLogin = Util.checkLogin;
 
 var router = express.Router();
 
-var FB_URL = 'https://graph.facebook.com/me?access_token=';
+var FB_URL = 'https://graph.facebook.com/';
+
+var graphAPI = function(route, token) {
+    return FB_URL + route + '?access_token=' + token;
+}
 
 /* GET home page. */
 router.get('/', function(req, res) {
@@ -56,23 +60,33 @@ router.get('/projects', function(req, res) {
 router.post('/login', function(req, res) {
     if (req.body.token) {
         var token = req.body.token;
-        request(FB_URL + token, function(err, response, data) {
-            if (response.statusCode != 200) {
+        request(graphAPI('me', token), function(err, response, data) {
+            if (err || response.statusCode != 200) {
                 res.json({ error: err });
                 return;
             }
-
             // User exists, either login or create a new account.
             var userData = JSON.parse(data);
-            Users.count({ _id: userData.id }, function(err, count) {
-                if (err) res.json({ error: err });
+            Users.findOne({ _id: userData.id }, function(err, user) {
+                if (err) {
+                    res.json({ error: err });
+                    return;
+                }
                 // Check whether user exists in our system.
-                if (count == 1) {
-                    req.session.user = userData;
+                if (user) {
+                    req.session.user = user;
                     res.json({ user: true });
                 } else {
-                    req.session.newUser = userData;
-                    res.json({ user: false });
+                    var picUrl = graphAPI('me/picture', token) + '&width=200&height=200';
+                    request(picUrl, function(err, response, data) {
+                        if (err || response.statusCode != 200) {
+                            res.json({ error: err });
+                            return;
+                        }
+                        userData.picture = response.request.uri.href;
+                        req.session.newUser = userData;
+                        res.json({ user: false });
+                    });
                 }
             });
         });
@@ -111,14 +125,14 @@ router.get('/project/:pid/vote', function(req, res) {
             return;
         }
         Votes.findOneAndRemove(
-            { user: user.id, project: project._id }, function(err, vote) {
+            { user: user._id, project: project._id }, function(err, vote) {
             if (err) {
                 res.json({success: false, error: err});
                 return;
             } 
             var voted = false;
             if (!vote) {
-                vote = new Votes({ user: user.id, project: project._id });
+                vote = new Votes({ user: user._id, project: project._id });
                 vote.save();
                 voted = true;
             }

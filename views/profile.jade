@@ -5,20 +5,20 @@ block append content
         if profile
             .row
                 .col-md-3
-                    #profile-img.img-responsive
-                        img(src="/img/default-profile.png")
 
-                    #profile-info
-                        h1 #{profile.fname} #{profile.lname}
-                        p
-                            i.fa.fa-envelope
-                            | #{profile.email}
-                        p
-                            i.fa.fa-quote-left
-                            | #{profile.bio}
-                        p
-                            i.fa.fa-graduation-cap
-                            | #{profile.major} &bull; Class of #{profile.gradyr}
+                    .thumbnail
+                        img(src=profile.picture ? profile.picture : "/img/default-profile.png")
+                        .caption
+                            h1 #{profile.fname} #{profile.lname}
+                            p
+                                i.fa.fa-envelope
+                                | #{profile.email}
+                            p
+                                i.fa.fa-quote-left
+                                | #{profile.bio}
+                            p
+                                i.fa.fa-graduation-cap
+                                | #{profile.major} &bull; Class of #{profile.gradyr}
 
                 #profile-feed.col-md-9
                     h2#profile-projects Projects
