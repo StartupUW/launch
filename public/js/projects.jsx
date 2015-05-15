@@ -7,7 +7,7 @@ var SORT_OPTIONS = {
         return (votes[b._id] || []).length - (votes[a._id] || []).length;
     },
     'new': function(a, b) { 
-        var test = new Date(a.date) < new Date(b.date); 
+        var test = new Date(a.date) > new Date(b.date); 
         return test ? -1 : 1;
     }
 }
@@ -102,16 +102,17 @@ var VoteButton = React.createClass({
 var ProjectInfo = React.createClass({
     getDate: function(date) {
         var diff = (new Date() - new Date(date)) / 60000;
-        var interval = 'minutes';
+        var interval = 'minute';
         if (diff > 60) {
             diff /= 60;
-            interval = 'hours'
+            interval = 'hour'
             if (diff > 24) {
                 diff /= 24;
-                interval = 'days';
+                interval = 'day';
             }
         }
-        return parseInt(diff) + ' ' + interval + ' ago';
+        diff = parseInt(diff);
+        return diff + ' ' + interval + (diff > 1 ? 's': '') + ' ago';
     },
     render: function() {
         var labelNodes = this.props.project.tags.map(function(tag) {
@@ -232,21 +233,24 @@ var ProjectList = React.createClass({
         var firstEl = this.state.currentPage * pageLimit;
 
         var projectNodes = projects
-            .sort(SORT_OPTIONS[sort].bind(this))
             .filter(function(project) {
                 return !filter || project.name.toLowerCase().indexOf(filter) != -1 ||
                     project.description.toLowerCase().indexOf(filter) != -1 ||
                     project.tags.join(' ').toLowerCase().indexOf(filter) != -1;
             })
+
+        projectNodes.sort(SORT_OPTIONS[sort].bind(this))
+
+        projectNodes = projectNodes
             .map(function(project, index) {
                 var votes = this.state.votes[project._id] || [];
                 return (<Project key={project._id} project={project} refreshVotes={this.refreshVotes.bind(this, project._id)} votes={votes} index={index % pageLimit} user={user} />);
-            }.bind(this));
-        
-        var totalLength = projectNodes.length;
-        projectNodes = projectNodes.slice(firstEl, firstEl + pageLimit);
+            }.bind(this))
+            .slice(firstEl, firstEl + pageLimit);
 
+        var totalLength = projectNodes.length;
         var pageNodes = [];
+
         for (var i = 0; i < totalLength / pageLimit; i++) {
             var className = i == this.state.currentPage ? "active": "";
             pageNodes.push(
