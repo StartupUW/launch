@@ -6,11 +6,13 @@ var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var mongoose = require('mongoose');
 var session = require('express-session');
+var RedisStore = require('connect-redis')(session);
 var port = 8080;
 
 mongoose.connect('mongodb://127.0.0.1/traction');
 
 var index = require('./routes/index');
+var api = require('./routes/api');
 var users = require('./routes/users');
 var admin = require('./routes/admin');
 
@@ -29,16 +31,21 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-// TODO: Change to redis
-app.use(session({
+app.use(session({                                         
+    store: new RedisStore({                               
+        host: 'localhost',                                
+        port: '6379'                                      
+    }),                                                   
+    secret: process.env.ADMIN_PASS,
     resave: false,
-    saveUninitialized: false,
-    secret: 'bar'
-}))
+    saveUninitialized: true,                              
+    cookie : {}                                           
+}));                                                      
 
 app.use('/', index);
 app.use('/profile', users);
 app.use('/admin', admin);
+app.use('/api', api);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
@@ -70,7 +77,6 @@ app.use(function(err, req, res, next) {
         error: {}
     });
 });
-
 
 module.exports = app;
 

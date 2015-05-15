@@ -1,21 +1,31 @@
+/**
+ * Startup UW Launch, 2015
+ * Index Router - homepage, projects, and logout functionality.
+ * 
+ * ---------------------------------------------------------------------------
+ * Route                    REST Calls      Description
+ * ---------------------------------------------------------------------------
+ * /                        GET             Render the homepage (all projects)
+ * /logout                  GET             Log the current user out.
+ * /project                 GET, POST       Render and process form for creating projects
+ * /project/:pid/           GET             Display a single project page
+ * /project/:pid/update     POST            Update a project
+ *
+ */
+
+
+// Express
 var express = require('express');
-var request = require('request');
+var router = express.Router();
+
+// Models
 var Projects = require('../models/projects');
 var Users = require('../models/users');
 var Votes = require('../models/votes');
 
-var Util = require('../util/util');
-var checkLogin = Util.checkLogin;
+// Utility
+var checkLogin = require('../util/util').checkLogin;
 
-var router = express.Router();
-
-var FB_URL = 'https://graph.facebook.com/';
-
-var graphAPI = function(route, token) {
-    return FB_URL + route + '?access_token=' + token;
-}
-
-/* GET home page. */
 router.get('/', function(req, res) {
 	Projects.find({ approved: true }, function(err, projects){
         var errors = req.session.errs;
@@ -29,73 +39,6 @@ router.get('/', function(req, res) {
 	});
 });
 
-/* GET projects (JSON format) */
-router.get('/projects', function(req, res) {
-	Projects.find({ approved: true }, function(err, projects){
-		if (err) {
-            res.send(err);
-            return;
-        }
-        Votes.find({}, 'project user').populate('user', '_id').exec(function(err, votes) {
-            if (err) {
-                res.send(err);
-                return;
-            }
-            var votesObj = {};
-            for (index in projects) {
-                var project = projects[index];
-                votesObj[project._id] = [];
-            }
-
-            for (index in votes) {
-                var vote = votes[index];
-                votesObj[vote.project].push(vote);
-            }
-            res.json({votes: votesObj, projects: projects, user: req.session.user || null });
-        });
-	});
-});
-
-/* Login via FB User Token */
-router.post('/login', function(req, res) {
-    if (req.body.token) {
-        var token = req.body.token;
-        request(graphAPI('me', token), function(err, response, data) {
-            if (err || response.statusCode != 200) {
-                res.json({ error: err });
-                return;
-            }
-            // User exists, either login or create a new account.
-            var userData = JSON.parse(data);
-            Users.findOne({ _id: userData.id }, function(err, user) {
-                if (err) {
-                    res.json({ error: err });
-                    return;
-                }
-                // Check whether user exists in our system.
-                if (user) {
-                    req.session.user = user;
-                    res.json({ user: true });
-                } else {
-                    var picUrl = graphAPI('me/picture', token) + '&width=200&height=200';
-                    request(picUrl, function(err, response, data) {
-                        if (err || response.statusCode != 200) {
-                            res.json({ error: err });
-                            return;
-                        }
-                        userData.picture = response.request.uri.href;
-                        req.session.newUser = userData;
-                        res.json({ user: false });
-                    });
-                }
-            });
-        });
-    } else {
-        res.json({ success: false });
-    }
-});
-
-/* Logout */
 router.get('/logout', function(req, res) {
     delete req.session.user;
     res.redirect('/');
@@ -108,34 +51,6 @@ router.get('/project/:pid', function(req, res) {
             project: project,
             user: req.session.user,
             err: err ? 'Could not load project' : null
-        });
-	});
-});
-
-router.get('/project/:pid/vote', function(req, res) {
-    var user = req.session.user;
-    if (!user) {
-        res.status(401).json({err: 'Must be logged in to vote!'});
-        return;
-    }
-	Projects.findById(req.params.pid, function(err, project){
-        if (!project || err) {
-            res.status(404).json({err: err ? err : 'No project found'});
-            return;
-        }
-        Votes.findOneAndRemove(
-            { user: user._id, project: project._id }, function(err, vote) {
-            if (err) {
-                res.json({success: false, error: err});
-                return;
-            } 
-            var voted = false;
-            if (!vote) {
-                vote = new Votes({ user: user._id, project: project._id });
-                vote.save();
-                voted = true;
-            }
-            res.json({voteStatus: voted });
         });
 	});
 });
@@ -190,4 +105,5 @@ router.put('/project/:pid/update', function(req, res) {
 		});
 	});
 });
+
 module.exports = router;

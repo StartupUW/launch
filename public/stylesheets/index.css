@@ -259,6 +259,7 @@ textarea {
 
 .votes.user-voted {
     background-color: #e74c3c;
+    border: 1px solid #e74c4c;
     color: white;
 }
 
@@ -546,6 +547,12 @@ span#admin-logout {
         text-align: left;
         line-height: 25px;
     }
+}
+
+/* ERROR */
+#error-container {
+    padding: 20px 30px;
+    min-height: 400px;
 }
 
 @media screen and (max-width: 768px) { 

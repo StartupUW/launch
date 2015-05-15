@@ -32,7 +32,7 @@ window.fbAsyncInit = function() {
 function APILogin(token) {
     console.log(token);
     FB.api('/me', function(response) {
-        $.post('/login', {token : token})
+        $.post('/api/login', {token : token})
         .done(function(data) {
             if (data.user) {
                 location.reload();

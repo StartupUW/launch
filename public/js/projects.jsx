@@ -52,6 +52,19 @@ var ProjectImage = React.createClass({
 });
 
 var VoteButton = React.createClass({
+    getInitialState: function() {
+        var user = this.props.user;
+        var voted = false;
+        if (user) {
+            voted = this.props.votes.filter(function(el) {
+                return el.user._id === user._id;
+            }).length === 1;
+        }
+        return {
+            numVotes: this.props.votes.length || 0,
+            voted: voted
+        };
+    },
     componentDidMount: function() {
         $(".cannot-vote").tooltip({
             title: 'You must sign in to vote on projects!',
@@ -60,29 +73,21 @@ var VoteButton = React.createClass({
     },
     handleClick: function() {
         if (this.props.user) {
-            $.get('/project/' + this.props.project._id + '/vote')
+            $.get('/api/project/' + this.props.project._id + '/vote')
                 .done(function(data) {
-                    this.props.refreshVotes(data.voteStatus);
+                    //this.props.refreshVotes(data.voteStatus);
+                    this.setState({
+                        numVotes: this.state.numVotes + (data.voteStatus ? 1: -1),
+                        voted: data.voteStatus
+                    });
                 }.bind(this))
-                .fail(function(data) {
-                    var data = JSON.parse(data.responseText);
-                    console.log(data.err);    
-                });
         }
     },
     render: function() {
-        console.log(this.props);
         var user = this.props.user;
-        var numVotes = this.props.votes.length;
-        var voted = false;
-        if (user) {
-            voted = this.props.votes.filter(function(el) {
-                return el.user._id === user._id;
-            }).length === 1;
-        }
-
+        var numVotes = this.state.numVotes;
         var className = "votes";
-        className += voted ? " user-voted" : " user-not-voted";
+        className += this.state.voted ? " user-voted" : " user-not-voted";
         className += user ? " can-vote" : " cannot-vote";
 
         return (
@@ -115,7 +120,7 @@ var ProjectInfo = React.createClass({
                     {memberNodes}
                 </div>
                 <p className="project-description"> {this.props.project.description} </p>
-                <a href={"/project/" + this.props.id}>
+                <a href={"/project/" + this.props.project._id}>
                     <div className="more"> SEE MORE </div>
                 </a>
                 <VoteButton key={this.props.id} {...this.props} />
@@ -163,9 +168,7 @@ var ProjectList = React.createClass({
                 }.bind(this))
             }
         }
-        console.log(update);
         var votes = React.addons.update(this.state.votes, update);
-        console.log(votes);
         this.setState({ votes: votes });
     },
     componentDidMount: function() {
@@ -254,7 +257,7 @@ var ProjectList = React.createClass({
 });
 
 React.render(
-    <ProjectList url="/projects" votesUrl="/votes"/>,
+    <ProjectList url="/api/projects"/>,
     document.getElementById('projects-container')
 );
 
