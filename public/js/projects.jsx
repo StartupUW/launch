@@ -1,6 +1,17 @@
 var DEFAULT_SORT = 'top';
 var DEFAULT_PAGE_LIMIT = 5;
 
+var SORT_OPTIONS = {
+    'top': function(a, b) { 
+        var votes = this.state.votes;
+        return (votes[b._id] || []).length - (votes[a._id] || []).length;
+    },
+    'new': function(a, b) { 
+        var test = new Date(a.date) < new Date(b.date); 
+        return test ? -1 : 1;
+    }
+}
+
 var SortControl = React.createClass({
     getInitialState: function() {
         return {selected: DEFAULT_SORT};
@@ -41,28 +52,18 @@ var ProjectImage = React.createClass({
 });
 
 var VoteButton = React.createClass({
-    getInitialState: function() {
-        var loggedIn = this.props.user != null;
-        var userId = loggedIn ? this.props.user._id : -1;
-        var voted = this.props.votes.filter(function(el) {
-            return el.user._id === userId;
-        }).length === 1;
-        return { canVote: loggedIn, voted: voted, numVotes: this.props.votes.length };
-    },
     componentDidMount: function() {
-        $(".cannot-vote").tooltip({title: 'You must sign in to vote on projects!', placement: 'bottom'});
+        $(".cannot-vote").tooltip({
+            title: 'You must sign in to vote on projects!',
+            placement: 'bottom'
+        });
     },
-    handleClick: function(event) {
-        if (this.state.canVote) {
-            var reactButton = this;
-            $.get('/project/' + this.props.id + '/vote')
+    handleClick: function() {
+        if (this.props.user) {
+            $.get('/project/' + this.props.project._id + '/vote')
                 .done(function(data) {
-                    var voteStatus = data.voteStatus;
-                    reactButton.setState(function(prevState) {
-                        var incCount = voteStatus ? 1: -1;
-                        return {voted: voteStatus, numVotes: prevState.numVotes + incCount};
-                    });
-                })
+                    this.props.refreshVotes(data.voteStatus);
+                }.bind(this))
                 .fail(function(data) {
                     var data = JSON.parse(data.responseText);
                     console.log(data.err);    
@@ -70,12 +71,22 @@ var VoteButton = React.createClass({
         }
     },
     render: function() {
-        var numVotes = this.state.numVotes;
+        console.log(this.props);
+        var user = this.props.user;
+        var numVotes = this.props.votes.length;
+        var voted = false;
+        if (user) {
+            voted = this.props.votes.filter(function(el) {
+                return el.user._id === user._id;
+            }).length === 1;
+        }
+
         var className = "votes";
-        className += this.state.voted ? " user-voted" : " user-not-voted";
-        className += this.state.canVote ? " can-vote" : " cannot-vote";
+        className += voted ? " user-voted" : " user-not-voted";
+        className += user ? " can-vote" : " cannot-vote";
+
         return (
-            <div onClick={this.handleClick} className={className} id={this.props.id}>
+            <div onClick={this.handleClick} className={className}>
                 <span className="glyphicon glyphicon-heart"></span>
                 <span className="vote-count"> {numVotes > 0 ? numVotes : ""}</span>
             </div>
@@ -93,10 +104,6 @@ var ProjectInfo = React.createClass({
             return (<span key={member} className="member">{member}</span>);
         });
 
-        var id = this.props.project._id;
-        var projectUrl = "/project/" + id;
-        var votes = this.props.project.votes;
-
         return (
             <div className="project-info col-sm-9">
                 <h2 className="project-title"> {this.props.project.name}  
@@ -108,10 +115,10 @@ var ProjectInfo = React.createClass({
                     {memberNodes}
                 </div>
                 <p className="project-description"> {this.props.project.description} </p>
-                <a href={projectUrl}>
+                <a href={"/project/" + this.props.id}>
                     <div className="more"> SEE MORE </div>
                 </a>
-                <VoteButton key={id} id={id} user={this.props.user} votes={this.props.project.votes} />
+                <VoteButton key={this.props.id} {...this.props} />
             </div>
         );
     }
@@ -124,13 +131,13 @@ var Project = React.createClass({
             return (
                 <div className="project col-md-12">
                     <ProjectImage url={''}></ProjectImage>
-                    <ProjectInfo user={this.props.user} project={this.props.project}></ProjectInfo>
+                    <ProjectInfo {...this.props}></ProjectInfo>
                 </div>
             );
         } else {
             return (
                 <div className="project col-md-12">
-                    <ProjectInfo user={this.props.user} project={this.props.project}></ProjectInfo>
+                    <ProjectInfo {...this.props} ></ProjectInfo>
                     <ProjectImage url={''}></ProjectImage>
                 </div>
             );
@@ -141,42 +148,52 @@ var Project = React.createClass({
 var ProjectList = React.createClass({
     getInitialState: function() {
         return {
-            projects: [], user: {}, filter: '',
+            votes: {}, projects: [], user: {}, filter: '',
             sort: DEFAULT_SORT, pageLimit: DEFAULT_PAGE_LIMIT, currentPage: 0
         };
     },
+    refreshVotes: function(projectId, voteStatus) {
+        var update = {}
+        if (voteStatus) {
+            update[projectId] = {$push: [{user: this.state.user}]}
+        } else {
+            update[projectId] = {
+                $set: this.state.votes[projectId].filter(function(el) {
+                    return el.user._id !== this.state.user._id;
+                }.bind(this))
+            }
+        }
+        console.log(update);
+        var votes = React.addons.update(this.state.votes, update);
+        console.log(votes);
+        this.setState({ votes: votes });
+    },
     componentDidMount: function() {
-        var topSort = function(a, b) { return b.votes.length - a.votes.length; };
-        var newSort = function(a, b) { 
-            var test = new Date(a.date) < new Date(b.date); 
-            return test ? -1 : 1;
-        };
         $.ajax({
             url: this.props.url,
             dataType: 'json',
             cache: false,
             success: function(data) {
-                for (index in data.projects) {
-                    var project = data.projects[index];
-                    project.votes = data.votes[project._id];
-                }
-                this.setState({projects: data.projects.sort(topSort), user: data.user});
+                this.setState({
+                    projects: data.projects,
+                    votes: data.votes,
+                    user: data.user
+                });
 
                 $('#project-filter').keyup(this, function(event) {
-                    event.data.setState({currentPage: 0, filter: $(this).val()});
+                    event.data.setState({
+                        currentPage: 0,
+                        filter: $(this).val()
+                    });
                 });
 
                 $('#sort-method').change(this, function(event) {
                     var sort = $(this).val();
-                    var sortProjects = function(a, b) {
-                        switch(sort) {
-                            case 'new': return newSort(a, b);
-                            case 'top': return topSort(a, b);
-                        }
-                        return -1;
-                    };
-                    event.data.setState({sort: sort,  projects: event.data.state.projects.sort(sortProjects) });
+                    event.data.setState({
+                        sort: sort
+                    });
                 });
+
             }.bind(this),
             error: function(xhr, status, err) {
                 console.error(this.props.url, status, err.toString());
@@ -187,21 +204,25 @@ var ProjectList = React.createClass({
         this.setState({currentPage: i});
     },
     render: function() {
+        var projects = this.state.projects;
+        var votes = this.state.votes;
         var user = this.state.user;
         var filter = this.state.filter.toLowerCase();
         var sort = this.state.sort;
         var pageLimit = this.state.pageLimit;
         var firstEl = this.state.currentPage * pageLimit;
 
-        // Filter out projects that match the search bar, then sort
-        // by sorting option, then finally cut by page size.
-        var projectNodes = this.state.projects.filter(function(project) {
-            return !filter || project.name.toLowerCase().indexOf(filter) != -1 ||
-                project.description.toLowerCase().indexOf(filter) != -1 ||
-                project.tags.join(' ').toLowerCase().indexOf(filter) != -1;
-        }).map(function(project, index) {
-            return (<Project key={project._id} project={project} index={index % pageLimit} user={user} />);
-        });
+        var projectNodes = projects
+            .sort(SORT_OPTIONS[sort].bind(this))
+            .filter(function(project) {
+                return !filter || project.name.toLowerCase().indexOf(filter) != -1 ||
+                    project.description.toLowerCase().indexOf(filter) != -1 ||
+                    project.tags.join(' ').toLowerCase().indexOf(filter) != -1;
+            })
+            .map(function(project, index) {
+                var votes = this.state.votes[project._id] || [];
+                return (<Project key={project._id} project={project} refreshVotes={this.refreshVotes.bind(this, project._id)} votes={votes} index={index % pageLimit} user={user} />);
+            }.bind(this));
         
         var totalLength = projectNodes.length;
         projectNodes = projectNodes.slice(firstEl, firstEl + pageLimit);
@@ -210,7 +231,7 @@ var ProjectList = React.createClass({
         for (var i = 0; i < totalLength / pageLimit; i++) {
             var className = i == this.state.currentPage ? "active": "";
             pageNodes.push(
-                (<li className={className} onClick={this.handleClick.bind(this, i)}>
+                (<li key={i} className={className} onClick={this.handleClick.bind(this, i)}>
                     <a href="#!"> {i + 1} </a>
                 </li>)
             );
@@ -221,8 +242,7 @@ var ProjectList = React.createClass({
                 <div>
                     {projectNodes}
                     <nav>
-                        <ul className="pagination">
-                            {pageNodes}
+                        <ul className="pagination"> {pageNodes}
                             <span className="pagination-showing">Showing {firstEl + 1} - {firstEl + projectNodes.length} of {totalLength}</span>
                         </ul>
                     </nav>
@@ -234,8 +254,7 @@ var ProjectList = React.createClass({
 });
 
 React.render(
-    <ProjectList url="/projects" />,
+    <ProjectList url="/projects" votesUrl="/votes"/>,
     document.getElementById('projects-container')
 );
-
 

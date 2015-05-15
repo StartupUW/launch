@@ -91,6 +91,7 @@ textarea {
 
 #add-project {
     margin-left: 25px;
+    display: inline-block;
 }
 
 #fb-login {
@@ -252,6 +253,7 @@ textarea {
 .votes.can-vote.user-not-voted:hover {
     background-color: #E08283;
     border: 1px solid #E08283;
+    border-left: none;
     color: white;
 }
 
@@ -552,6 +554,14 @@ span#admin-logout {
         width: 80px;
     }
 
+    #login-bar {
+        text-align: center;
+    }
+
+    #header {
+        padding: 20px 0;
+    }
+
     #splash {
         min-height: 400px;
     }
@@ -577,6 +587,4 @@ span#admin-logout {
     #profile-feed {
         padding: 0 20px;
     }
-
-
 }

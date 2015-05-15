@@ -4,7 +4,7 @@ html(lang="en")
         block title
             title Launch by StartupUW
         meta(name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0, user-scalable=no") 
-        script(src="https://fb.me/react-0.13.3.js")
+        script(src="https://fb.me/react-with-addons-0.13.3.js")
         script(src="https://fb.me/JSXTransformer-0.13.3.js")
 
         link(rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css")
@@ -17,9 +17,9 @@ html(lang="en")
         block header
             #header
                 .row
-                    p#logo.col-xs-6.hidden-xs Startup UW | 
+                    p#logo.col-md-6.hidden-xs.hidden-sm Startup UW | 
                         a(href='/') Launch
-                    #login-bar.col-xs-12.col-sm-6
+                    #login-bar.col-xs-12.col-sm-12.col-md-6
                         if user
                             .btn-group
                                 button.button.btn.btn-default.dropdown-toggle(data-toggle="dropdown" aria-expanded="false")
@@ -34,15 +34,17 @@ html(lang="en")
                                     li
                                         a(href="/logout") Log Out
 
-                                a#add-project.hidden-xs(href="/project")
-                                    button.btn.btn-primary Add Your Project
+                            a#add-project(href="/project")
+                                button.btn.btn-primary.hidden-xs Add Your Project
+                                button.btn.btn-primary.visible-xs + Project
                         else
                             button.btn#fb-login(onclick="fbLogin();")
                                 .fa.lg.fa-facebook 
                                 span Continue with Facebook
 
         block content
-            script(src='/js/fb.js')
+            script(src='/js/fb.js' type="text/jsx")
+            #fb-root
 
             if errs
                 each err in errs

@@ -36,7 +36,7 @@ router.get('/projects', function(req, res) {
             res.send(err);
             return;
         }
-        Votes.find({}).populate('user', '_id').exec(function(err, votes) {
+        Votes.find({}, 'project user').populate('user', '_id').exec(function(err, votes) {
             if (err) {
                 res.send(err);
                 return;
@@ -100,7 +100,6 @@ router.get('/logout', function(req, res) {
     delete req.session.user;
     res.redirect('/');
 });
-
 
 /* Project display page */
 router.get('/project/:pid', function(req, res) {
