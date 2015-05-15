@@ -15,7 +15,7 @@ router.route('/')
         next();
     })
     .get(function(req, res) {
-      res.render('admin');
+      res.render('admin', { user: req.session.user });
     })
     .post(function(req, res) {
         if (req.body.password && req.body.password === ADMIN_PASS) {
@@ -51,11 +51,10 @@ router.route('/console')
    });
 
 /* Admin logout */
-router.route('/logout')
-    .get(function(req, res) {
-        req.session.destroy();
-        res.redirect('/admin');
-    });
+router.get('/logout', function(req, res) {
+    delete req.session.admin;
+    res.redirect('/admin');
+});
 
 var renderProjects = function(errors, res) {
      Projects.find({ approved: false }, function(err, projects){

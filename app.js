@@ -6,13 +6,16 @@ var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var mongoose = require('mongoose');
 var session = require('express-session');
+
 var multer  = require('multer')
 
+var RedisStore = require('connect-redis')(session);
 var port = 8080;
 
 mongoose.connect('mongodb://127.0.0.1/traction');
 
 var index = require('./routes/index');
+var api = require('./routes/api');
 var users = require('./routes/users');
 var admin = require('./routes/admin');
 
@@ -32,16 +35,21 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(multer({ dest: __dirname + 'public/uploads/'}))
 
-// TODO: Change to redis
-app.use(session({
+app.use(session({                                         
+    store: new RedisStore({                               
+        host: 'localhost',                                
+        port: '6379'                                      
+    }),                                                   
+    secret: process.env.ADMIN_PASS,
     resave: false,
-    saveUninitialized: false,
-    secret: 'bar'
-}))
+    saveUninitialized: true,                              
+    cookie : {}                                           
+}));                                                      
 
 app.use('/', index);
 app.use('/profile', users);
 app.use('/admin', admin);
+app.use('/api', api);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
@@ -59,7 +67,8 @@ if (app.get('env') === 'development') {
         res.status(err.status || 500);
         res.render('error', {
             message: err.message,
-            error: err
+            error: err,
+            user: req.session.user || null
         });
     });
 }
@@ -70,10 +79,10 @@ app.use(function(err, req, res, next) {
     res.status(err.status || 500);
     res.render('error', {
         message: err.message,
-        error: {}
+        error: {},
+        user: req.session.user || null
     });
 });
-
 
 module.exports = app;
 

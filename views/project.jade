@@ -2,6 +2,8 @@ extends ./layout.jade
 
 block append content
 
+    input#project-id(type="hidden" value="#{projectId}")
     #project-container
-        h1 #{project.name}
-        p #{project.description}
+
+block append scripts
+    script(src="/js/project.jsx" type="text/jsx")

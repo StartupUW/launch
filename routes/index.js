@@ -1,21 +1,34 @@
+/**
+ * Startup UW Launch, 2015
+ * Index Router - homepage, projects, and logout functionality.
+ * 
+ * ---------------------------------------------------------------------------
+ * Route                    REST Calls      Description
+ * ---------------------------------------------------------------------------
+ * /                        GET             Render the homepage (all projects)
+ * /logout                  GET             Log the current user out.
+ * /project                 GET, POST       Render and process form for creating projects
+ * /project/:pid/           GET             Display a single project page
+ * /project/:pid/update     POST            Update a project
+ *
+ */
+
+// Express
 var express = require('express');
-var request = require('request');
-var Projects = require('../models/projects');
-var Users = require('../models/users');
-
-var fs = require('fs');
-var Util = require('../util/util');
-var checkLogin = Util.checkLogin;
-
 var router = express.Router();
 
-var FB_URL = 'https://graph.facebook.com/me?access_token=';
+// Models
+var Projects = require('../models/projects');
+var Users = require('../models/users');
+var Votes = require('../models/votes');
 
-/* GET home page. */
+// Utility
+var checkLogin = require('../util/util').checkLogin;
+
 router.get('/', function(req, res) {
 	Projects.find({ approved: true }, function(err, projects){
         var errors = req.session.errs;
-		if (err) errors.append(err);
+		if (err) errors.push(err);
         delete req.session.errs;
 		res.render('index', { 
             projects: projects,
@@ -25,62 +38,17 @@ router.get('/', function(req, res) {
 	});
 });
 
-/* GET projects (JSON format) */
-router.get('/projects', function(req, res) {
-	Projects.find({ approved: true }, function(err, projects){
-		if (err) {
-            res.send(err);
-            return;
-        }
-		res.json({ projects: projects });
-	});
-});
-
-/* Login via FB User Token */
-router.post('/login', function(req, res) {
-    if (req.body.token) {
-        var token = req.body.token;
-        request(FB_URL + token, function(err, response, data) {
-            if (response.statusCode != 200) {
-                res.json({ error: err });
-                return;
-            }
-
-            // User exists, either login or create a new account.
-            var userData = JSON.parse(data);
-            Users.count({ uid: userData.id }, function(err, count) {
-                if (err) res.json({ error: err });
-                // Check whether user exists in our system.
-                if (count == 1) {
-                    req.session.user = userData;
-                    res.json({ user: true });
-                } else {
-                    req.session.newUser = userData;
-                    res.json({ user: false });
-                }
-            });
-        });
-    } else {
-        res.json({ success: false });
-    }
-});
-
-/* Logout */
 router.get('/logout', function(req, res) {
-    req.session.destroy();
+    delete req.session.user;
     res.redirect('/');
 });
 
-
 /* Project display page */
-router.get('/project/:pid', function(req, res){
-	Projects.findById(req.params.pid, function(err, project){
-		res.render('project', { 
-            project: project,
-            user: req.session.user,
-            err: err ? 'Could not load project' : null
-        });
-	});
+router.get('/project/:pid', function(req, res) {
+    res.render('project', { 
+        projectId: req.params.pid,
+        user: req.session.user,
+    });
 });
 
 router.route('/project')
@@ -146,4 +114,5 @@ router.put('/project/:pid/update', function(req, res) {
 		});
 	});
 });
+
 module.exports = router;

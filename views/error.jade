@@ -1,3 +1,7 @@
-p= message
-p= error
-p= error.stack
+extends ./layout.jade
+
+block append content
+    #error-container.container
+        h1= message
+        p= error
+        p= error.stack
