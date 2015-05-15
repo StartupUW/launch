@@ -100,6 +100,19 @@ var VoteButton = React.createClass({
 });
 
 var ProjectInfo = React.createClass({
+    getDate: function(date) {
+        var diff = (new Date() - new Date(date)) / 60000;
+        var interval = 'minutes';
+        if (diff > 60) {
+            diff /= 60;
+            interval = 'hours'
+            if (diff > 24) {
+                diff /= 24;
+                interval = 'days';
+            }
+        }
+        return parseInt(diff) + ' ' + interval + ' ago';
+    },
     render: function() {
         var labelNodes = this.props.project.tags.map(function(tag) {
             return (<span key={tag} className="label label-default">{tag}</span>);
@@ -109,6 +122,8 @@ var ProjectInfo = React.createClass({
             return (<span key={member} className="member">{member}</span>);
         });
 
+        var diff = this.getDate(this.props.project.date);
+
         return (
             <div className="project-info col-sm-9">
                 <h2 className="project-title"> {this.props.project.name}  
@@ -116,6 +131,7 @@ var ProjectInfo = React.createClass({
                         {labelNodes}
                     </div>
                 </h2>
+                <div className="posted">{diff}</div>
                 <div className="project-members">
                     {memberNodes}
                 </div>

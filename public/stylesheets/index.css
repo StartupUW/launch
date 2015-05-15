@@ -316,6 +316,13 @@ textarea {
 
 .project-title {
     font-size: 32px;
+    margin-bottom: 2px;
+}
+
+.project .posted {
+    color: #aaa;
+    font-size: 12px;
+    margin-bottom: 18px;
 }
 
 .project-labels {
@@ -500,6 +507,10 @@ span#admin-logout {
 
 #project-container h2 {
     font-size: 20px;
+}
+
+.members a {
+    margin-right: 15px;
 }
 
 .members .popover img {

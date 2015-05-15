@@ -96,10 +96,15 @@ router.get('/project/:pid', function(req, res) {
         if (err || !project) return handleError(err, res, true, 404, 'Project not found');
         Users.populate(project.members, { path: 'member'}, function(err, members) {
             if (err) return handleError(err, res, true);
-            res.json({
-                project: project,
-                members: members,
-            });;
+            Votes.find({project: req.params.pid}, function(err, votes) {
+                if (err) return handleError(err, res, true);
+                res.json({
+                    project: project,
+                    members: members,
+                    votes: votes,
+                    user: req.session.user || null,
+                });;
+            });
         });
     });
 });
