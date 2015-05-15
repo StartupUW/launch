@@ -35,12 +35,12 @@ router.post('/login', function(req, res) {
     if (req.body.token) {
         var token = req.body.token;
         request(graphAPI('me', token), function(err, response, data) {
-            if (err || response.statusCode != 200) return handleError(err, true);
+            if (err || response.statusCode != 200) return handleError(err, res, true);
 
             // User exists, either login or create a new account.
             var userData = JSON.parse(data);
             Users.findOne({ _id: userData.id }, function(err, user) {
-                if (err) return handleError(err, true);
+                if (err) return handleError(err, res, true);
 
                 // Check whether user exists in our system.
                 if (user) {
@@ -49,7 +49,7 @@ router.post('/login', function(req, res) {
                 } else {
                     var picUrl = graphAPI('me/picture', token) + '&width=200&height=200';
                     request(picUrl, function(err, response, data) {
-                        if (err || response.statusCode != 200) return handleError(err, true);
+                        if (err || response.statusCode != 200) return handleError(err, res, true);
                         userData.picture = response.request.uri.href;
                         req.session.newUser = userData;
                         res.json({ user: false });
@@ -64,7 +64,7 @@ router.post('/login', function(req, res) {
 
 router.get('/users', function(req, res) {
     Users.find({}, 'fname lname picture', function(err, users) {
-        if (err) return handleError(err, true);
+        if (err) return handleError(err, res, true);
         res.json({ users: users });
         return;
     });
@@ -72,9 +72,9 @@ router.get('/users', function(req, res) {
 
 router.get('/projects', function(req, res) {
 	Projects.find({ approved: true }, function(err, projects){
-		if (err) return handleError(err, true);
+		if (err) return handleError(err, res, true);
         Votes.find({}, 'project user').populate('user', '_id').exec(function(err, votes) {
-            if (err) return handleError(err, true);
+            if (err) return handleError(err, res, true);
 
             var votesObj = {};
             for (index in projects) {
@@ -91,6 +91,20 @@ router.get('/projects', function(req, res) {
 	});
 });
 
+router.get('/project/:pid', function(req, res) {
+    Projects.findById(req.params.pid, function(err, project){
+        if (err || !project) return handleError(err, res, true, 404, 'Project not found');
+        Users.populate(project.members, { path: 'member'}, function(err, members) {
+            if (err) return handleError(err, res, true);
+            res.json({
+                project: project,
+                members: members,
+            });;
+        });
+    });
+});
+
+
 router.get('/project/:pid/vote', function(req, res) {
     var user = req.session.user;
     if (!user) {
@@ -98,13 +112,13 @@ router.get('/project/:pid/vote', function(req, res) {
         return;
     }
 	Projects.findById(req.params.pid, function(err, project){
-        if (err) return handleError(err, true);
+        if (err) return handleError(err, res, true);
         if (!project) {
             res.status(404).json({ err: 'No project found'});
             return;
         }
         Votes.findOneAndRemove({ user: user._id, project: project._id }, function(err, vote) {
-            if (err) return handleError(err, true);
+            if (err) return handleError(err, res, true);
 
             var voted = false;
             if (!vote) {

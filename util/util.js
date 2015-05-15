@@ -12,8 +12,12 @@ var checkLogin = function(err, req, res, redirect) {
     return false;
 };
 
-var handleError = function(err, res, json) {
+var handleError = function(err, res, json, statusCode, msg) {
     if (json) {
+        if (statusCode && msg) {
+            res.status(statusCode).json({ err: msg });
+            return true;
+        }
         res.status(500).json({ err: err });
         return true;
     }

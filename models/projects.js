@@ -8,13 +8,14 @@ var ProjectSchema = new Schema ({
 	images: [String],
     date: {type: Date, default: Date.now },
 	hiring: {type: Boolean, default: false },
-	contact: [{
-		email: {type: String, required: true},
-		phone: {type: String, required: false}
-	}],
 	type: {type: String, required: true},
 	tags: [String],
-	approved: { type: Boolean, default: false}
+	approved: { type: Boolean, default: false},
+    fbPage: {type: String},
+    members: [{
+        user: {type: String, ref: 'Users'},
+        role: {type: String}
+    }],
 });
 
 module.exports = mongoose.model('Projects', ProjectSchema);

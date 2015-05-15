@@ -2,9 +2,8 @@ extends ./layout.jade
 
 block append content
 
+    input#project-id(type="hidden" value="#{projectId}")
     #project-container
-        if project
-            h1 #{project.name}
-            p #{project.description}
-        else 
-            h1 Project not found.
+
+block append scripts
+    script(src="/js/project.jsx" type="text/jsx")

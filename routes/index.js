@@ -46,13 +46,10 @@ router.get('/logout', function(req, res) {
 
 /* Project display page */
 router.get('/project/:pid', function(req, res) {
-	Projects.findById(req.params.pid, function(err, project){
-		res.render('project', { 
-            project: project,
-            user: req.session.user,
-            err: err ? 'Could not load project' : null
-        });
-	});
+    res.render('project', { 
+        projectId: req.params.pid,
+        user: req.session.user,
+    });
 });
 
 /* Create a new project */

@@ -486,8 +486,53 @@ span#admin-logout {
 /* Project page */
 #project-container {
     max-width: 1000px;
-    padding: 55px;
+    padding: 55px 0;
     margin: auto;
+}
+
+#project-container .project-feed {
+    padding-top: 10px;
+}
+
+#project-container .contact-info {
+    padding: 10px 0;
+}
+
+#project-container h2 {
+    font-size: 20px;
+}
+
+.members .popover img {
+    width: 100%;
+    max-width: 100px;
+}
+
+.members .popover .row {
+    margin: 15px 0;
+}
+
+.members .popover-content {
+    padding: 0;
+}
+
+.members .name {
+    font-weight: 600;
+}
+
+.members .grad {
+    background-color: #33ccff;
+    color: white;
+    text-align: center;
+    font-size: 10px;
+    padding: 2px;
+    border-radius: 3px;
+}
+
+.members .popover .role {
+    background-color: #eeeeee;
+    margin-bottom: 0;
+    padding: 10px 0;
+    text-align: center;
 }
 
 /* CREATE PROJECT */
@@ -551,7 +596,7 @@ span#admin-logout {
 
 /* ERROR */
 #error-container {
-    padding: 20px 30px;
+    padding: 20px 35px;
     min-height: 400px;
 }
 
