@@ -25,6 +25,9 @@ block append content
                     if !projects
                         .panel
                             .panel-body This user has no public projects yet.
+                    else
+                        each project in projects
+                            h1 #{project._id}
                     h2#profile-voted Upvoted
                     if !votes
                         .panel 
