@@ -5,26 +5,35 @@ block append content
         if profile
             .row
                 .col-md-3
-
                     .thumbnail
                         img(src=profile.picture ? profile.picture : "/img/default-profile.png")
                         .caption
-                            h1 #{profile.fname} #{profile.lname}
+                            h1 #{profile.fname} #{profile.lname} 
+                                if user && profile._id == user._id
+                                    i.fa.fa-pencil
                             p
                                 i.fa.fa-envelope
                                 | #{profile.email}
+                                
                             p
                                 i.fa.fa-quote-left
                                 | #{profile.bio}
+
                             p
                                 i.fa.fa-graduation-cap
-                                | #{profile.major} &bull; Class of #{profile.gradyr}
+                                | #{profile.major} &bull; Class of #{profile.gradyr} &nbsp;
 
                 #profile-feed.col-md-9
                     h2#profile-projects Projects
                     if !projects
                         .panel
                             .panel-body This user has no public projects yet.
+                    else
+                        each project in projects
+                            .panel
+                                .panel-body
+                                    .col-md-3
+                                        img(src="/img/suw-logo.png")
                     h2#profile-voted Upvoted
                     if !votes
                         .panel 
@@ -32,10 +41,8 @@ block append content
                     else
                         .row
                             each vote in votes
-                                a(href="/project/#{vote.project._id}")
-                                    .vote-card
-                                        p.name #{vote.project.name}
-                                            span.date #{(new Date(vote.date)).toLocaleDateString()}
-                                        p.description #{vote.project.description}
+                                .col-md-1.col-xs-1.projectlogo
+                                    a(href="/project/#{vote.project._id}")
+                                        img(src=vote.project.images ? vote.project.images : "/img/suw-logo.png")
         else
             h1 No such user exists!
