@@ -94,9 +94,9 @@ router.get('/projects', function(req, res) {
 router.get('/project/:pid', function(req, res) {
     Projects.findById(req.params.pid, function(err, project){
         if (err || !project) return handleError(err, res, true, 404, 'Project not found');
-        Users.populate(project.members, { path: 'member'}, function(err, members) {
+        Users.populate(project.members, { path: 'user' }, function(err, members) {
             if (err) return handleError(err, res, true);
-            Votes.find({project: req.params.pid}, function(err, votes) {
+            Votes.find({project: req.params.pid}).populate('user', 'fname lname picture').exec(function(err, votes) {
                 if (err) return handleError(err, res, true);
                 res.json({
                     project: project,
