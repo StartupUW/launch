@@ -13,7 +13,6 @@
  *
  */
 
-
 // Express
 var express = require('express');
 var router = express.Router();
@@ -52,33 +51,47 @@ router.get('/project/:pid', function(req, res) {
     });
 });
 
-/* Create a new project */
 router.route('/project')
     .all(function(req, res, next) {
-        if (checkLogin('You must be logged in to create a project', req, res, '/')) return;
+        //if (checkLogin('You must be logged in to create a project', req, res, '/')) return;
         next();
     })
     .get(function(req, res) {
         res.render('create-project', { user: req.session.user });
     })
     .post(function(req, res) {
-        var project = new Projects();
-        project.name = req.body.name;
-        project.website = req.body.website;
-        project.description = req.body.desc;
-        project.contact.email = req.body.email;
-        project.contact.phone = req.body.phone;
-        project.type = req.body.type;
-        project.tags = req.body.tags.split(/,[ \t]*/);
-
-        project.save(function(err){
-            if(err) {
-                res.send(err);
-                return;
-            }
-            res.json(project);
-        });
+		var project = new Projects();
+		project.name = req.body.name;
+		project.website = req.body.website;
+		project.description = req.body.desc;
+		project.contact.email = req.body.email;
+		project.contact.phone = req.body.phone;
+		project.type = req.body.type;
+		console.log(req.files);
+		project.tags = 'asdf';
+		uploadImg(req.files.image, project.id, function(err, newFile) {
+			if(!err) {
+				project.images.push(newFile);
+				project.save(function(err){
+					if(err) {
+						res.send(err);
+					}
+					res.json(project);
+				});
+			} else {
+				res.send(err);
+			}
+		})
     });
+
+var uploadImg = function(image, id, handle) {
+	fs.readFile(image.path, function (err, data) {
+	  	var newPath = "./public/uploads/" + id + "." + image.extension;
+	  	fs.writeFile(newPath, data, function(err) {
+    		handle(err, newPath);
+	  	});
+	});
+};
 
 /* Update an existing project */
 router.put('/project/:pid/update', function(req, res) {
@@ -93,7 +106,6 @@ router.put('/project/:pid/update', function(req, res) {
 		project.contact.phone = req.body.phone || project.contact.phone;
 		project.type = req.body.type || project.type;
 		project.tags = req.body.tags || project.tags;
-
 		project.save(function(err){
 			if(err) {
 				res.send(err);

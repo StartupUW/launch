@@ -5,6 +5,7 @@ block append content
         h1 Add Your Project
         h2 Show everyone what you've been working hard on.
 
+        #misc
         #create-form
             mixin input(fieldName)
                 .row
@@ -22,11 +23,10 @@ block append content
                     input(type="text" name="type")
                 +input('Tags')
                     input#inputTags(type="text" name="tags")
-                #tags
+                    #tags
                 +input('Members')
-                    input(type="text" name="members")
-                button.btn.btn-primary(type="submit") Submit
-
+                    #members
 
 block append scripts
     script(src="/js/tags.jsx" type="text/jsx")
+    script(src="/js/create-project.jsx" type="text/jsx")

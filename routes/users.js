@@ -33,6 +33,23 @@ router.route('/create')
 		user.bio = req.body.bio;
 		user.major = req.body.major;
 		user.gradyr = req.body.gradyr;
+		user.link.label = req.body.link.label;
+		user.link.url = req.body.link.url;
+		user.link.visible = req.body.link.visible;
+		user.save(function(err){
+			if(err) {
+				res.send(err);
+			}
+				res.render('user', {user: user});
+		});	
+	});
+
+router.route('users/:user_id')
+	.get(function(req,res) {
+		Users.findById(req.params.user_id, function(err, user) {
+			if(err) {res.render('user', {err: err})};
+			res.render('user', {user: user});
+		});
 		user.save(function(err) {
 			if(err) { 
                 res.send(err); 
@@ -59,18 +76,5 @@ router.route('/:user_id')
                 });
             });
         });
-    })
-	.delete(function(req,res) {
-		Users.remove({
-			_id : req.params.user_id
-		}, function(err, user) {
-			if(err) { 
-                res.send(err);
-                return;
-            }
-			res.json({message: 'User deleted'});
-		});
-	});
-
-
+    });
 module.exports = router;
