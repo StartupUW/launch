@@ -7,7 +7,7 @@ var bodyParser = require('body-parser');
 var mongoose = require('mongoose');
 var session = require('express-session');
 var RedisStore = require('connect-redis')(session);
-var port = 7000;
+var port = 8080;
 
 mongoose.connect('mongodb://127.0.0.1/traction');
 
