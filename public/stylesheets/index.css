@@ -509,6 +509,19 @@ span#admin-logout {
     font-size: 20px;
 }
 
+.projectlogo {
+    padding: 5px;
+}
+.popover-content {
+    width: 100%;
+    text-align: center;
+    white-space: nowrap;
+}
+
+.projectlogo img{
+    width: 100%;
+}
+
 .members a {
     margin-right: 15px;
 }
