@@ -75,7 +75,6 @@ var VoteButton = React.createClass({
         if (this.props.user) {
             $.get('/api/project/' + this.props.project._id + '/vote')
                 .done(function(data) {
-                    //this.props.refreshVotes(data.voteStatus);
                     this.setState({
                         numVotes: this.state.numVotes + (data.voteStatus ? 1: -1),
                         voted: data.voteStatus
@@ -174,20 +173,6 @@ var ProjectList = React.createClass({
             sort: DEFAULT_SORT, pageLimit: DEFAULT_PAGE_LIMIT, currentPage: 0
         };
     },
-    refreshVotes: function(projectId, voteStatus) {
-        var update = {}
-        if (voteStatus) {
-            update[projectId] = {$push: [{user: this.state.user}]}
-        } else {
-            update[projectId] = {
-                $set: this.state.votes[projectId].filter(function(el) {
-                    return el.user._id !== this.state.user._id;
-                }.bind(this))
-            }
-        }
-        var votes = React.addons.update(this.state.votes, update);
-        this.setState({ votes: votes });
-    },
     componentDidMount: function() {
         $.ajax({
             url: this.props.url,
@@ -244,7 +229,7 @@ var ProjectList = React.createClass({
         projectNodes = projectNodes
             .map(function(project, index) {
                 var votes = this.state.votes[project._id] || [];
-                return (<Project key={project._id} project={project} refreshVotes={this.refreshVotes.bind(this, project._id)} votes={votes} index={index % pageLimit} user={user} />);
+                return (<Project key={project._id} project={project} votes={votes} index={index % pageLimit} user={user} />);
             }.bind(this))
             .slice(firstEl, firstEl + pageLimit);
 
