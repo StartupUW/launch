@@ -256,7 +256,7 @@ var ProjectList = React.createClass({
             pageNodes.push(
                 (<li key={i} className={className} onClick={this.handleClick.bind(this, i)}>
                     <a href="#!"> {i + 1} </a>
-                </li>)
+                </li>
             );
         }
 
