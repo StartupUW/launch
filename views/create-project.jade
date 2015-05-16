@@ -21,7 +21,12 @@ block append content
                 +input('Type')
                     input(type="text" name="type")
                 +input('Tags')
-                    input(type="text" name="tags")
+                    input#inputTags(type="text" name="tags")
+                #tags
+                +input('Members')
+                    input(type="text" name="members")
                 button.btn.btn-primary(type="submit") Submit
 
 
+block append scripts
+    script(src="/js/tags.jsx" type="text/jsx")
