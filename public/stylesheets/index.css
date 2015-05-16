@@ -554,6 +554,9 @@ span#admin-logout {
     padding: 30px 15px;
 }
 
+#project-feed .panel {
+    width: 100%;
+}
 #project-info .basic-info h1 {
     margin-top: 0;
     font-weight: 600;
@@ -658,6 +661,10 @@ span#admin-logout {
 
     #login-bar {
         text-align: center;
+    }
+
+    #logo {
+        text-align: right;
     }
 
     #header {

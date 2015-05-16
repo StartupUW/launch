@@ -27,8 +27,11 @@ var Member = React.createClass({
         var user = this.props.member.user;
         var role = this.props.member.role;
         return (
-            <a href={"/profile/" + user._id} className="member" id={user._id}>
-                {user.fname} {user.lname}
+            <a href={"/profile/" + user._id} className="member col-md-3" id={user._id}>
+                <div>
+                    <div>{user.fname} {user.lname}</div>
+                    <div>{role}</div>
+                </div>
             </a>
         );
     }
@@ -105,7 +108,7 @@ var ProjectFeed = React.createClass({
         return (
             <div id="project-feed" className="col-md-4">
                 <div className="panel panel-default">
-                    <div className="panel-heading">Upvotes</div>
+                    <div className="panel-heading">Overview</div>
                         <div className="panel-body">
                             <p> Website: 
                                 <a target="_blank" href={"http://" + project.website}> {project.website} </a>
