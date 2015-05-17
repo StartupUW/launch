@@ -56,7 +56,7 @@ var ProjectInfo = React.createClass({
                     <div className="title">
                         <div className="col-md-9">
                             <h1>{project.name}</h1>
-                            <div className="tags"> { tagNodes }</div>
+                            <div className="tags">{ tagNodes }</div>
                             <p>{project.description}</p>
                         </div>
                         <div className="hidden-xs hidden-sm col-md-3">
@@ -101,6 +101,7 @@ var VoteButton = React.createClass({
                 this.setState({
                     voted: data.voteStatus
                 });
+                this.props.update(data.votes);
             }.bind(this), 'json')
         }
     },
@@ -126,9 +127,7 @@ var ProjectFeed = React.createClass({
             fbNode = (
                 <div className="fb-page" data-href={project.fbPage} data-width="350" data-hide-cover="true" data-show-facepile="true" data-show-posts="false">
                     <div className="fb-xfbml-parse-ignore">
-                        <blockquote cite={project.fbPage}>
-                            <a href={project.fbPage}></a>
-                        </blockquote>
+                        <blockquote cite={project.fbPage}><a href={project.fbPage}></a></blockquote>
                     </div>
                 </div>
             );
@@ -139,13 +138,10 @@ var ProjectFeed = React.createClass({
                 <div className="panel panel-default">
                     <div className="panel-heading">Overview</div>
                         <div className="panel-body">
-                            <p> Website: 
-                                <a target="_blank" href={project.website}> {project.website} </a>
-                            </p>
-                            <p> Hiring: {project.hiring ? "Yes": "No"} </p>
-                            <p> Posted On: { (new Date(project.date)).toLocaleDateString()} </p>
+                            <p>Website: <a target="_blank" href={project.website}>{project.website}</a></p>
+                            <p>Hiring: {project.hiring ? "Yes": "No"}</p>
+                            <p>Posted On: { (new Date(project.date)).toLocaleDateString()}</p>
                             { voteNode }
-
                         </div>
                 </div>
                 { fbNode }
@@ -157,12 +153,10 @@ var ProjectFeed = React.createClass({
 
 var Project = React.createClass({
     getInitialState: function() {
-        return {
-            project: null,
-            members: null,
-            votes: null,
-            user: null,
-        }
+        return { project: null, members: null, votes: null, user: null }
+    },
+    updateVotes: function(votes) {
+        this.setState({ votes: votes });
     },
     componentDidMount: function() {
         $.get(this.props.url, function(data) {
@@ -179,14 +173,12 @@ var Project = React.createClass({
     },
     render: function() {
         if(!this.state.project) {
-            return (
-                <h1> Project Not Found </h1>
-            );
+            return (<h1> Project Not Found </h1>);
         }
         return (
             <div className="row">
                 <ProjectInfo user={this.state.user} votes={this.state.votes} project={this.state.project} />
-                <ProjectFeed url={this.props.url} user={this.state.user} votes={this.state.votes} project={this.state.project} fbPage={this.state.project.fbPage} />
+                <ProjectFeed update={this.updateVotes.bind(this)} url={this.props.url} user={this.state.user} votes={this.state.votes} project={this.state.project} fbPage={this.state.project.fbPage} />
             </div>
         );
     }

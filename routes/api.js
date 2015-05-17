@@ -142,16 +142,24 @@ router.get('/project/:pid/vote', function(req, res) {
         }
         Votes.findOneAndRemove({ user: user._id, project: project._id }, function(err, vote) {
             if (err) return handleError(err, res, true);
-
-            var voted = false;
             if (!vote) {
                 vote = new Votes({ user: user._id, project: project._id });
-                vote.save();
-                voted = true;
+                vote.save(function(err) {
+                    if (err) return handleError(err, res, true);
+                    getLatestVotes(res, project._id, true);
+                });
+                return;
             }
-            res.json({ voteStatus: voted });
+            getLatestVotes(res, project._id, false);
         });
 	});
 });
+
+var getLatestVotes = function(res, pid, voteStatus) {
+    Votes.find({ project: pid }).populate('user', 'fname lname picture').exec(function(err, votes) {
+        if (err) return handleError(err, res, true);
+        res.json({ voteStatus: voteStatus, votes: votes });
+    });
+}
 
 module.exports = router;
