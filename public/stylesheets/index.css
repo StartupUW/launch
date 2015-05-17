@@ -659,8 +659,12 @@ span#admin-logout {
     cursor: text;
 }
 
-#create-form select.input-container, #create-form input[type=checkbox] {
+#create-form select.input-container, #create-form input[type=checkbox], #create-form input[type=file]  {
     cursor: default;
+}
+
+#create-form input[type=file] {
+    padding-top: 8px;
 }
 
 #create-form input {

@@ -7,6 +7,7 @@
  * ---------------------------------------------------------------------------
  * /login                   POST            Authenticate user via FB token
  * /users                   GET             Retrieve all users
+ * /project                 POST            Submit and process a new project
  * /projects                GET             Retrieve projects and their votes
  * /project/:pid/vote       POST            Toggle the vote for a project
  *
@@ -67,16 +68,16 @@ router.post('/project', function(req, res) {
         res.status(401).json({ error: 'You must be logged in to create a project.'});
         return;
     }
-    console.log(req.body);
     var project = new Projects();
     project.name = req.body.name;
     project.description = req.body.description;
     project.type = req.body.type;
-    project.members = req.body.members;
+    project.members = JSON.parse(req.body.members);
     if (req.body.website) project.website = req.body.website;
     if (req.body.fbPage) project.fbPage = req.body.fbPage;
     if (req.body.hiring) project.hiring = req.body.hiring;
-    if (req.body.tags) project.tags = req.body.tags;
+    if (req.body.tags) project.tags = JSON.parse(req.body.tags);
+    if (req.files.logo) project.images = [req.files.logo.name];
     project.save(function(err, project) {
         if (err) return handleError(err, res, true);
         res.json({ success: true });
