@@ -298,7 +298,26 @@ textarea {
     margin-right: 5px;
 }
 
-.project:nth-child(even) img {
+.project .img-container {
+    height: 165px;
+    top: 0;
+    bottom: 0;
+    margin: auto;
+    position: absolute;
+}
+
+.project .img-container img {
+    max-height: 100%;
+    max-width: 100%;
+    top: 0;
+    bottom: 0;
+    right: 0;
+    left: 0;
+    margin: auto;
+    position: absolute;
+}
+
+.project:nth-child(even) .img-container {
     right: 60px;
 }
 
@@ -310,7 +329,7 @@ textarea {
     margin-left: 5px;
 }
 
-.project:nth-child(odd) img {
+.project:nth-child(odd) .img-container {
     left: 60px;
 }
 
@@ -732,11 +751,6 @@ span#admin-logout {
 @media screen and (max-width: 768px) { 
     #create-form .input-container {
         width: 100%;
-    }
-
-    .project-logo {
-        top: 10px;
-        width: 80px;
     }
 
     #login-bar {

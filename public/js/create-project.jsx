@@ -6,6 +6,7 @@ var ProjectForm = React.createClass({
 		e.preventDefault();
 		var data = new FormData();
 		var IMG_MIMES = ['image/jpeg', 'image/pjpeg', 'image/png', 'image/bmp', 'image/svg+xml', 'image/tiff'];
+		var MAX_SIZE = 2000000;
 		form = $('#project-form')[0];
 		errors = {};
 
@@ -14,6 +15,9 @@ var ProjectForm = React.createClass({
 				var file = form.logo.files[0];
 				if (IMG_MIMES.indexOf(file.type) == -1) {
 					errors.logo = 'Not a valid image type: ' + file.type;
+					errors.hasErrors = true;
+				} else if (file.size > 2000000) {
+					errors.logo = 'Max file size: 2MB';
 					errors.hasErrors = true;
 				} else {
 					data.append(this.name, file);

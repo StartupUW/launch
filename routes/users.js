@@ -10,7 +10,7 @@ router.route('/')
             if(err) {
                 res.send(err);
             }
-            Votes.find({ user: me._id }).populate('project', '_id name description').exec(function(err, votes) {
+            Votes.find({ user: me._id }).populate('project', '_id name images').exec(function(err, votes) {
                 Projects.find({ "members.user" : req.session.user._id }, function(err, projects){
                     res.render('profile', { votes: votes, profile: me, projects : projects, user: req.session.user });
                 });
@@ -70,8 +70,9 @@ router.route('/:user_id')
                 res.json(err);
                 return;
             }
-            Votes.find({ user: profile._id }).populate('project', '_id name description').exec(function(err, votes) {
-                Projects.find({ "members.user" : req.session.user._id }, function(err, projects){
+            Votes.find({ user: profile._id }).populate('project', '_id name images').exec(function(err, votes) {
+                Projects.find({ "members.user" : req.session.user._id }, function(err, projects) {
+                    console.log(projects);
                     res.render('profile', { votes: votes, profile: profile, projects : projects, user: req.session.user });
                 });
             });

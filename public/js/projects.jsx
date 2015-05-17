@@ -42,10 +42,10 @@ React.render(
 
 var ProjectImage = React.createClass({
     render: function() {
-        var srcUrl = this.props.src ? this.props.src : '/img/suw-logo.png';
+        var srcUrl = this.props.src ? "/uploads/" + this.props.src : '/img/suw-logo.png';
         return (
-            <div className="img-container col-sm-3 hidden-xs">
-                <img className="project-logo" src={srcUrl} />
+            <div className="img-container col-sm-3 hidden-xs hidden-sm">
+                <img className="project-logo" src={srcUrl}/>
             </div>
         );
     }
@@ -121,7 +121,7 @@ var ProjectInfo = React.createClass({
         var diff = this.getDate(this.props.project.date);
 
         return (
-            <div className="project-info col-sm-9">
+            <div className="project-info col-xs-12">
                 <h2 className="project-title"> {this.props.project.name}  
                     <div className="project-labels">
                         {labelNodes}
@@ -135,27 +135,6 @@ var ProjectInfo = React.createClass({
                 <VoteButton key={this.props.id} {...this.props} />
             </div>
         );
-    }
-});
-
-var Project = React.createClass({
-    render: function() {
-        var index = this.props.index;
-        if (index % 2 == 0) {
-            return (
-                <div className="project col-md-12">
-                    <ProjectImage url={''}></ProjectImage>
-                    <ProjectInfo {...this.props}></ProjectInfo>
-                </div>
-            );
-        } else {
-            return (
-                <div className="project col-md-12">
-                    <ProjectInfo {...this.props} ></ProjectInfo>
-                    <ProjectImage url={''}></ProjectImage>
-                </div>
-            );
-        }
     }
 });
 
@@ -224,7 +203,12 @@ var ProjectList = React.createClass({
         projectNodes = projectNodes
             .map(function(project, index) {
                 var votes = this.state.votes[project._id] || [];
-                return (<Project key={project._id} project={project} votes={votes} index={index % pageLimit} user={user} />);
+                return (
+                    <div className="project col-xs-12">
+                        <ProjectImage src={project.images[0]}></ProjectImage>
+                        <ProjectInfo key={project._id} project={project} votes={votes} user={user}></ProjectInfo>
+                    </div>
+                );
             }.bind(this))
             .slice(firstEl, firstEl + pageLimit);
 

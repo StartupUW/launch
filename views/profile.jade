@@ -33,7 +33,8 @@ block append content
                             .panel
                                 .panel-body
                                     .col-md-3
-                                        img(src="/img/suw-logo.png")
+                                        img(src="/uploads/#{project.images[0]}")
+
                     h2#profile-voted Upvoted
                     if !votes
                         .panel 
@@ -43,6 +44,6 @@ block append content
                             each vote in votes
                                 .col-md-1.col-xs-1.projectlogo
                                     a(href="/project/#{vote.project._id}")
-                                        img(src=vote.project.images ? vote.project.images : "/img/suw-logo.png")
+                                        img(src="/uploads/#{vote.project.images[0]}")
         else
             h1 No such user exists!

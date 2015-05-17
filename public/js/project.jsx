@@ -58,6 +58,8 @@ var ProjectInfo = React.createClass({
             return(<span className="label label-primary">{tag}</span>);
         });
 
+        var imgSrc = project.images[0] ? "/uploads/" + project.images[0] : "/img/suw-logo.png";
+
         return (
             <div id="project-info" className="col-md-8">
                 <div className="row basic-info">
@@ -69,7 +71,7 @@ var ProjectInfo = React.createClass({
                         </div>
                         <div className="hidden-xs hidden-sm col-md-3">
                             <div className="img-responsive">
-                                <img src="/img/suw-logo.png"/>
+                                <img src={imgSrc}/>
                             </div>
                         </div>
                     </div>

@@ -140,7 +140,7 @@ router.get('/project/:pid/vote', function(req, res) {
     }
 	Projects.findById(req.params.pid, function(err, project){
         if (err) return handleError(err, res, true);
-        if (!project) {
+        if (!project || !project.approved) {
             res.status(404).json({ err: 'No project found'});
             return;
         }
