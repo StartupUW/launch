@@ -114,19 +114,15 @@ router.get('/projects', function(req, res) {
 });
 
 router.get('/project/:pid', function(req, res) {
-    Projects.findById(req.params.pid, function(err, project){
+    Projects.findById(req.params.pid).populate('members.user').exec(function(err, project){
         if (err || !project) return handleError(err, res, true, 404, 'Project not found');
-        Users.populate(project.members, { path: 'user' }, function(err, members) {
+        Votes.find({project: req.params.pid}).populate('user', 'fname lname picture').exec(function(err, votes) {
             if (err) return handleError(err, res, true);
-            Votes.find({project: req.params.pid}).populate('user', 'fname lname picture').exec(function(err, votes) {
-                if (err) return handleError(err, res, true);
-                res.json({
-                    project: project,
-                    members: members,
-                    votes: votes,
-                    user: req.session.user || null,
-                });;
-            });
+            res.json({
+                project: project,
+                votes: votes,
+                user: req.session.user || null,
+            });;
         });
     });
 });

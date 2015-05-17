@@ -3,15 +3,8 @@ var Member = React.createClass({
         var user = this.props.member.user;
         var html = React.renderToString(
             <div>
-                <div className="row">
-                    <div className="col-md-6">
-                        <img src={user.picture}></img>
-                    </div>
-                    <div className="col-md-6">
-                        <p className="name">{user.fname} {user.lname}</p>
-                        <p className="grad">{user.major}</p>
-                    </div>
-                </div>
+                <p>{user.bio}</p>
+                <span className="grad">{user.major}</span>
             </div>
         );
         $('#' + user._id).popover({
@@ -24,8 +17,9 @@ var Member = React.createClass({
     render: function() {
         var user = this.props.member.user;
         return (
-            <a href={"/profile/" + user._id} className="member col-md-3" id={user._id}>
+            <a href={"/profile/" + user._id} className="member col-xs-4 col-md-3" id={user._id}>
                 <div>
+                    <img src={user.picture}></img>
                     <div>{user.fname} {user.lname}</div>
                 </div>
             </a>
@@ -37,7 +31,7 @@ var ProjectInfo = React.createClass({
     render: function() {
         var project = this.props.project;
 
-        var memberNodes = this.props.members.map(function(member) {
+        var memberNodes = project.members.map(function(member) {
             return (<Member member={member} />);
         });
 
@@ -71,8 +65,9 @@ var ProjectInfo = React.createClass({
                             </div>
                         </div>
                     </div>
-                    <div className="col-md-12">
-                        <div className="members">{ memberNodes }</div>
+                    <div className="col-md-12 members">
+                        <h2>Founders</h2>
+                        { memberNodes }
                     </div>
 
                 </div>
@@ -82,6 +77,41 @@ var ProjectInfo = React.createClass({
                         {voteNodes}
                     </div>
                 </div>
+            </div>
+        );
+    }
+});
+
+var VoteButton = React.createClass({
+    getInitialState: function() {
+        var user = this.props.user;
+        var voted = false;
+        if (user) {
+            voted = this.props.votes.filter(function(el) {
+                return el.user._id === user._id;
+            }).length === 1;
+        }
+        return {
+            voted: voted
+        };
+    },
+    handleClick: function() {
+        if (this.props.user) {
+            $.get(this.props.url + '/vote', function(data) {
+                this.setState({
+                    voted: data.voteStatus
+                });
+            }.bind(this), 'json')
+        }
+    },
+    render: function() {
+        var user = this.props.user;
+        var className = "vote-large" + (this.state.voted ? " user-voted" : " user-not-voted");
+
+        return (
+            <div onClick={this.handleClick} className={className}>
+                <span className="glyphicon glyphicon-heart"></span>
+                <span className="vote-count">Upvote</span>
             </div>
         );
     }
@@ -103,6 +133,7 @@ var ProjectFeed = React.createClass({
                 </div>
             );
         }
+        var voteNode = this.props.user ? (<VoteButton {...this.props} />) : (<div></div>);
         return (
             <div id="project-feed" className="col-md-4">
                 <div className="panel panel-default">
@@ -113,6 +144,8 @@ var ProjectFeed = React.createClass({
                             </p>
                             <p> Hiring: {project.hiring ? "Yes": "No"} </p>
                             <p> Posted On: { (new Date(project.date)).toLocaleDateString()} </p>
+                            { voteNode }
+
                         </div>
                 </div>
                 { fbNode }
@@ -136,7 +169,6 @@ var Project = React.createClass({
             console.log(data);
             this.setState({
                 project: data.project,
-                members: data.members,
                 votes: data.votes,
                 user: data.user,
             });
@@ -153,8 +185,8 @@ var Project = React.createClass({
         }
         return (
             <div className="row">
-                <ProjectInfo user={this.state.user} votes={this.state.votes} project={this.state.project} members={this.state.members} />
-                <ProjectFeed project={this.state.project} fbPage={this.state.project.fbPage} />
+                <ProjectInfo user={this.state.user} votes={this.state.votes} project={this.state.project} />
+                <ProjectFeed url={this.props.url} user={this.state.user} votes={this.state.votes} project={this.state.project} fbPage={this.state.project.fbPage} />
             </div>
         );
     }
