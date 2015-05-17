@@ -18,7 +18,19 @@ router.route('/')
         });
     })
     .put(function(req, res, next){
-
+        User.findById(req.session.user._id,function(req,res) {
+            if(err) {
+                res.send(err);
+            }
+            if(req.body.email) user.email = req.body.email;
+            if(req.body.bio) user.bio = req.body.bio;
+            if(req.body.major) user.major = req.body.major;
+            if(req.body.gradyr) user.gradyr = req.body.gradyr;
+            user.save(function(err) {
+                if(err) res.send(err);
+                res.send('User updated');
+            });
+        });
     });
 
 router.route('/create')
