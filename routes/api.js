@@ -79,14 +79,14 @@ router.post('/project', function(req, res) {
     if (req.body.tags) project.tags = req.body.tags;
     project.save(function(err, project) {
         if (err) return handleError(err, res, true);
-        res.json({ success: true, project: project });
+        res.json({ success: true });
     })
 });
 
 router.get('/users', function(req, res) {
     Users.find({}, 'fname lname picture', function(err, users) {
         if (err) return handleError(err, res, true);
-        res.json({ users: users });
+        res.json({ users: users, user: req.session.user });
         return;
     });
 });

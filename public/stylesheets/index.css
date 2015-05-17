@@ -509,6 +509,7 @@ span#admin-logout {
 .projectlogo {
     padding: 5px;
 }
+
 .popover-content {
     width: 100%;
     text-align: center;
@@ -597,7 +598,6 @@ span#admin-logout {
 
 #project-container .voter img {
     width: 80%;
-
     margin: 10px;
 }
 
@@ -619,60 +619,91 @@ span#admin-logout {
 
 #create-form {
     margin: 50px auto;
-    max-width: 750px;
+    max-width: 650px;
 }
 
 #create-form .row {
     margin-bottom: 30px;
 }
 
+#create-form input[type=checkbox] {
+    margin-top: -5px;
+}
+
 #create-form .input-field {
     font-size: 16px;
-    width: 20%;
+    width: 30%;
     margin-bottom: 15px;
     display: inline-block;
     vertical-align: top;
 }
 
+#create-form textarea {
+    height: 100px;
+}
+
+#create-form .required {
+    display: block;
+    font-size: 14px;
+    color: #c0392b;
+}
+
 #create-form .input-container {
-    width: 80%;
+    width: 70%;
     border: 1px solid #ddd;
     outline: none;
     display: inline-block;
     margin-bottom: 10px;
     border-radius: 3px;
+    padding-left: 8px;
+    cursor: text;
+}
+
+#create-form select.input-container, #create-form input[type=checkbox] {
+    cursor: default;
 }
 
 #create-form input {
     height: 35px;
 }
 
-#tagInput input, #memberInput {
+#inputTags, #memberInput {
     border: none;
     outline: none;
 }
 
-.input-container .popover .popover-content {
+#create-form .popover .popover-content {
     padding: 0;
 }
 
-.input-container .popover .list-group {
+#create-form .popover .list-group {
     margin-bottom: 0;
 }
 
-.input-container .popover .list-group-item {
+#create-form .popover .list-group-item {
     padding: 0;
+    cursor: pointer;
 }
 
-.input-container .popover .name {
+#create-form .popover .name {
     margin: 0 10px;
 }
 
-#tagInput .tag {
+#create-form .popover.bottom {
+    margin-top: 0;
+}
+
+#create-form .tag {
     margin-right: 5px;
     background-color: #ddd;
-    padding: 0 5px;
+    padding: 2px 7px;
     border-radius: 3px;
+}
+
+#create-form .formError {
+    text-align: right;
+    margin-bottom: 20px;
+    font-weight: 600;
 }
 
 /* MEDIA QUERIES */
@@ -695,6 +726,10 @@ span#admin-logout {
 }
 
 @media screen and (max-width: 768px) { 
+    #create-form .input-container {
+        width: 100%;
+    }
+
     .project-logo {
         top: 10px;
         width: 80px;
@@ -728,10 +763,6 @@ span#admin-logout {
 
     #subtitle {
         font-size: 24px;
-    }
-
-    #create-form .input-field, #create-form input, #create-form textarea {
-        width: 100%;
     }
 
     #profile-feed {
