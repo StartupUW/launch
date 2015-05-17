@@ -28,29 +28,38 @@ block content
                         h3= project.name
                         p Description: #{project.description}
                         p Type: #{project.type}
-                        p Website: #{project.website}
+                        if project.website
+                            p Website: #{project.website}
                         p Hiring: #{project.hiring ? "Yes" : "No"}
                         p Date: #{project.date}
 
                         if project.images.length
                             span Images: 
-                            each image in project.images
-                                p= image
-                            br
+                            each image, index in project.images
+                                a(target="_blank" href="/uploads/#{image}") Image #{index}
+                            p
+
+                        if project.fbPage
+                            span FB Page:
+                            a(target="_blank" href="#{project.fbPage}")
+                                p= project.fbPage
 
                         if project.tags.length
                             span Tags: 
                             each tag in project.tags
                                 span #{tag} 
-                            br
+                            p
 
                         if project.members.length
                             span Members: 
                             each member in project.members
-                                span #{member.user} #{member.role}
-                            br
+                                .member
+                                    a(target="_blank" href="/profile/#{member.user._id}")
+                                        span #{member.user.fname} #{member.user.lname}
+                            p
 
                         form(action="/admin/console" method="post")
-                            button.btn.btn-primary(type="submit") Approve
+                            button.btn.btn-primary(type="submit" name="action" value="approve") Approve
+                            button.btn.btn-primary(type="submit" name="action" value="delete") Delete
                             input(type="hidden" name="id" value="#{project._id}")
 

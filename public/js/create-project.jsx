@@ -4,33 +4,47 @@ var ProjectForm = React.createClass({
 	},
 	handleSubmit: function(e) {
 		e.preventDefault();
-		data = {};
+		var data = new FormData();
+		var IMG_MIMES = ['image/jpeg', 'image/pjpeg', 'image/png', 'image/bmp', 'image/svg+xml', 'image/tiff'];
+		var MAX_SIZE = 2000000;
+		form = $('#project-form')[0];
 		errors = {};
 
 		$('#create-form :input').each(function() {
-			if (this.type == "checkbox") {
-				data[this.name] = this.checked;
+			if (this.type == "file" && form.logo.files[0]) {
+				var file = form.logo.files[0];
+				if (IMG_MIMES.indexOf(file.type) == -1) {
+					errors.logo = 'Not a valid image type: ' + file.type;
+					errors.hasErrors = true;
+				} else if (file.size > 2000000) {
+					errors.logo = 'Max file size: 2MB';
+					errors.hasErrors = true;
+				} else {
+					data.append(this.name, file);
+				}
+			} else if (this.type == "checkbox") {
+				data.append(this.name, this.checked)
 			} else if (this.value && this.name) {
-				data[this.name] = this.value
+				data.append(this.name, this.value)
 			}
 		})
 
-		data.tags = this.state.tags;
-		data.members = this.state.members;
+		data.append('tags', JSON.stringify(this.state.tags));
+		data.append('members', JSON.stringify(this.state.members));
 
-		if (!data.name) {
+		if (!form.name.value) {
 			errors.name = 'Project name is required';
 			errors.hasErrors = true;
 		}
-		if (!data.description) {
+		if (!form.description.value) {
 			errors.description = 'Project description is required';
 			errors.hasErrors = true;
 		}
-		if (!data.type) {
+		if (!form.type.value) {
 			errors.type = 'Project type is required';
 			errors.hasErrors = true;
 		}
-		if (data.members.length == 0) {
+		if (this.state.members.length == 0) {
 			errors.members = 'Projects must have at least one member';
 			errors.hasErrors = true;
 		}
@@ -39,16 +53,16 @@ var ProjectForm = React.createClass({
 			$.ajax({
 				type: "POST",
 				url: this.props.url,
-				data: JSON.stringify(data),
+				data: data,
+				processData: false,
+				contentType: false,
 				success: function(data) {
 					console.log(data.success);
 					$("#create-success").modal('show');
 				},
-				failure: function(err) {
+				failure: function(xhr, err) {
 					console.log(err);
 				},
-				dataType: 'json',
-				contentType: 'application/json',
 			});
 		}
 		this.setState({ formErrors: errors })
@@ -65,7 +79,7 @@ var ProjectForm = React.createClass({
 		var errors = this.state.formErrors;
 		var required = (<span className="required">required</span>);
 		return (
-			<form className="projectForm" onSubmit={this.handleSubmit}>
+			<form id="project-form" onSubmit={this.handleSubmit}>
 				<div className="row">
 					<ProjectInput name="name" required={required} displayName="Project Name" />
 					<p className="formError">{ errors.name }</p>
@@ -94,6 +108,11 @@ var ProjectForm = React.createClass({
 						<span className="input-field">Hiring</span>
 						<input className="input-container" type="checkbox" name="hiring" />
 					</div>
+					<div>
+						<span className="input-field">Logo</span>
+						<input className="input-container" type="file" name="logo" />
+					</div>
+					<p className="formError">{ errors.logo }</p>
 
 					<TagInput update={this.handleTags.bind(this)} />
 					<button type="submit" className="btn btn-primary">Submit</button>
@@ -206,7 +225,7 @@ var MemberInput = React.createClass( {
 				selectedUsers: newMembers
 			});
 			this.props.update(newMembers.map(function(user) {
-				return { user: user._id, role: 'None' };
+				return { user: user._id };
 			}));
 		}
 
@@ -292,7 +311,7 @@ var MemberInput = React.createClass( {
         		users: data.users,
         		selectedUsers: [data.user]
         	});
-        	this.props.update([{ user: data.user._id, role: 'None' }])
+        	this.props.update([{ user: data.user._id }])
         }.bind(this));
     },
     focus: function() {

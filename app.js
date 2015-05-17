@@ -21,18 +21,28 @@ var admin = require('./routes/admin');
 var fs = require('fs');
 var app = express();
 
+var IMG_MIMES = ['image/jpeg', 'image/pjpeg', 'image/png', 'image/bmp', 'image/svg+xml', 'image/tiff'];
+
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
 
 // uncomment after placing your favicon in /public
 //app.use(favicon(__dirname + '/public/favicon.ico'));
-// app.use(logger('dev'));
+app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
-app.use(multer({ dest: __dirname + 'public/uploads/'}))
+app.use(multer({ 
+    dest: __dirname + '/public/uploads/',
+    limits: {fileSize: 2000000},
+    onFileUploadStart: function(file, req, res) {
+        if (IMG_MIMES.indexOf(file.mimetype) == -1) {
+            return false;
+        }
+    }
+}))
 
 app.use(session({                                         
     store: new RedisStore({                               

@@ -298,8 +298,26 @@ textarea {
     margin-right: 5px;
 }
 
-.project:nth-child(even) img {
-    right: 60px;
+.project .img-container {
+    height: 165px;
+    top: 0;
+    bottom: 0;
+    margin: auto;
+    position: absolute;
+}
+
+.project .img-container img {
+    max-height: 100%;
+    max-width: 100%;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    margin: auto;
+    position: absolute;
+}
+
+.project:nth-child(even) .img-container {
+    right: 0;
 }
 
 .project:nth-child(odd) {
@@ -310,8 +328,8 @@ textarea {
     margin-left: 5px;
 }
 
-.project:nth-child(odd) img {
-    left: 60px;
+.project:nth-child(odd) .img-container {
+    left: 50px;
 }
 
 .project-title {
@@ -442,6 +460,12 @@ span#admin-logout {
     margin: 50px auto;
 }
 
+#profile-container .ih-item {
+    width: 100%;
+    height: auto;
+    box-shadow: none;
+}
+
 #profile-container .fa {
     margin-right: 10px;
 }
@@ -504,41 +528,61 @@ span#admin-logout {
 
 #project-container h2 {
     font-size: 20px;
+    margin-bottom: 20px;
+}
+
+.vote-large {
+    padding: 10px;
+    transition: all .1s linear;
+    display: inline-block;
+    cursor: pointer;
+    background-color: white;
+    border: 1px solid #E08283;
+    color: #E08283;
+}
+
+.vote-container {
+    text-align: center;
+}
+
+.vote-large .glyphicon {
+    top: 2px;
+    margin-right: 5px;
+}
+
+.vote-large.user-not-voted:hover {
+    background-color: #E08283;
+    border: 1px solid #E08283;
+    border-left: none;
+    color: white;
+}
+
+.vote-large.user-voted {
+    background-color: #e74c3c;
+    border: 1px solid #e74c4c;
+    color: white;
+}
+
+#project-container .members {
+    padding-left: 0;
+    text-align: center;
 }
 
 .projectlogo {
     padding: 5px;
 }
 
-.popover-content {
-    width: 100%;
+#project-container .popover {
     text-align: center;
     white-space: nowrap;
 }
 
-.projectlogo img{
-    width: 100%;
+.members .name {
+    font-weight: 600;
 }
 
 .members a {
-    margin-right: 15px;
-}
-
-.members .popover img {
-    width: 100%;
-    max-width: 100px;
-}
-
-.members .popover .row {
-    margin: 15px 0;
-}
-
-.members .popover-content {
-    padding: 0;
-}
-
-.members .name {
-    font-weight: 600;
+    padding: 10px 2%;
 }
 
 .members .grad {
@@ -546,15 +590,8 @@ span#admin-logout {
     color: white;
     text-align: center;
     font-size: 10px;
-    padding: 2px;
+    padding: 5px 10px;
     border-radius: 3px;
-}
-
-.members .popover .role {
-    background-color: #eeeeee;
-    margin-bottom: 0;
-    padding: 10px 0;
-    text-align: center;
 }
 
 #project-container .vote-row {
@@ -571,6 +608,7 @@ span#admin-logout {
 #project-feed .panel {
     width: 100%;
 }
+
 #project-info .basic-info h1 {
     margin-top: 0;
     font-weight: 600;
@@ -659,8 +697,12 @@ span#admin-logout {
     cursor: text;
 }
 
-#create-form select.input-container, #create-form input[type=checkbox] {
+#create-form select.input-container, #create-form input[type=checkbox], #create-form input[type=file]  {
     cursor: default;
+}
+
+#create-form input[type=file] {
+    padding-top: 8px;
 }
 
 #create-form input {
@@ -728,11 +770,6 @@ span#admin-logout {
 @media screen and (max-width: 768px) { 
     #create-form .input-container {
         width: 100%;
-    }
-
-    .project-logo {
-        top: 10px;
-        width: 80px;
     }
 
     #login-bar {
