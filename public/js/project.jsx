@@ -111,7 +111,7 @@ var ProjectFeed = React.createClass({
                     <div className="panel-heading">Overview</div>
                         <div className="panel-body">
                             <p> Website: 
-                                <a target="_blank" href={"http://" + project.website}> {project.website} </a>
+                                <a target="_blank" href={project.website}> {project.website} </a>
                             </p>
                             <p> Hiring: {project.hiring ? "Yes": "No"} </p>
                             <p> Posted On: { (new Date(project.date)).toLocaleDateString()} </p>

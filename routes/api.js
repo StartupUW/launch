@@ -74,6 +74,7 @@ router.post('/project', function(req, res) {
     project.type = req.body.type;
     project.members = req.body.members;
     if (req.body.website) project.website = req.body.website;
+    if (req.body.fbPage) project.fbPage = req.body.fbPage;
     if (req.body.hiring) project.hiring = req.body.hiring;
     if (req.body.tags) project.tags = req.body.tags;
     project.save(function(err, project) {

@@ -217,6 +217,8 @@ var ProjectList = React.createClass({
                     project.tags.join(' ').toLowerCase().indexOf(filter) != -1;
             })
 
+        var totalLength = projectNodes.length;
+        
         projectNodes.sort(SORT_OPTIONS[sort].bind(this))
 
         projectNodes = projectNodes
@@ -226,7 +228,6 @@ var ProjectList = React.createClass({
             }.bind(this))
             .slice(firstEl, firstEl + pageLimit);
 
-        var totalLength = projectNodes.length;
         var pageNodes = [];
 
         for (var i = 0; i < totalLength / pageLimit; i++) {

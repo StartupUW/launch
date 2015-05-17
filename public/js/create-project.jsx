@@ -41,7 +41,8 @@ var ProjectForm = React.createClass({
 				url: this.props.url,
 				data: JSON.stringify(data),
 				success: function(data) {
-					console.log(data);
+					console.log(data.success);
+					$("#create-success").modal('show');
 				},
 				failure: function(err) {
 					console.log(err);
