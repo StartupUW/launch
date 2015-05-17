@@ -9,7 +9,7 @@ var session = require('express-session');
 var RedisStore = require('connect-redis')(session);
 var multer  = require('multer')
 
-var port = process.env.PORT || 8080;
+var port = process.env.PORT || 2000;
 
 mongoose.connect('mongodb://127.0.0.1/traction');
 
