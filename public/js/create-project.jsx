@@ -225,7 +225,7 @@ var MemberInput = React.createClass( {
 				selectedUsers: newMembers
 			});
 			this.props.update(newMembers.map(function(user) {
-				return { user: user._id, role: 'None' };
+				return { user: user._id };
 			}));
 		}
 
@@ -311,7 +311,7 @@ var MemberInput = React.createClass( {
         		users: data.users,
         		selectedUsers: [data.user]
         	});
-        	this.props.update([{ user: data.user._id, role: 'None' }])
+        	this.props.update([{ user: data.user._id }])
         }.bind(this));
     },
     focus: function() {

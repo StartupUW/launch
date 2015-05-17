@@ -1,7 +1,6 @@
 var Member = React.createClass({
     componentDidMount: function() {
         var user = this.props.member.user;
-        var role = this.props.member.role;
         var html = React.renderToString(
             <div>
                 <div className="row">
@@ -13,7 +12,6 @@ var Member = React.createClass({
                         <p className="grad">{user.major}</p>
                     </div>
                 </div>
-                <p className="role">{role}</p>
             </div>
         );
         $('#' + user._id).popover({
@@ -25,12 +23,10 @@ var Member = React.createClass({
     },
     render: function() {
         var user = this.props.member.user;
-        var role = this.props.member.role;
         return (
             <a href={"/profile/" + user._id} className="member col-md-3" id={user._id}>
                 <div>
                     <div>{user.fname} {user.lname}</div>
-                    <div>{role}</div>
                 </div>
             </a>
         );

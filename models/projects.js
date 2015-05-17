@@ -14,7 +14,6 @@ var ProjectSchema = new Schema ({
     fbPage: {type: String},
     members: [{
         user: {type: String, ref: 'Users'},
-        role: {type: String}
     }],
 });
 
