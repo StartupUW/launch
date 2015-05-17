@@ -62,6 +62,26 @@ router.post('/login', function(req, res) {
     }
 });
 
+router.post('/project', function(req, res) {
+    if (!req.session.user) {
+        res.status(401).json({ error: 'You must be logged in to create a project.'});
+        return;
+    }
+    console.log(req.body);
+    var project = new Projects();
+    project.name = req.body.name;
+    project.description = req.body.description;
+    project.type = req.body.type;
+    project.members = req.body.members;
+    if (req.body.website) project.website = req.body.website;
+    if (req.body.hiring) project.hiring = req.body.hiring;
+    if (req.body.tags) project.tags = req.body.tags;
+    project.save(function(err, project) {
+        if (err) return handleError(err, res, true);
+        res.json({ success: true, project: project });
+    })
+});
+
 router.get('/users', function(req, res) {
     Users.find({}, 'fname lname picture', function(err, users) {
         if (err) return handleError(err, res, true);

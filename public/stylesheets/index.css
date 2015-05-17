@@ -634,17 +634,45 @@ span#admin-logout {
     vertical-align: top;
 }
 
-#create-form input, #create-form textarea {
+#create-form .input-container {
     width: 80%;
     border: 1px solid #ddd;
     outline: none;
-    padding: 12px;
+    display: inline-block;
+    margin-bottom: 10px;
+    border-radius: 3px;
 }
 
 #create-form input {
-    height: 40px;
+    height: 35px;
+}
+
+#tagInput input, #memberInput {
+    border: none;
+    outline: none;
+}
+
+.input-container .popover .popover-content {
+    padding: 0;
+}
+
+.input-container .popover .list-group {
+    margin-bottom: 0;
+}
+
+.input-container .popover .list-group-item {
+    padding: 0;
+}
+
+.input-container .popover .name {
+    margin: 0 10px;
+}
+
+#tagInput .tag {
+    margin-right: 5px;
+    background-color: #ddd;
+    padding: 0 5px;
     border-radius: 3px;
-    border-image: none;
 }
 
 /* MEDIA QUERIES */

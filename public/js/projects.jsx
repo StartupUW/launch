@@ -118,10 +118,6 @@ var ProjectInfo = React.createClass({
             return (<span key={tag} className="label label-default">{tag}</span>);
         });
 
-        var memberNodes = this.props.project.contact.map(function(member) {
-            return (<span key={member} className="member">{member}</span>);
-        });
-
         var diff = this.getDate(this.props.project.date);
 
         return (
@@ -132,9 +128,6 @@ var ProjectInfo = React.createClass({
                     </div>
                 </h2>
                 <div className="posted">{diff}</div>
-                <div className="project-members">
-                    {memberNodes}
-                </div>
                 <p className="project-description"> {this.props.project.description} </p>
                 <a href={"/project/" + this.props.project._id}>
                     <div className="more"> SEE MORE </div>

@@ -5,28 +5,7 @@ block append content
         h1 Add Your Project
         h2 Show everyone what you've been working hard on.
 
-        #misc
         #create-form
-            mixin input(fieldName)
-                .row
-                    span.input-field= fieldName
-                    block
-
-            form(action="/project" method="post")
-                +input('Project Name')
-                    input(type="text" name="name")
-                +input('Website')
-                    input(type="text" name="website")
-                +input('Description')
-                    textarea(rows="5" type="text" name="desc")
-                +input('Type')
-                    input(type="text" name="type")
-                +input('Tags')
-                    input#inputTags(type="text" name="tags")
-                    #tags
-                +input('Members')
-                    #members
 
 block append scripts
-    script(src="/js/tags.jsx" type="text/jsx")
     script(src="/js/create-project.jsx" type="text/jsx")

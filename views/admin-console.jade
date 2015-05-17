@@ -46,8 +46,8 @@ block content
 
                         if project.members.length
                             span Members: 
-                            each member in project.contact
-                                span #{member}
+                            each member in project.members
+                                span #{member.user} #{member.role}
                             br
 
                         form(action="/admin/console" method="post")

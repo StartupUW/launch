@@ -59,6 +59,7 @@ router.get('/logout', function(req, res) {
 var renderProjects = function(errors, res) {
      Projects.find({ approved: false }, function(err, projects){
         if (err) errors.append(err);
+        console.log(projects);
         res.render('admin-console', { projects: projects, errors: errors });
         return;
     });
