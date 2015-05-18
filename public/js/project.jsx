@@ -1,28 +1,22 @@
 var Member = React.createClass({
-    componentDidMount: function() {
-        var user = this.props.member.user;
-        var html = React.renderToString(
-            <div>
-                <p>{user.bio}</p>
-                <span className="grad">{user.major}</span>
-            </div>
-        );
-        $('#' + user._id).popover({
-            html: true,
-            content: html,
-            trigger: 'hover active focus',
-            placement: 'bottom',
-        });
-    },
     render: function() {
         var user = this.props.member.user;
         return (
-            <a href={"/profile/" + user._id} className="member col-xs-4 col-md-3" id={user._id}>
-                <div>
-                    <img src={user.picture}></img>
-                    <div>{user.fname} {user.lname}</div>
+            <div className="member col-xs-12 media">
+                <div className="media-left">
+                    <img className="media-object" src={user.picture} height="70px" width="70px"></img>
                 </div>
-            </a>
+                <div className="media-body">
+                    <a href={"/profile/" + user._id}>
+                        <h4 className="media-heading">
+                            {user.fname} {user.lname}
+                            <span className="grad">{user.major} {user.gradyr}</span>
+                        </h4>
+                    </a>
+                    <p className="email">{user.email}</p>
+                    <p className="bio">{user.bio}</p>
+                </div>
+            </div>
         );
     }
 });
@@ -61,11 +55,11 @@ var ProjectInfo = React.createClass({
                         </div>
                         <div className="hidden-xs hidden-sm col-md-3">
                             <div className="img-responsive">
-                                <img src={imgSrc}/>
+                                <img className="logo" src={imgSrc}/>
                             </div>
                         </div>
                     </div>
-                    <div className="col-md-12 members">
+                    <div className="col-md-12 members row">
                         <h2>Founders</h2>
                         { memberNodes }
                     </div>
@@ -137,12 +131,19 @@ var ProjectFeed = React.createClass({
             <div id="project-feed" className="col-md-4">
                 <div className="panel panel-default">
                     <div className="panel-heading">Overview</div>
-                        <div className="panel-body">
-                            <p>Website: <a target="_blank" href={project.website}>{project.website}</a></p>
-                            <p>Hiring: {project.hiring ? "Yes": "No"}</p>
-                            <p>Posted On: { (new Date(project.date)).toLocaleDateString()}</p>
-                            { voteNode }
-                        </div>
+                    <div className="panel-body">
+                        <p>Website: <a target="_blank" href={project.website}>{project.website}</a></p>
+                        <p>Hiring: {project.hiring ? "Yes": "No"}</p>
+                        <p>Posted On: { (new Date(project.date)).toLocaleDateString()}</p>
+                        { voteNode }
+                    </div>
+                </div>
+                <div className="panel panel-default">
+                    <div className="panel-heading">Social Shares</div>
+                    <div className="panel-body" id="fb-social-shares">
+                        <div className="fb-send" data-href={window.location.href}></div>
+                        <div className="fb-like" data-href={window.location.href} data-layout="button_count" data-action="like" data-show-faces="false" data-share="true"></div>
+                    </div>
                 </div>
                 { fbNode }
             </div>
@@ -160,12 +161,12 @@ var Project = React.createClass({
     },
     componentDidMount: function() {
         $.get(this.props.url, function(data) {
-            console.log(data);
             this.setState({
                 project: data.project,
                 votes: data.votes,
                 user: data.user,
             });
+            loadFacebook();
         }.bind(this), 'json')
         .fail(function(xhr, status, err) {
             console.log(err);

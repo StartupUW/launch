@@ -287,6 +287,7 @@ textarea {
 .project {
     padding: 50px 35px;
     border-bottom: 1px solid #ddd;
+    text-align: left;
 }
 
 .project-members {
@@ -294,51 +295,20 @@ textarea {
     font-size: 12px;
 }
 
-.project:nth-child(even) {
-    text-align: left;
-}
-
-.project:nth-child(even) .member {
-    margin-right: 5px;
-}
-
 .project .img-container {
     height: 165px;
-    top: 0;
-    bottom: 0;
-    margin: auto;
-    position: absolute;
+    padding-top: 10px;
 }
 
 .project .img-container img {
     max-height: 100%;
     max-width: 100%;
-    top: 0;
-    bottom: 0;
-    left: 0;
-    margin: auto;
-    position: absolute;
-}
-
-.project:nth-child(even) .img-container {
-    right: 0;
-}
-
-.project:nth-child(odd) {
-    text-align: right;
-}
-
-.project:nth-child(odd) .member {
-    margin-left: 5px;
-}
-
-.project:nth-child(odd) .img-container {
-    left: 50px;
 }
 
 .project-title {
     font-size: 32px;
     margin-bottom: 3px;
+    margin-top: 10px;
 }
 
 .project .posted {
@@ -356,6 +326,10 @@ textarea {
 }
 
 .project-labels .label {
+    margin-right: 5px;
+}
+
+.fb-send {
     margin-right: 5px;
 }
 
@@ -526,13 +500,16 @@ span#admin-logout {
     padding-top: 10px;
 }
 
+#project-container .logo {
+    max-width: 100%;
+}
+
 #project-container .contact-info {
     padding: 10px 0;
 }
 
 #project-container h2 {
     font-size: 20px;
-    margin-bottom: 20px;
 }
 
 .vote-large {
@@ -566,31 +543,22 @@ span#admin-logout {
     color: white;
 }
 
-#project-container .members {
+.members .member {
     padding-left: 0;
-    text-align: center;
 }
 
-#project-container .popover {
-    text-align: center;
-    white-space: nowrap;
+.members .member .media-heading {
+    font-size: 20px;
 }
 
-.members .name {
-    font-weight: 600;
+.members .member p.email {
+    font-size: 12px;
 }
 
-.members a {
-    padding: 10px 2%;
-}
-
-.members .grad {
-    background-color: #33ccff;
-    color: white;
-    text-align: center;
-    font-size: 10px;
-    padding: 5px 10px;
-    border-radius: 3px;
+.members .member span.grad {
+    font-size: 14px;
+    margin-left: 10px;
+    color: black;
 }
 
 #project-container .vote-row {
@@ -623,10 +591,6 @@ span#admin-logout {
 
 #project-info .tags {
     margin-bottom: 15px;
-}
-
-#project-info img {
-    width: 100%;
 }
 
 #project-container .voter {

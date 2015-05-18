@@ -1,9 +1,11 @@
 extends ./layout.jade
 
 block append content
-
     input#project-id(type="hidden" value="#{projectId}")
     #project-container
+
+// Disables regular fb sdk load, instead is done in the React component
+block fb
 
 block append scripts
     script(src="/js/project.jsx" type="text/jsx")

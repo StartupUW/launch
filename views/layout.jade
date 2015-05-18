@@ -4,7 +4,7 @@ html(lang="en")
         block title
             title Launch by StartupUW
         meta(name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0, user-scalable=no") 
-        script(src="https://fb.me/react-with-addons-0.13.3.js")
+        script(src="https://fb.me/react-with-addons-0.13.3.min.js")
         script(src="https://fb.me/JSXTransformer-0.13.3.js")
 
         block css
@@ -14,6 +14,28 @@ html(lang="en")
         link(href="/stylesheets/index.css" type="text/css" rel="stylesheet" media="screen,projection")
 
     body
+        #fb-root
+        script(src='/js/fb.js')
+
+        block fb
+            script.
+                window.fbAsyncInit = function() {
+                    FB.init({
+                        appId      : '845062025559463',
+                        xfbml      : true,
+                        version    : 'v2.3',
+                        cookie     : true,  // enable cookies to allow the server to access 
+                    });
+                };
+
+                // Load the SDK asynchronously
+                (function(d, s, id) {
+                    var js, fjs = d.getElementsByTagName(s)[0];
+                    if (d.getElementById(id)) return;
+                    js = d.createElement(s); js.id = id;
+                    js.src = "//connect.facebook.net/en_US/sdk.js";
+                    fjs.parentNode.insertBefore(js, fjs);
+                }(document, 'script', 'facebook-jssdk'));
 
         block header
             #header
@@ -47,9 +69,6 @@ html(lang="en")
                                 span Continue with Facebook
 
         block content
-            script(src='/js/fb.js' type="text/jsx")
-            #fb-root
-
             if errs
                 each err in errs
                     .alert.alert-danger.alert-dismissable(role="alert")

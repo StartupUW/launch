@@ -121,7 +121,7 @@ var ProjectInfo = React.createClass({
         var diff = this.getDate(this.props.project.date);
 
         return (
-            <div className="project-info col-xs-12">
+            <div className="project-info col-xs-9">
                 <h2 className="project-title"> {this.props.project.name}  
                     <div className="project-labels">
                         {labelNodes}
