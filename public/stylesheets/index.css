@@ -90,25 +90,12 @@ textarea {
 }
 
 #fb-login .fa {
-    margin-right: 15px;
+    margin-right: 10px;
 }
 
 #add-project {
     margin-left: 25px;
     display: inline-block;
-}
-
-#fb-login {
-    background-color: #3B5998;
-    border: none;
-    border-radius: 5px;
-    color: white;
-    font-weight: 600;
-    padding: 10px 20px;
-}
-
-#fb-login:hover {
-    background-color: #5890ff;
 }
 
 #fb-login span {
@@ -131,7 +118,7 @@ textarea {
     position: relative;
     background-size: cover;
     background-repeat: no-repeat;
-    background-image: url('/img/splash.jpg');
+    background-image: url('/img/splash.png');
     padding: 0;
     color: white;
 }
@@ -153,6 +140,10 @@ textarea {
 #title {
     font-size: 55px;
     font-weight: 600;
+}
+
+#subtitle {
+    font-size: 24px;
 }
 
 #seemore-container {
@@ -297,7 +288,7 @@ textarea {
 
 .project .img-container {
     height: 165px;
-    padding-top: 10px;
+    padding-top: 18px;
 }
 
 .project .img-container img {
@@ -762,7 +753,7 @@ span#admin-logout {
     }
 
     #subtitle {
-        font-size: 24px;
+        font-size: 18px;
     }
 
     #profile-feed {

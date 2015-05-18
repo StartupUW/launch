@@ -62,7 +62,7 @@ router.route('users/:user_id')
 
 router.route('/:user_id')
     .get(function(req, res) {
-        if(req.params.user_id  == req.session.user._id){
+        if(req.session.user && req.params.user_id == req.session.user._id){
             res.redirect('/profile'); return;
         }
         Users.findOne({ _id: req.params.user_id }, function(err, profile) {
@@ -71,8 +71,8 @@ router.route('/:user_id')
                 return;
             }
             Votes.find({ user: profile._id }).populate('project', '_id name images').exec(function(err, votes) {
-                Projects.find({ "members.user" : req.session.user._id }, function(err, projects) {
-                    console.log(projects);
+                Projects.find({ "members.user" : profile._id }, function(err, projects) {
+                    console.log(profile);
                     res.render('profile', { votes: votes, profile: profile, projects : projects, user: req.session.user });
                 });
             });

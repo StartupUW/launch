@@ -11,16 +11,21 @@ var ProjectForm = React.createClass({
 		errors = {};
 
 		$('#create-form :input').each(function() {
-			if (this.type == "file" && form.logo.files[0]) {
-				var file = form.logo.files[0];
-				if (IMG_MIMES.indexOf(file.type) == -1) {
-					errors.logo = 'Not a valid image type: ' + file.type;
-					errors.hasErrors = true;
-				} else if (file.size > 2000000) {
-					errors.logo = 'Max file size: 2MB';
+			if (this.type == "file") {
+				if (!form.logo.files[0]) {
+					errors.logo = 'You must include a logo';
 					errors.hasErrors = true;
 				} else {
-					data.append(this.name, file);
+					var file = form.logo.files[0];
+					if (IMG_MIMES.indexOf(file.type) == -1) {
+						errors.logo = 'Not a valid image type: ' + file.type;
+						errors.hasErrors = true;
+					} else if (file.size > 2000000) {
+						errors.logo = 'Max file size: 2MB';
+						errors.hasErrors = true;
+					} else {
+						data.append(this.name, file);
+					}
 				}
 			} else if (this.type == "checkbox") {
 				data.append(this.name, this.checked)
@@ -109,7 +114,7 @@ var ProjectForm = React.createClass({
 						<input className="input-container" type="checkbox" name="hiring" />
 					</div>
 					<div>
-						<span className="input-field">Logo</span>
+						<span className="input-field">Logo{required}</span>
 						<input className="input-container" type="file" name="logo" />
 					</div>
 					<p className="formError">{ errors.logo }</p>
