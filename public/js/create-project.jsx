@@ -98,8 +98,14 @@ var ProjectForm = React.createClass({
 					<p className="formError">{ errors.description }</p>
 					<MemberInput update={this.handleMembers.bind(this)} required={required} url="/api/users" />
 					<p className="formError">{ errors.members }</p>
-					<ProjectInput name="website" displayName="Website" />
+					<div>
+						<span className="input-field">Logo{required}</span>
+						<input className="input-container" type="file" name="logo" />
+					</div>
+					<p className="formError">{ errors.logo }</p>
+					<ProjectInput name="website" displayName="Website URL" />
 					<ProjectInput name="fbPage" displayName="Facebook Page URL" />
+					<ProjectInput name="demo" displayName="Youtube Embed URL" />
 					<div>
 						<span className="input-field">Type</span>
 						<select required className="input-container" name="type">
@@ -113,12 +119,6 @@ var ProjectForm = React.createClass({
 						<span className="input-field">Hiring</span>
 						<input className="input-container" type="checkbox" name="hiring" />
 					</div>
-					<div>
-						<span className="input-field">Logo{required}</span>
-						<input className="input-container" type="file" name="logo" />
-					</div>
-					<p className="formError">{ errors.logo }</p>
-
 					<TagInput update={this.handleTags.bind(this)} />
 					<button type="submit" className="btn btn-primary">Submit</button>
 				</div>

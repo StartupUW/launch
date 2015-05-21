@@ -12,6 +12,7 @@ var ProjectSchema = new Schema ({
 	tags: [String],
 	approved: { type: Boolean, default: false},
     fbPage: {type: String},
+    demo: {type: String},
     members: [{
         user: {type: String, ref: 'Users'},
     }],

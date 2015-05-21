@@ -33,14 +33,15 @@ router.route('/create')
 		user.bio = req.body.bio;
 		user.major = req.body.major;
 		user.gradyr = req.body.gradyr;
-		user.link.label = req.body.link.label;
-		user.link.url = req.body.link.url;
-		user.link.visible = req.body.link.visible;
-		user.save(function(err){
-			if(err) {
-				res.send(err);
-			}
-				res.render('user', {user: user});
+		user.save(function(errs) {
+			if (errs) {
+                console.log(errs);
+                req.session.errs = ['Could not create new user - are you already logged in?'];
+			} else {
+                req.session.user = user;
+            }
+			res.redirect('/');
+            return;
 		});	
 	});
 

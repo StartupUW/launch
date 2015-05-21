@@ -77,6 +77,7 @@ router.post('/project', function(req, res) {
     if (req.body.fbPage) project.fbPage = req.body.fbPage;
     if (req.body.hiring) project.hiring = req.body.hiring;
     if (req.body.tags) project.tags = JSON.parse(req.body.tags);
+    if (req.body.demo) project.demo = req.body.demo;
     if (req.files.logo) project.images = [req.files.logo.name];
     project.save(function(err, project) {
         if (err) return handleError(err, res, true);

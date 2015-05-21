@@ -30,7 +30,7 @@ block append content
                     h2 Projects
 
                     #profile-projects
-                        if !projects
+                        if projects.length == 0
                             .panel
                                 .panel-body This user has no public projects yet.
                         else
@@ -46,7 +46,7 @@ block append content
 
                     h2 Upvoted
                     #profile-voted
-                        if !votes
+                        if votes.length == 0
                             .panel 
                                 .panel-body This user has not voted on any projects yet.
                         else
