@@ -127,7 +127,11 @@ var GoogleTimeline = React.createClass({
                 return ['Event', event.title, this.getTooltip(event), event.date, event.date];
             }.bind(this));
 
-            rows.push(['Event', 'Today', 'Today', new Date(), new Date()]);
+            var today = new Date();
+
+            rows.push(['Event', 'Today', this.getTooltip({
+                title: "Today", description: "What an awesome day!", date: today,
+            }), today, today]);
 
             dataTable.addRows(rows);
 

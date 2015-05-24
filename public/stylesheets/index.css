@@ -518,7 +518,7 @@ span#admin-logout {
 }
 
 #project-feed > div, #project-sidebar > div {
-    margin-bottom: 20px;
+    margin-bottom: 30px;
 }
 
 #project-feed .basic-info .col-md-9 {
@@ -535,13 +535,13 @@ span#admin-logout {
 }
 
 #project-feed .timeline-tooltip {
-    padding: 10px;
+    padding: 5px 10px;
 }
 
 #project-feed .timeline-tooltip h1 {
     font-size: 18px;
     font-weight: 600;
-    margin: 0 0 5px 0;
+    margin: 5px 0;
 }
 
 #project-feed .timeline-tooltip p {
