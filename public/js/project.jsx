@@ -27,7 +27,7 @@ var SaveEditable = React.createClass({
 
 var EditSelection = React.createClass({
     render: function() {
-        if (!this.props.canEdit) {
+        if (!this.props.canEdit || this.props.editMode) {
             return (<div></div>);
         }
         return (
@@ -71,14 +71,13 @@ var Project = React.createClass({
         this.setState({ votes: votes });
     },
     componentDidMount: function() {
+        loadFacebook();
         $.get(this.props.url, function(data) {
             this.setState({
                 project: data.project,
                 votes: data.votes,
                 user: data.user,
             });
-            loadFacebook();
-
         }.bind(this), 'json')
         .fail(function(xhr, status, err) {
             console.log(err);
@@ -134,7 +133,7 @@ var ProjectFeed = React.createClass({
         var saved = this.state.saved;
         var editMode = this.state.edit;
         var imgSrc = project.images[0] ? "/uploads/" + project.images[0] : "/img/suw-logo.png";
-        var editName = (<input valueLink={this.linkState('inputName')} name="name"/>);
+        var editName = (<input type="text" valueLink={this.linkState('inputName')} name="name"/>);
         var editDescription = (<textarea valueLink={this.linkState('inputDescription')} name="description"/>);
         return (
             <div id="project-feed" className="col-md-8">
@@ -143,7 +142,7 @@ var ProjectFeed = React.createClass({
                         <div className="col-md-9">
                             <h1>
                                 <Editable editMode={editMode} value={saved.name} input={editName}/>
-                                <EditSelection canEdit={this.props.canEdit} edit={this.edit} />
+                                <EditSelection canEdit={this.props.canEdit} editMode={editMode} edit={this.edit} />
                             </h1>
                             <ProjectTags tags={project.tags}/>
                             <p><Editable editMode={editMode} value={saved.description} input={editDescription}/></p>
@@ -344,7 +343,7 @@ var ProjectOverview = React.createClass({
     render: function() {
         var project = this.props.project;
         var saved = this.state.saved;
-        var editWebsite = (<input name="website" valueLink={this.linkState('inputWebsite')}/>);
+        var editWebsite = (<input type="text" name="website" valueLink={this.linkState('inputWebsite')}/>);
         var editHiring = (<input type="checkbox" name="hiring" checkedLink={this.linkState('inputHiring')}/>);
         var editWebsiteNode = (<Editable editMode={this.state.edit} value={saved.website} input={editWebsite}/>);
         var websiteNode = (                        
@@ -357,7 +356,7 @@ var ProjectOverview = React.createClass({
             <div className="panel panel-default">
                 <div className="panel-heading">
                     Overview
-                    <EditSelection canEdit={this.props.canEdit} edit={this.edit}/>
+                    <EditSelection canEdit={this.props.canEdit} editMode={this.state.edit} edit={this.edit}/>
                 </div>
                 <div className="panel-body">
                     <p>Website:&nbsp;
