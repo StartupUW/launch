@@ -65,36 +65,56 @@ var genericSubmit = function(data) {
 /* Project */
 var Project = React.createClass({
     getInitialState: function() {
-        return { project: null, members: null, votes: null, user: null }
+        return { loaded: false, project: null, members: null, votes: null, user: null };
     },
     updateVotes: function(votes) {
         this.setState({ votes: votes });
     },
     componentDidMount: function() {
-        loadFacebook();
         $.get(this.props.url, function(data) {
             this.setState({
                 project: data.project,
                 votes: data.votes,
                 user: data.user,
+                loaded: true
             });
+            loadFacebook();
         }.bind(this), 'json')
         .fail(function(xhr, status, err) {
             console.log(err);
-        });
+            this.setState({ loaded: true });
+            loadFacebook();
+        }.bind(this));
     },
     render: function() {
         var project = this.state.project;
-        if (!project) return (<h1>Project Not Found</h1>);
-        var user = this.state.user;
-        var votes = this.state.votes;
-        var canEdit = user && project.members.filter(function(member) {
-            return member.user._id == user._id;
-        }).length == 1;
+        if (this.state.loaded) {
+            if (!project) {
+                return (
+                    <div className="row">
+                        <div className="col-xs-12">
+                            <h1>Project Not Found</h1>
+                        </div>
+                    </div>
+                );
+            }
+            var user = this.state.user;
+            var votes = this.state.votes;
+            var canEdit = user && project.members.filter(function(member) {
+                return member.user._id == user._id;
+            }).length == 1;
+            return (
+                <div className="row">
+                    <ProjectFeed user={user} votes={votes} project={project} canEdit={canEdit} url={this.props.url} />
+                    <ProjectSidebar update={this.updateVotes} user={user} votes={votes} project={project} canEdit={canEdit} url={this.props.url} />
+                </div>
+            );
+        }
         return (
             <div className="row">
-                <ProjectFeed user={user} votes={votes} project={project} canEdit={canEdit} url={this.props.url} />
-                <ProjectSidebar update={this.updateVotes} user={user} votes={votes} project={project} canEdit={canEdit} url={this.props.url} />
+                <div className="col-xs-12">
+                    <h1>Loading project... <i className="fa fa-cog fa-spin"></i></h1>
+                </div>
             </div>
         );
     }
@@ -217,8 +237,17 @@ var ProjectDemo = React.createClass({
 });
 
 var GoogleTimeline = React.createClass({
+    getInitialState: function() {
+        return ({ loaded: false });
+    },
     componentDidMount: function() {
-        this.drawCharts();
+        google.load('visualization', '1.1', {
+            packages: ['timeline'],
+            callback: function() {
+                this.setState({loaded: true });
+                this.drawCharts(); 
+            }.bind(this),
+        });
     },
     componentDidUpdate: function() {
         this.drawCharts();
@@ -233,7 +262,7 @@ var GoogleTimeline = React.createClass({
         ));
     },
     drawCharts: function() {
-        if (this.props.timeline.length) {
+        if (this.state.loaded && this.props.timeline.length) {
             var dataTable = new google.visualization.DataTable();
 
             dataTable.addColumn({ type: 'string', id: 'Type' });
@@ -276,7 +305,7 @@ var GoogleTimeline = React.createClass({
         }
         return (
             <div>
-                <h2>Event Timeline</h2>
+                <h2>Milestones</h2>
                 {timelineNode}
             </div>
         );
@@ -370,7 +399,7 @@ var ProjectOverview = React.createClass({
         var saved = this.state.saved;
         var editWebsite = (<input type="text" name="website" valueLink={this.linkState('inputWebsite')}/>);
         var editHiring = (<input type="checkbox" name="hiring" checkedLink={this.linkState('inputHiring')}/>);
-        var editWebsiteNode = (<Editable editMode={this.state.edit} value={saved.website} input={editWebsite}/>);
+        var editWebsiteNode = (<Editable editMode={this.state.edit} value={"Visit"} input={editWebsite}/>);
         var websiteNode = (                        
             <a target="_blank" href={saved.website}>{editWebsiteNode}</a>
         );
@@ -507,13 +536,8 @@ var FacebookPage = React.createClass({
     }
 });
 
-google.load('visualization', '1.1', {
-    packages: ['timeline'],
-    callback: function() {
-        React.render(
-            <Project url={"/api/project/" + $("#project-id").val()}/>,
-            document.getElementById('project-container')
-        );
-    }
-});
+React.render(
+    <Project url={"/api/project/" + $("#project-id").val()}/>,
+    document.getElementById('project-container')
+);
 

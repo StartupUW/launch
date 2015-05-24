@@ -188,7 +188,7 @@ textarea {
 #showcase {
     max-width: 950px;
     text-align: center;
-    padding: 50px 0;
+    padding: 30px 0;
     margin: auto;
 }
 
@@ -207,7 +207,7 @@ textarea {
 /* Control Panel */
 
 #control-panel.row {
-    padding: 20px 0;
+    padding: 12px 0;
     margin-top: 45px;
     background-color: #ecf0f1;
     border-radius: 5px;
@@ -271,6 +271,7 @@ textarea {
 .votes.user-voted {
     background-color: #e74c3c;
     border: 1px solid #e74c4c;
+    border-left: none;
     color: white;
 }
 
@@ -324,12 +325,15 @@ textarea {
     margin-bottom: 18px;
 }
 
+.project-title .title {
+    margin-right: 8px;
+}
+
 .project-labels {
     display: inline-block;
     font-size: 15px;
     vertical-align: middle;
     padding-bottom: 5px;
-    margin-left: 8px;
 }
 
 .project-labels .label {
@@ -499,7 +503,7 @@ span#admin-logout {
 /* Project page */
 #project-container {
     max-width: 1000px;
-    padding: 55px 0;
+    padding: 30px 0;
     margin: auto;
 }
 
@@ -766,20 +770,20 @@ span#admin-logout {
         width: 100%;
     }
 
-    #login-bar {
-        text-align: center;
-    }
-
-    #logo {
-        text-align: right;
-    }
-
     #header {
         padding: 20px 0;
     }
 
     #splash {
         min-height: 400px;
+    }
+
+    #fb-login .fa {
+        margin-right: 0;
+    }
+
+    .profile-picture.small {
+        margin-right: 0;
     }
 
     #title-container {

@@ -11,7 +11,7 @@ router.route('/')
                 res.send(err);
             }
             Votes.find({ user: me._id }).populate('project', '_id name images').exec(function(err, votes) {
-                Projects.find({ "members.user" : req.session.user._id }, function(err, projects){
+                Projects.find({ "members.user" : req.session.user._id, approved: true }, function(err, projects){
                     res.render('profile', { votes: votes, profile: me, projects : projects, user: req.session.user });
                 });
             });
@@ -72,7 +72,7 @@ router.route('/:user_id')
                 return;
             }
             Votes.find({ user: profile._id }).populate('project', '_id name images').exec(function(err, votes) {
-                Projects.find({ "members.user" : profile._id }, function(err, projects) {
+                Projects.find({ "members.user" : profile._id, approved: true }, function(err, projects) {
                     console.log(profile);
                     res.render('profile', { votes: votes, profile: profile, projects : projects, user: req.session.user });
                 });
