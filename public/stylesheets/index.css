@@ -527,8 +527,12 @@ span#admin-logout {
     height: 100px;
 }
 
-#project-container input {
+#project-container input[type=text] {
     width: 100%;
+}
+
+#project-feed .project-demo input[type=text] {
+    margin-bottom: 15px;
 }
 
 #project-container .save-edit {

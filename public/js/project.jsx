@@ -153,9 +153,9 @@ var ProjectFeed = React.createClass({
                         </div>
                     </div>
                 </div>
-                <ProjectDemo user={user} project={project} canEdit={canEdit}/>
-                <GoogleTimeline graphName="timeline" timeline={project.timeline} canEdit={canEdit}/>
-                <ProjectMembers members={project.members} canEdit={canEdit}/>
+                <ProjectDemo user={user} project={project} canEdit={canEdit} url={this.props.url}/>
+                <GoogleTimeline graphName="timeline" timeline={project.timeline} canEdit={canEdit} url={this.props.url}/>
+                <ProjectMembers members={project.members} canEdit={canEdit} url={this.props.url}/>
             </div>
         );
     }
@@ -173,19 +173,44 @@ var ProjectTags = React.createClass({
 
 /* Project > ProjectFeed > ProjectDemo */
 var ProjectDemo = React.createClass({
+    mixins: [React.addons.LinkedStateMixin],
+    getInitialState: function() {
+        var demo = this.props.project.demo;
+        return { 
+            edit: false, 
+            saved: { demo: demo },
+            demoInput: demo,
+        };
+    },
+    edit: function() {
+        this.setState({edit: true});
+    },
+    submit: function() {
+        genericSubmit.bind(this, {
+            demo: this.state.demoInput
+        })();
+    }, 
+    cancel: function() {
+        this.setState({edit: false});
+    },
     render: function() {
         var user = this.props.user;
-        var demo = this.props.project.demo;
+        var demo = this.state.saved.demo;
         var demoNode = (<p>No demo added yet!</p>);
         if (!demo && !this.props.canEdit) {
             return (<div></div>);
         } else if (demo){
             demoNode = (<iframe src={demo} width="100%" height="400px" />);
         } 
+        var editMode = this.state.edit;
+        var editDemo = (<input type="text" name="demo" valueLink={this.linkState('demoInput')}/>);
         return (
             <div className="project-demo">
-                <h2>Project Demo</h2>
-                {demoNode}
+                <h2>Project Demo 
+                    <EditSelection canEdit={this.props.canEdit} editMode={editMode} edit={this.edit}/>
+                </h2>
+                <Editable value={demoNode} editMode={editMode} input={editDemo}/>
+                <SaveEditable editMode={editMode} submit={this.submit} cancel={this.cancel}/>
             </div>
         );
     }
