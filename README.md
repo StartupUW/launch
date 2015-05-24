@@ -6,6 +6,9 @@ Launch is a web application built upon node.js, mongodb, jade, and React. It's i
 
 ## Upcoming Features/Unimplemented
 
+### More Media
+Adding milestones/timeline for startups. The ability to add video and more images.
+
 ### Dynamic editing
 Use React to allow users to edit their own projects and profiles without having to leave the page. We need to be able to add and remove founders and edit content without having to go to the database.
 
