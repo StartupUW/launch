@@ -1,7 +1,13 @@
 var mongoose = require('mongoose');
 	Schema = mongoose.Schema;
 
-var ProjectSchema = new Schema ({
+var TimelineEventSchema = new Schema({
+	date: {type: Date, required: true},
+	title: {type: String, required: true},
+	description: {type: String, required: true},
+})
+
+var ProjectSchema = new Schema({
 	name: {type: String, required: true},
 	description: {type: String, required: true},
 	website: {type: String},
@@ -16,6 +22,7 @@ var ProjectSchema = new Schema ({
     members: [{
         user: {type: String, ref: 'Users'},
     }],
+    timeline: [TimelineEventSchema],
 });
 
 module.exports = mongoose.model('Projects', ProjectSchema);

@@ -1,11 +1,35 @@
-var express = require('express');
-var Projects = require('../models/projects');
+/**
+ * Startup UW Launch, 2015
+ * Admin Router - admin console and login
+ * 
+ * ---------------------------------------------------------------------------
+ * Route                    REST Calls      Description
+ * ---------------------------------------------------------------------------
+ * /                        GET             Render the login page or redirect if logged in
+ * /console                 GET             Render all unapproved projects
+ * /console                 POST            Approve or delete a pending project
+ * /logout/:pid/            GET             Log the current admin out
+ *
+ */
 
+// Express
+var express = require('express');
 var router = express.Router();
 
+// Models
+var Projects = require('../models/projects');
+
+// Authentication
 var ADMIN_PASS = process.env.ADMIN_PASS;
 
-/* Admin Login Page */
+var renderProjects = function(errors, res) {
+     Projects.find({ approved: false }).populate('members.user', 'fname lname _id').exec(function(err, projects){
+        if (err) errors.append(err);
+        res.render('admin-console', { projects: projects, errors: errors });
+        return;
+    });
+}
+
 router.route('/')
     .all(function(req, res, next) {
         if (req.session.admin) {
@@ -26,7 +50,6 @@ router.route('/')
         res.render('admin', { error: true });
     });
     
-/* Admin console */
 router.route('/console')
     .all(function(req, res, next) {
         if (!req.session.admin) {
@@ -58,19 +81,9 @@ router.route('/console')
         }
    });
 
-/* Admin logout */
 router.get('/logout', function(req, res) {
     delete req.session.admin;
     res.redirect('/admin');
 });
-
-var renderProjects = function(errors, res) {
-     Projects.find({ approved: false }).populate('members.user', 'fname lname _id').exec(function(err, projects){
-        if (err) errors.append(err);
-        console.log(projects);
-        res.render('admin-console', { projects: projects, errors: errors });
-        return;
-    });
-}
 
 module.exports = router;
