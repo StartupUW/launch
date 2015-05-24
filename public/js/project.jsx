@@ -155,8 +155,8 @@ var ProjectFeed = React.createClass({
         var imgSrc = project.images[0] ? "/uploads/" + project.images[0] : "/img/suw-logo.png";
         var editName = (<input type="text" valueLink={this.linkState('inputName')} name="name"/>);
         var editDescription = (<textarea valueLink={this.linkState('inputDescription')} name="description"/>);
-        var descriptionNode = saved.description.split("\n").map(function(p) {
-            return (<p>{p}<br/></p>);
+        var descriptionNode = saved.description.split("\n").map(function(p, index) {
+            return index == 0 ? (<p>{p}</p>) : (<p>{p}<br/></p>);
         });
         return (
             <div id="project-feed" className="col-md-8">
