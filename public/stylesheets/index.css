@@ -560,6 +560,11 @@ span#admin-logout {
     font-weight: 600;
 }
 
+#project-feed .basic-info p {
+    font-size: 18px;
+    font-weight: 300;
+}
+
 #project-feed .tags .label {
     margin-right: 2px;
 }

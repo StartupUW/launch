@@ -155,6 +155,9 @@ var ProjectFeed = React.createClass({
         var imgSrc = project.images[0] ? "/uploads/" + project.images[0] : "/img/suw-logo.png";
         var editName = (<input type="text" valueLink={this.linkState('inputName')} name="name"/>);
         var editDescription = (<textarea valueLink={this.linkState('inputDescription')} name="description"/>);
+        var descriptionNode = saved.description.split("\n").map(function(p) {
+            return (<p>{p}<br/></p>);
+        });
         return (
             <div id="project-feed" className="col-md-8">
                 <div className="row basic-info">
@@ -165,7 +168,7 @@ var ProjectFeed = React.createClass({
                                 <EditSelection canEdit={this.props.canEdit} editMode={editMode} edit={this.edit} />
                             </h1>
                             <ProjectTags tags={project.tags}/>
-                            <p><Editable editMode={editMode} value={saved.description} input={editDescription}/></p>
+                            <Editable editMode={editMode} value={descriptionNode} input={editDescription}/>
                             <SaveEditable editMode={editMode} submit={this.submit} cancel={this.cancel}/>
                         </div>
                         <div className="hidden-xs hidden-sm col-md-3">
