@@ -14,7 +14,12 @@ var Editable = React.createClass({
 var SaveEditable = React.createClass({
     render: function() {
         if (this.props.editMode) {
-            return (<button onClick={this.props.submit} className="btn btn-primary save-edit">Save</button>);
+            return (
+                <div className="save-edit">
+                    <button onClick={this.props.submit} className="btn btn-primary">Save</button>
+                    <button onClick={this.props.cancel} className="btn btn-default">Cancel</button>
+                </div>
+                );
         }
         return (<span></span>);
     }
@@ -119,6 +124,9 @@ var ProjectFeed = React.createClass({
             tags: this.state.inputTags,
         })();
     },
+    cancel: function() {
+        this.setState({ edit: false });
+    },
     render: function() {
         var project = this.props.project;
         var user = this.props.user;
@@ -139,7 +147,7 @@ var ProjectFeed = React.createClass({
                             </h1>
                             <ProjectTags tags={project.tags}/>
                             <p><Editable editMode={editMode} value={saved.description} input={editDescription}/></p>
-                            <SaveEditable editMode={editMode} submit={this.submit}/>
+                            <SaveEditable editMode={editMode} submit={this.submit} cancel={this.cancel}/>
                         </div>
                         <div className="hidden-xs hidden-sm col-md-3">
                             <div className="img-responsive"><img className="logo" src={imgSrc}/></div>
@@ -329,6 +337,9 @@ var ProjectOverview = React.createClass({
             website: this.state.inputWebsite,
             hiring: this.state.inputHiring,
         })();
+    },    
+    cancel: function() {
+        this.setState({ edit: false });
     },
     render: function() {
         var project = this.props.project;
@@ -356,7 +367,7 @@ var ProjectOverview = React.createClass({
                         <Editable editMode={this.state.edit} value={saved.hiring ? "Yes": "No"} input={editHiring}/>
                     </p>
                     <p>Posted On: { (new Date(project.date)).toLocaleDateString() }</p>
-                    <SaveEditable editMode={this.state.edit} submit={this.submit}/>
+                    <SaveEditable editMode={this.state.edit} submit={this.submit} cancel={this.cancel}/>
                     <VoteButton {...this.props} />
                 </div>
             </div>

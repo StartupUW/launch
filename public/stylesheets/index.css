@@ -531,6 +531,10 @@ span#admin-logout {
     margin-bottom: 10px;
 }
 
+#project-container .save-edit .btn {
+    margin-right: 5px;
+}
+
 #project-feed > div, #project-sidebar > div {
     margin-bottom: 30px;
 }
