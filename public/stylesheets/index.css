@@ -517,6 +517,20 @@ span#admin-logout {
     padding: 20px;
 }
 
+#project-container .dropdown-toggle {
+    cursor: pointer;
+    padding: 0 10px;
+}
+
+#project-container textarea {
+    width: 100%;
+    height: 100px;
+}
+
+#project-container .save-edit {
+    margin-bottom: 10px;
+}
+
 #project-feed > div, #project-sidebar > div {
     margin-bottom: 30px;
 }
@@ -544,14 +558,6 @@ span#admin-logout {
     margin: 5px 0;
 }
 
-#project-feed .timeline-tooltip p {
-    
-}
-
-#project-feed .timeline-tooltip p.date {
-    
-}
-
 #project-feed .tags {
     margin-bottom: 15px;
 }
@@ -577,7 +583,7 @@ span#admin-logout {
 #project-sidebar .vote-large {
     padding: 10px;
     transition: all .1s linear;
-    display: inline-block;
+    display: block;
     cursor: pointer;
     background-color: white;
     border: 1px solid #E08283;

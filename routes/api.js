@@ -114,19 +114,41 @@ router.get('/projects', function(req, res) {
 	});
 });
 
-router.get('/project/:pid', function(req, res) {
-    Projects.findById(req.params.pid).populate('members.user').exec(function(err, project){
-        if (err || !project) return handleError(err, res, true, 404, 'Project not found');
-        Votes.find({project: req.params.pid}).populate('user', 'fname lname picture').exec(function(err, votes) {
-            if (err) return handleError(err, res, true);
-            res.json({
-                project: project,
-                votes: votes,
-                user: req.session.user || null,
-            });;
+router.route('/project/:pid')
+    .get(function(req, res) {
+        Projects.findById(req.params.pid).populate('members.user').exec(function(err, project) {
+            if (err || !project) return handleError(err, res, true, 404, 'Project not found');
+            Votes.find({project: req.params.pid}).populate('user', 'fname lname picture').exec(function(err, votes) {
+                if (err) return handleError(err, res, true);
+                res.json({
+                    project: project,
+                    votes: votes,
+                    user: req.session.user || null,
+                });;
+            });
+        });
+    })
+    .put(function(req, res) {
+        Projects.findById(req.params.pid, function(err, project) {
+            if (err || !project) return handleError(err, res, true, 404, 'Project not found');
+            var owner = false;
+            for (index in project.members) {
+                if (project.members[index].user === req.session.user._id) {
+                    owner = true;
+                }
+            }
+            if (owner) {
+                var data = req.body;
+                for (key in data) {
+                    project[key] = data[key];
+                }
+                project.save();
+                res.json({ success: true });
+            } else {
+                res.status(401).json({err : 'You must be a member of this project to edit it.'});
+            }
         });
     });
-});
 
 
 router.get('/project/:pid/vote', function(req, res) {

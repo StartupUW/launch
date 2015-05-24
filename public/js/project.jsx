@@ -1,3 +1,62 @@
+////////////////////////////////
+//   HELPER REACT CLASSES     //
+////////////////////////////////
+
+var Editable = React.createClass({
+    render: function() {
+        if (this.props.editMode) {
+            return this.props.input;
+        }
+        return (<span>{this.props.value}</span>);
+    }
+});
+
+var SaveEditable = React.createClass({
+    render: function() {
+        if (this.props.editMode) {
+            return (<button onClick={this.props.submit} className="btn btn-primary save-edit">Save</button>);
+        }
+        return (<span></span>);
+    }
+});
+
+var EditSelection = React.createClass({
+    render: function() {
+        if (!this.props.canEdit) {
+            return (<div></div>);
+        }
+        return (
+            <span className="dropdown">
+                <span className="dropdown-toggle" type="button" id="dropdown" data-toggle="dropdown" aria-expanded="true">
+                    <span className="edit-project caret"></span>
+                </span>
+                <ul className="dropdown-menu" role="menu" aria-labelledby="dropdown">
+                <li onClick={this.props.edit} role="presentation"><a role="menuitem" tabIndex="-1" href="#">Edit</a></li>
+                </ul>
+            </span>
+        );
+    }
+})
+
+var genericSubmit = function(data) {
+    $.ajax({
+        url: this.props.url,
+        method: "PUT",
+        data: data,
+    }).done(function() {
+        this.setState({ 
+            saved: data,
+            edit: false,
+        });
+    }.bind(this)).fail(function(err) {
+        this.setState({ edit: false });
+        console.log(err);
+    }.bind(this));
+};
+
+///////////////////////////////////
+//////////////////////////////////
+
 /* Project */
 var Project = React.createClass({
     getInitialState: function() {
@@ -30,8 +89,8 @@ var Project = React.createClass({
         }).length == 1;
         return (
             <div className="row">
-                <ProjectFeed user={user} votes={votes} project={project} canEdit={canEdit} />
-                <ProjectSidebar update={this.updateVotes} url={this.props.url} user={user} votes={votes} project={project} canEdit={canEdit} />
+                <ProjectFeed user={user} votes={votes} project={project} canEdit={canEdit} url={this.props.url} />
+                <ProjectSidebar update={this.updateVotes} user={user} votes={votes} project={project} canEdit={canEdit} url={this.props.url} />
             </div>
         );
     }
@@ -39,19 +98,48 @@ var Project = React.createClass({
 
 /* Project > ProjectFeed */
 var ProjectFeed = React.createClass({
+    mixins: [React.addons.LinkedStateMixin],
+    getInitialState: function() {
+        var project = this.props.project;
+        return { 
+            edit: false,
+            saved: { name: project.name, tags: project.tags, description: project.description },
+            inputName: project.name,
+            inputTags: project.tags,
+            inputDescription: project.description,
+        }
+    },
+    edit: function() {
+        this.setState({ edit: true });
+    },
+    submit: function() {
+        genericSubmit.bind(this, {
+            name: this.state.inputName,
+            description: this.state.inputDescription,
+            tags: this.state.inputTags,
+        })();
+    },
     render: function() {
         var project = this.props.project;
         var user = this.props.user;
         var canEdit = this.props.canEdit;
+        var saved = this.state.saved;
+        var editMode = this.state.edit;
         var imgSrc = project.images[0] ? "/uploads/" + project.images[0] : "/img/suw-logo.png";
+        var editName = (<input valueLink={this.linkState('inputName')} name="name"/>);
+        var editDescription = (<textarea valueLink={this.linkState('inputDescription')} name="description"/>);
         return (
             <div id="project-feed" className="col-md-8">
                 <div className="row basic-info">
                     <div className="title">
                         <div className="col-md-9">
-                            <h1>{project.name}</h1>
-                            <ProjectTags tags={project.tags} canEdit={this.props.canEdit}/>
-                            <p>{project.description}</p>
+                            <h1>
+                                <Editable editMode={editMode} value={saved.name} input={editName}/>
+                                <EditSelection canEdit={this.props.canEdit} edit={this.edit} />
+                            </h1>
+                            <ProjectTags tags={project.tags}/>
+                            <p><Editable editMode={editMode} value={saved.description} input={editDescription}/></p>
+                            <SaveEditable editMode={editMode} submit={this.submit}/>
                         </div>
                         <div className="hidden-xs hidden-sm col-md-3">
                             <div className="img-responsive"><img className="logo" src={imgSrc}/></div>
@@ -220,15 +308,55 @@ var ProjectSidebar = React.createClass({
 
 /* Project > ProjectSidebar > ProjectOverview */
 var ProjectOverview = React.createClass({
+    mixins: [React.addons.LinkedStateMixin],
+    getInitialState: function() {
+        var project = this.props.project;
+        return { 
+            edit: false,
+            saved: { 
+                website: project.website,
+                hiring: project.hiring
+            },
+            inputWebsite: project.website,
+            inputHiring: project.hiring
+        };
+    },
+    edit: function() {
+        this.setState({ edit: true });
+    },
+    submit: function() {
+        genericSubmit.bind(this, {
+            website: this.state.inputWebsite,
+            hiring: this.state.inputHiring,
+        })();
+    },
     render: function() {
         var project = this.props.project;
+        var saved = this.state.saved;
+        var editWebsite = (<input name="website" valueLink={this.linkState('inputWebsite')}/>);
+        var editHiring = (<input type="checkbox" name="hiring" checkedLink={this.linkState('inputHiring')}/>);
+        var editWebsiteNode = (<Editable editMode={this.state.edit} value={saved.website} input={editWebsite}/>);
+        var websiteNode = (                        
+            <a target="_blank" href={saved.website}>{editWebsiteNode}</a>
+        );
+        if (this.state.edit) {
+            websiteNode = editWebsiteNode;
+        }
         return (
             <div className="panel panel-default">
-                <div className="panel-heading">Overview</div>
+                <div className="panel-heading">
+                    Overview
+                    <EditSelection canEdit={this.props.canEdit} edit={this.edit}/>
+                </div>
                 <div className="panel-body">
-                    <p>Website: <a target="_blank" href={project.website}>{project.website}</a></p>
-                    <p>Hiring: {project.hiring ? "Yes": "No"}</p>
+                    <p>Website:&nbsp;
+                        {websiteNode}
+                    </p>
+                    <p>Hiring:&nbsp;
+                        <Editable editMode={this.state.edit} value={saved.hiring ? "Yes": "No"} input={editHiring}/>
+                    </p>
                     <p>Posted On: { (new Date(project.date)).toLocaleDateString() }</p>
+                    <SaveEditable editMode={this.state.edit} submit={this.submit}/>
                     <VoteButton {...this.props} />
                 </div>
             </div>
