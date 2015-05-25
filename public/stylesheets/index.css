@@ -450,55 +450,68 @@ span#admin-logout {
     margin: 50px auto;
 }
 
-#profile-container .ih-item {
-    width: 100%;
-    height: auto;
-    box-shadow: none;
+#profile-overview { 
+    text-align: center;
+}
+
+#profile-overview img {
+    width: 150px;
+}
+
+#profile-overview .bio {
+    font-size: 18px;
+    margin-bottom: 25px;
+    color: #888;
+}
+
+#profile-overview h1 {
+    font-size: 40px;
+    font-weight: 600;
+}
+
+#profile-overview li {
+    display: inline-block;
+    width: 175px;
+}
+
+#profile-overview .title {
+    font-weight: 300;
+    font-size: 12px;
+    letter-spacing: 1px;    
+}
+
+#profile-overview li p, #profile-overview li i {
+    font-size: 18px;
+}
+
+#profile-feed h2 {
+    text-align: center;
+    font-size: 18px;
+}
+
+#profile-feed {
+    max-width: 650px;
+    margin: 50px auto;
+}
+
+#profile-voted img {
+    margin-right: 10px;
+}
+
+#profile-feed .media {
+    margin: 15px 0;
+}
+
+#profile-feed .media-heading, #profile-container .fa {
+    color: #565a5c;
+}
+
+#profile-feed .media-heading:hover, #profile-container .fa:hover {
+    color: #33ccff;
 }
 
 #profile-container .fa {
     margin-right: 10px;
-}
-
-#profile-container h2 {
-    font-size: 18px;
-    font-weight: 600;
-}
-
-#profile-container h1 {
-    font-size: 24px;
-    margin-bottom: 15px;
-}
-
-#profile-container .thumbnail {
-    border: 1px solid #ddd;
-    padding: 30px 10px 10px 10px;
-}
-
-#profile-sidebar {
-    padding: 0 50px;
-}
-
-.vote-card {
-    padding: 10px 20px 5px 20px;
-    margin: 10px 0;
-    border-radius: 3px;
-    border: 1px solid #eee;
-}
-
-.vote-card .name {
-    font-weight: 600;
-    font-size: 20px;
-}
-
-.vote-card .description {
-    color: #565a5c;
-}
-
-.vote-card .date {
-    font-size: 12px;
-    color: #34495e;
-    margin-left: 10px;
 }
 
 /* Project page */
