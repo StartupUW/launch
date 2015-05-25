@@ -503,7 +503,7 @@ span#admin-logout {
 /* Project page */
 #project-container {
     max-width: 1000px;
-    padding: 30px 0;
+    padding: 50px 0 100px 0;
     margin: auto;
 }
 
@@ -561,7 +561,7 @@ span#admin-logout {
 }
 
 #project-feed .basic-info p {
-    font-size: 18px;
+    font-size: 16px;
     font-weight: 300;
 }
 
@@ -583,50 +583,67 @@ span#admin-logout {
     margin-bottom: 15px;
 }
 
-#project-feed .members .member {
-    padding-left: 0;
+#status-bar {
+    position: fixed;
+    background-color: white;
+    height: 55px;
+    border-top: 1px solid #ddd;
+    bottom: 0;
+    z-index: 1;
+    width: 100%;
 }
 
-#project-feed .members .member .media-heading {
-    font-size: 20px;
+#status-bar .members {
+    padding: 12px;
 }
 
-#project-feed .members .member p.email {
-    font-size: 12px;
+#status-bar .members .member {
+    display: inline-block;
+    margin-right: 15px;
 }
 
-#project-feed .members .member span.grad {
-    font-size: 14px;
-    margin-left: 10px;
-    color: black;
+#status-bar .members .media {
+    margin-top: 0;
 }
 
-#project-sidebar .vote-large {
+#fb-share, #votes-container {
+    display: inline-block;
+    float: right;
+    padding-top: 5px;
+}
+
+#status-bar .members .media-body {
+    width: auto;
+    vertical-align: middle;
+}
+
+#status-bar .vote-large {
     padding: 10px;
     transition: all .1s linear;
-    display: block;
+    display: inline-block;
     cursor: pointer;
     background-color: white;
     border: 1px solid #E08283;
     color: #E08283;
+    margin-left: 20px;
 }
 
-#project-sidebar .vote-container {
+#status-bar .vote-container {
     text-align: center;
 }
 
-#project-sidebar .vote-large .glyphicon {
+#status-bar .vote-large .glyphicon {
     top: 2px;
     margin-right: 5px;
 }
 
-#project-sidebar .vote-large.user-not-voted:hover {
+#status-bar .vote-large.user-not-voted:hover {
     background-color: #E08283;
     border: 1px solid #E08283;
     color: white;
 }
 
-#project-sidebar .vote-large.user-voted {
+#status-bar .vote-large.user-voted {
     background-color: #e74c3c;
     border: 1px solid #e74c4c;
     color: white;
