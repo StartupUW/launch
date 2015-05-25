@@ -49,7 +49,8 @@ var updateProject = function(data) {
     $.ajax({
         url: url,
         method: "PUT",
-        data: data,
+        data: JSON.stringify(data),
+        contentType: 'application/json'
     }).done(function() {
         this.setState({ saved: data, edit: false });
     }.bind(this)).fail(function(err) {
@@ -94,7 +95,6 @@ var Project = React.createClass({
         return <div className="row"><ProjectFeed {...this.props} /></div>;
     }
 });
-
 
 var ProjectFeed = React.createClass({
     mixins: [React.addons.LinkedStateMixin],
@@ -158,6 +158,10 @@ var ProjectBasicInfo = React.createClass({
             tags: this.state.inputTags,
         })();
     },
+    updateTags: function(tags) {
+        console.log(tags);
+        this.setState({ inputTags: tags });
+    },
     cancel: function() {
         this.setState({ edit: false });
     },
@@ -172,17 +176,22 @@ var ProjectBasicInfo = React.createClass({
         var descriptionNode = saved.description.split("\n").map(function(p, index) {
             return index == 0 ? (<p>{p}</p>) : (<p>{p}<br/></p>);
         });
+        var tagNodes = this.state.saved.tags.map(function(tag) {
+            return(<span key={tag} className="label label-primary">{tag}</span>);
+        });
         return (
             <div className="row basic-info">
                 <div className="title">
                     <div className="col-md-9">
                         <h1>
-                            <Editable editMode={editMode} value={saved.name} input={editName}/>
+                            <Editable editMode={editMode} value={saved.name} input={editName} />
                             <EditSelection canEdit={canEdit} editMode={editMode} edit={this.edit} />
                         </h1>
-                        <ProjectTags tags={project.tags}/>
-                        <Editable editMode={editMode} value={descriptionNode} input={editDescription}/>
-                        <SaveEditable editMode={editMode} submit={this.submit} cancel={this.cancel}/>
+                        <div className="tags">
+                            <Editable editMode={editMode} value={tagNodes} input={<TagInput tags={this.state.inputTags} update={this.updateTags} />}/>
+                        </div>
+                        <Editable editMode={editMode} value={descriptionNode} input={editDescription} />
+                        <SaveEditable editMode={editMode} submit={this.submit} cancel={this.cancel} />
                     </div>
                     <div className="hidden-xs hidden-sm col-md-3">
                         <div className="img-responsive"><img className="logo" src={imgSrc}/></div>
@@ -193,17 +202,59 @@ var ProjectBasicInfo = React.createClass({
     }
 })
 
-/* Project > ProjectFeed > ProjectTags*/
-var ProjectTags = React.createClass({
+var TagInput = React.createClass({
+    addTag: function(event) {
+        var key = event.keyCode;
+        var input = event.target.value;
+        var tags = this.props.tags;
+        if (input.match(/^\s*\w+ $/)) {
+            input = input.trim()
+            var newTags = React.addons.update(tags, {
+                $push: [input.substr(0, input.length)]
+            });
+            this.props.update(newTags);
+            $('#inputTags').val('');
+        }
+    },
+    tagAction: function() {
+        var key = event.keyCode;
+        var input = event.target.value;
+        var tags = this.props.tags;
+        if ((key == 8 || key == 46) && event.target.value === '') {
+            // Deletes the last element
+            var newTags = tags.filter(function(el, index) {
+                return index !== tags.length - 1;
+            });
+            this.props.update(newTags);
+            $('#inputTags').val('');
+        } else if (key == 13) {
+            event.preventDefault();
+            if (!input.match(/^\s*$/)) {
+                input = input.trim()
+                var newTags = React.addons.update(tags, {
+                    $push: [input.substr(0, input.length)]
+                });
+                this.props.update(newTags);
+                $('#inputTags').val('');
+            }
+        }
+    },
+    focus: function() {
+        $("#inputTags").focus();
+    },
     render: function() {
         var tagNodes = this.props.tags.map(function(tag) {
-            return(<span key={tag} className="label label-primary">{tag}</span>);
+            return (<span className="label label-primary">{tag}</span>);
         });
-        return (<div className="tags">{ tagNodes }</div>);
+        return(
+            <div id="tagEditor" onClick={this.focus}>
+                <span>{tagNodes}</span>
+                <input id="inputTags" onKeyUp={this.addTag} onKeyDown={this.tagAction} type="text"/>
+            </div>
+        );
     }
 });
 
-/* Project > ProjectFeed > ProjectDemo */
 var ProjectDemo = React.createClass({
     mixins: [React.addons.LinkedStateMixin],
     getInitialState: function() {
@@ -232,7 +283,7 @@ var ProjectDemo = React.createClass({
         if (!demo && !this.props.canEdit) {
             return (<div></div>);
         } else if (demo){
-            demoNode = (<iframe src={demo} width="100%" height="400px" />);
+            demoNode = (<div className="video-container"><iframe src={demo} /></div>);
         } 
         var editMode = this.state.edit;
         var editDemo = (<input type="text" name="demo" valueLink={this.linkState('demoInput')}/>);
@@ -324,7 +375,6 @@ var GoogleTimeline = React.createClass({
     }
 });
 
-/* Project > ProjectFeed > ProjectMembers */
 var ProjectMembers = React.createClass({
     render: function() {
         var memberNodes = this.props.members.map(function(member) {
@@ -339,8 +389,6 @@ var ProjectMembers = React.createClass({
     }
 });
 
-
-/* Project > ProjectFeed > ProjectMembers > ProjectMember  */
 var ProjectMember = React.createClass({
     render: function() {
         var member = this.props.member;
@@ -372,7 +420,6 @@ var StatusBar = React.createClass({
     }
 })
 
-/* Project > ProjectSidebar > ProjectOverview */
 var ProjectOverview = React.createClass({
     mixins: [React.addons.LinkedStateMixin],
     getInitialState: function() {
@@ -474,10 +521,11 @@ var ProjectVotes = React.createClass({
         var myVote = this.state.myVote;
         var votesNode = (<span>Be the first to upvote this!</span>);
         if (votes.length) {
+            var otherVotes = votes.length - (myVote ? 1: 0);
             votesNode = (
                 <span>
-                    {myVote ? (<span><a href="/profile">You</a> and </span>) : ""}
-                    <a onClick={this.showModal}>{votes.length - (myVote ? 1: 0) } other{votes.length > 1 ? "s": ""}</a>
+                    {myVote ? (<span><a href="/profile">You</a>{otherVotes > 0 ? " and " : ""}</span>) : ""}
+                    {otherVotes > 0 ? (<a onClick={this.showModal}>{otherVotes} other{otherVotes != 1 ? "s": ""}</a>) : ""}
                     <span> upvoted this project</span>
                 </span>
             );
@@ -497,6 +545,14 @@ var VoteButton = React.createClass({
             $.get(url + '/vote', function(data) {
                 this.props.update(data.votes, data.voteStatus);
             }.bind(this), 'json')
+        }
+    },
+    componentDidMount: function() {
+        if (!this.props.user) {
+            $(".vote-large").tooltip({
+                title: 'You must sign in to vote on projects!',
+                placement: 'top'
+            });
         }
     },
     render: function() {

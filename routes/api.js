@@ -139,6 +139,7 @@ router.route('/project/:pid')
             }
             if (owner) {
                 var data = req.body;
+                console.log(data);
                 for (key in data) {
                     project[key] = data[key];
                 }
