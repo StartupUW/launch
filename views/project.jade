@@ -3,9 +3,26 @@ extends ./layout.jade
 block append content
     input#project-id(type="hidden" value="#{projectId}")
     #project-container
+        .row
+            .col-xs-12
+                h1
+                    span Loading project... 
+                    i.fa.fa-cog.fa-spin
+    
 
 // Disables regular fb sdk load, instead is done in the React component
 block fb
+
+block footer
+    #user-votes.modal.fade
+        .modal-dialog.modal-sm
+            .modal-content
+                .modal-header
+                    button.btn.close(data-dismiss="modal" aria-label="Close")
+                        span(aria-hidden="true") &times;
+                    h4.modal-title Upvotes
+                #user-votes-content.modal-body
+    #status-bar
 
 block append scripts
     script(type="text/javascript" src="https://www.google.com/jsapi")

@@ -1,104 +1,316 @@
-/* Project */
-var Project = React.createClass({
-    getInitialState: function() {
-        return { project: null, members: null, votes: null, user: null }
-    },
-    updateVotes: function(votes) {
-        this.setState({ votes: votes });
-    },
-    componentDidMount: function() {
-        $.get(this.props.url, function(data) {
-            this.setState({
-                project: data.project,
-                votes: data.votes,
-                user: data.user,
-            });
-            loadFacebook();
+////////////////////////////////
+//   HELPER REACT CLASSES     //
+////////////////////////////////
 
-        }.bind(this), 'json')
-        .fail(function(xhr, status, err) {
-            console.log(err);
-        });
-    },
+var Editable = React.createClass({
     render: function() {
-        var project = this.state.project;
-        if (!project) return (<h1>Project Not Found</h1>);
-        var user = this.state.user;
-        var votes = this.state.votes;
-        var canEdit = user && project.members.filter(function(member) {
-            return member.user._id == user._id;
-        }).length == 1;
-        return (
-            <div className="row">
-                <ProjectFeed user={user} votes={votes} project={project} canEdit={canEdit} />
-                <ProjectSidebar update={this.updateVotes} url={this.props.url} user={user} votes={votes} project={project} canEdit={canEdit} />
-            </div>
-        );
+        if (this.props.editMode) return this.props.input;
+        return (<span>{this.props.value}</span>);
     }
 });
 
-/* Project > ProjectFeed */
+var SaveEditable = React.createClass({
+    render: function() {
+        if (this.props.editMode) {
+            return (
+                <div className="save-edit">
+                    <button onClick={this.props.submit} className="btn btn-primary">Save</button>
+                    <button onClick={this.props.cancel} className="btn btn-default">Cancel</button>
+                </div>
+            );
+        }
+        return (<span></span>);
+    }
+});
+
+var EditSelection = React.createClass({
+    render: function() {
+        if (!this.props.canEdit || this.props.editMode) return (<div></div>);
+        return (
+            <span className={"dropdown " + this.props.dropup}>
+                <span className="dropdown-toggle" type="button" id="dropdown" data-toggle="dropdown" aria-expanded="true">
+                    <span className="edit-project caret"></span>
+                </span>
+                <ul className="dropdown-menu" role="menu" aria-labelledby="dropdown">
+                <li onClick={this.props.edit} role="presentation"><a role="menuitem" tabIndex="-1">Edit</a></li>
+                </ul>
+            </span>
+        );
+    }
+})
+
+////////////////////////////////
+//          MAIN              //
+////////////////////////////////
+
+var url = "/api/project/" + $("#project-id").val();
+
+var updateProject = function(data) {
+    $.ajax({
+        url: url,
+        method: "PUT",
+        data: JSON.stringify(data),
+        contentType: 'application/json'
+    }).done(function() {
+        this.setState({ saved: data, edit: false });
+    }.bind(this)).fail(function(err) {
+        this.setState({ edit: false });
+        console.log(err);
+    }.bind(this));
+};
+
+$.get(url, function(data) {
+    var user = data.user;
+    var project = data.project;
+    var canEdit = user && project.members.filter(function(member) {
+        return member.user._id == data.user._id;
+    }).length == 1;
+
+    React.render(
+        <Project url={url} project={project} user={user} canEdit={canEdit}/>,
+        document.getElementById('project-container')
+    );
+
+    React.render(
+        <StatusBar url={url} project={project} votes={data.votes} user={user} canEdit={canEdit} />,
+        document.getElementById('status-bar')
+    );
+}, 'json')
+.fail(function(xhr, status, err) {
+    console.log(err);
+    loadFacebook();
+});
+
+////////////////////////////////
+//      REACT COMPONENTS      //
+////////////////////////////////
+
+var Project = React.createClass({
+    componentDidMount: function() {
+        loadFacebook();
+    },
+    render: function() {
+        var project = this.props.project;
+        if (!project) return <div className="row"><div className="col-xs-12"><h1>Project Not Found</h1></div></div>;
+        return <div className="row"><ProjectFeed {...this.props} /></div>;
+    }
+});
+
 var ProjectFeed = React.createClass({
+    mixins: [React.addons.LinkedStateMixin],
+    getInitialState: function() {
+        var project = this.props.project;
+        return { 
+            edit: false,
+            saved: { name: project.name, tags: project.tags, description: project.description },
+            inputName: project.name,
+            inputTags: project.tags,
+            inputDescription: project.description,
+        }
+    },
+    edit: function() {
+        this.setState({ edit: true });
+    },
+    submit: function() {
+        updateProject.bind(this, {
+            name: this.state.inputName,
+            description: this.state.inputDescription,
+            tags: this.state.inputTags,
+        })();
+    },
+    cancel: function() {
+        this.setState({ edit: false });
+    },
     render: function() {
         var project = this.props.project;
         var user = this.props.user;
         var canEdit = this.props.canEdit;
-        var imgSrc = project.images[0] ? "/uploads/" + project.images[0] : "/img/suw-logo.png";
         return (
-            <div id="project-feed" className="col-md-8">
-                <div className="row basic-info">
-                    <div className="title">
-                        <div className="col-md-9">
-                            <h1>{project.name}</h1>
-                            <ProjectTags tags={project.tags} canEdit={this.props.canEdit}/>
-                            <p>{project.description}</p>
-                        </div>
-                        <div className="hidden-xs hidden-sm col-md-3">
-                            <div className="img-responsive"><img className="logo" src={imgSrc}/></div>
-                        </div>
-                    </div>
-                </div>
-                <ProjectDemo user={user} project={project} canEdit={canEdit}/>
-                <GoogleTimeline graphName="timeline" timeline={project.timeline} canEdit={canEdit}/>
-                <ProjectMembers members={project.members} canEdit={canEdit}/>
+            <div id="project-feed" className="col-md-12">
+                <ProjectBasicInfo user={user} project={project} canEdit={canEdit} />
+                <ProjectDemo user={user} project={project} canEdit={canEdit} />
+                <GoogleTimeline graphName="timeline" timeline={project.timeline} canEdit={canEdit} />
+                <ProjectMembers members={project.members} canEdit={canEdit} />
             </div>
         );
     }
 });
 
-/* Project > ProjectFeed > ProjectTags*/
-var ProjectTags = React.createClass({
+var ProjectBasicInfo = React.createClass({
+    mixins: [React.addons.LinkedStateMixin],
+    getInitialState: function() {
+        var project = this.props.project;
+        return { 
+            edit: false,
+            saved: { name: project.name, tags: project.tags, description: project.description },
+            inputName: project.name,
+            inputTags: project.tags,
+            inputDescription: project.description,
+        }
+    },
+    edit: function() {
+        this.setState({ edit: true });
+    },
+    submit: function() {
+        updateProject.bind(this, {
+            name: this.state.inputName,
+            description: this.state.inputDescription,
+            tags: this.state.inputTags,
+        })();
+    },
+    updateTags: function(tags) {
+        console.log(tags);
+        this.setState({ inputTags: tags });
+    },
+    cancel: function() {
+        this.setState({ edit: false });
+    },
     render: function() {
-        var tagNodes = this.props.tags.map(function(tag) {
+        var project = this.props.project;
+        var canEdit = this.props.canEdit;
+        var saved = this.state.saved;
+        var editMode = this.state.edit;
+        var imgSrc = project.images[0] ? "/uploads/" + project.images[0] : "/img/suw-logo.png";
+        var editName = (<input type="text" valueLink={this.linkState('inputName')} name="name"/>);
+        var editDescription = (<textarea valueLink={this.linkState('inputDescription')} name="description"/>);
+        var descriptionNode = saved.description.split("\n").map(function(p, index) {
+            return index == 0 ? (<p>{p}</p>) : (<p>{p}<br/></p>);
+        });
+        var tagNodes = this.state.saved.tags.map(function(tag) {
             return(<span key={tag} className="label label-primary">{tag}</span>);
         });
-        return (<div className="tags">{ tagNodes }</div>);
+        return (
+            <div className="row basic-info">
+                <div className="title">
+                    <div className="col-md-9">
+                        <h1>
+                            <Editable editMode={editMode} value={saved.name} input={editName} />
+                            <EditSelection canEdit={canEdit} editMode={editMode} edit={this.edit} />
+                        </h1>
+                        <div className="tags">
+                            <Editable editMode={editMode} value={tagNodes} input={<TagInput tags={this.state.inputTags} update={this.updateTags} />}/>
+                        </div>
+                        <Editable editMode={editMode} value={descriptionNode} input={editDescription} />
+                        <SaveEditable editMode={editMode} submit={this.submit} cancel={this.cancel} />
+                    </div>
+                    <div className="hidden-xs hidden-sm col-md-3">
+                        <div className="img-responsive"><img className="logo" src={imgSrc}/></div>
+                    </div>
+                </div>
+            </div>
+    );
+    }
+})
+
+var TagInput = React.createClass({
+    addTag: function(event) {
+        var key = event.keyCode;
+        var input = event.target.value;
+        var tags = this.props.tags;
+        if (input.match(/^\s*\w+ $/)) {
+            input = input.trim()
+            var newTags = React.addons.update(tags, {
+                $push: [input.substr(0, input.length)]
+            });
+            this.props.update(newTags);
+            $('#inputTags').val('');
+        }
+    },
+    tagAction: function() {
+        var key = event.keyCode;
+        var input = event.target.value;
+        var tags = this.props.tags;
+        if ((key == 8 || key == 46) && event.target.value === '') {
+            // Deletes the last element
+            var newTags = tags.filter(function(el, index) {
+                return index !== tags.length - 1;
+            });
+            this.props.update(newTags);
+            $('#inputTags').val('');
+        } else if (key == 13) {
+            event.preventDefault();
+            if (!input.match(/^\s*$/)) {
+                input = input.trim()
+                var newTags = React.addons.update(tags, {
+                    $push: [input.substr(0, input.length)]
+                });
+                this.props.update(newTags);
+                $('#inputTags').val('');
+            }
+        }
+    },
+    focus: function() {
+        $("#inputTags").focus();
+    },
+    render: function() {
+        var tagNodes = this.props.tags.map(function(tag) {
+            return (<span className="label label-primary">{tag}</span>);
+        });
+        return(
+            <div id="tagEditor" onClick={this.focus}>
+                <span>{tagNodes}</span>
+                <input id="inputTags" onKeyUp={this.addTag} onKeyDown={this.tagAction} type="text"/>
+            </div>
+        );
     }
 });
 
-/* Project > ProjectFeed > ProjectDemo */
 var ProjectDemo = React.createClass({
+    mixins: [React.addons.LinkedStateMixin],
+    getInitialState: function() {
+        var demo = this.props.project.demo;
+        return { 
+            edit: false, 
+            saved: { demo: demo },
+            demoInput: demo,
+        };
+    },
+    edit: function() {
+        this.setState({edit: true});
+    },
+    submit: function() {
+        updateProject.bind(this, {
+            demo: this.state.demoInput
+        })();
+    }, 
+    cancel: function() {
+        this.setState({edit: false});
+    },
     render: function() {
         var user = this.props.user;
-        var demo = this.props.project.demo;
+        var demo = this.state.saved.demo;
         var demoNode = (<p>No demo added yet!</p>);
         if (!demo && !this.props.canEdit) {
             return (<div></div>);
         } else if (demo){
-            demoNode = (<iframe src={demo} width="100%" height="400px" />);
+            demoNode = (<div className="video-container"><iframe src={demo} /></div>);
         } 
+        var editMode = this.state.edit;
+        var editDemo = (<input type="text" name="demo" valueLink={this.linkState('demoInput')}/>);
         return (
             <div className="project-demo">
-                <h2>Project Demo</h2>
-                {demoNode}
+                <h2>Project Demo 
+                    <EditSelection canEdit={this.props.canEdit} editMode={editMode} edit={this.edit}/>
+                </h2>
+                <Editable value={demoNode} editMode={editMode} input={editDemo}/>
+                <SaveEditable editMode={editMode} submit={this.submit} cancel={this.cancel}/>
             </div>
         );
     }
 });
 
 var GoogleTimeline = React.createClass({
+    getInitialState: function() {
+        return ({ loaded: false });
+    },
     componentDidMount: function() {
-        this.drawCharts();
+        google.load('visualization', '1.1', {
+            packages: ['timeline'],
+            callback: function() {
+                this.setState({loaded: true });
+                this.drawCharts(); 
+            }.bind(this),
+        });
     },
     componentDidUpdate: function() {
         this.drawCharts();
@@ -113,7 +325,7 @@ var GoogleTimeline = React.createClass({
         ));
     },
     drawCharts: function() {
-        if (this.props.timeline.length) {
+        if (this.state.loaded && this.props.timeline.length) {
             var dataTable = new google.visualization.DataTable();
 
             dataTable.addColumn({ type: 'string', id: 'Type' });
@@ -156,14 +368,13 @@ var GoogleTimeline = React.createClass({
         }
         return (
             <div>
-                <h2>Event Timeline</h2>
+                <h2>Milestones</h2>
                 {timelineNode}
             </div>
         );
     }
 });
 
-/* Project > ProjectFeed > ProjectMembers */
 var ProjectMembers = React.createClass({
     render: function() {
         var memberNodes = this.props.members.map(function(member) {
@@ -172,30 +383,22 @@ var ProjectMembers = React.createClass({
         return (
             <div>
                 <h2>Founders</h2>
-                <div className="members row">
-                    { memberNodes }
-                </div>
+                <div className="members row">{ memberNodes }</div>
             </div>
         );
     }
 });
 
-
-/* Project > ProjectFeed > ProjectMembers > ProjectMember  */
 var ProjectMember = React.createClass({
     render: function() {
         var member = this.props.member;
         return (
             <div className="member col-xs-12 media">
-                <div className="media-left"><img className="media-object" src={member.picture} height="70px" width="70px"></img></div>
+                <div className="media-left"><img className="img-circle media-object" src={member.picture} height="60px" width="60px"></img></div>
                 <div className="media-body">
                     <a href={"/profile/" + member._id}>
-                        <h4 className="media-heading">
-                            {member.fname} {member.lname}
-                            <span className="grad">{member.major} {member.gradyr}</span>
-                        </h4>
+                        <h4 className="media-heading">{member.fname + " " + member.lname}</h4>
                     </a>
-                    <p className="email">{member.email}</p>
                     <p className="bio">{member.bio}</p>
                 </div>
             </div>
@@ -203,137 +406,185 @@ var ProjectMember = React.createClass({
     }
 });
 
-/* Project > ProjectSidebar */
-var ProjectSidebar = React.createClass({
+var StatusBar = React.createClass({
     render: function() {
         var project = this.props.project;
+        var canEdit = this.props.canEdit;
         return (
-            <div id="project-sidebar" className="col-md-4">
+            <div className="row">
                 <ProjectOverview project={project} {...this.props} />
-                <ProjectVotes votes={this.props.votes}/>
-                <SocialMedia />
-                <FacebookPage page={project.fbPage} />
+                <ProjectVotes {...this.props} />
             </div>
         );
+               
     }
-});
+})
 
-/* Project > ProjectSidebar > ProjectOverview */
 var ProjectOverview = React.createClass({
+    mixins: [React.addons.LinkedStateMixin],
+    getInitialState: function() {
+        var project = this.props.project;
+        return { 
+            edit: false,
+            saved: { 
+                website: project.website,
+                hiring: project.hiring
+            },
+            inputWebsite: project.website,
+            inputHiring: project.hiring
+        };
+    },
+    edit: function() {
+        this.setState({ edit: true });
+    },
+    submit: function() {
+        updateProject.bind(this, {
+            website: this.state.inputWebsite,
+            hiring: this.state.inputHiring,
+        })();
+    },    
+    cancel: function() {
+        this.setState({ edit: false });
+    },
     render: function() {
         var project = this.props.project;
+        var saved = this.state.saved;
+        var editMode = this.state.edit;
+
+        var editWebsite = <input type="text" name="website" valueLink={this.linkState('inputWebsite')}/>;
+        var defaultWebsite = (
+            <a target="_blank" href={saved.website}>
+                <span className="status-item">
+                    <span className="text hidden-xs">Website</span>
+                    <i className="fa fa-external-link"></i>
+                </span>
+            </a>
+        );
+        var editableWebsite = <Editable editMode={editMode} value={defaultWebsite} input={editWebsite}/>;
+
+        var editHiring = <input type="checkbox" name="hiring" checkedLink={this.linkState('inputHiring')}/>;
+        var defaultHiring = <i className={"fa " + (saved.hiring ? "fa-check-circle-o" : "fa-circle-o")}></i>;
+        var editableHiring = <Editable editMode={editMode} value={defaultHiring} input={editHiring}/>
+
         return (
-            <div className="panel panel-default">
-                <div className="panel-heading">Overview</div>
-                <div className="panel-body">
-                    <p>Website: <a target="_blank" href={project.website}>{project.website}</a></p>
-                    <p>Hiring: {project.hiring ? "Yes": "No"}</p>
-                    <p>Posted On: { (new Date(project.date)).toLocaleDateString() }</p>
-                    <VoteButton {...this.props} />
-                </div>
+            <div className="col-xs-8">
+                <SaveEditable editMode={editMode} submit={this.submit} cancel={this.cancel}/>
+                {editableWebsite}
+                <span className="status-item"><span className="text">Hiring</span>{editableHiring}</span>
+                <span className="status-item hidden-xs post-date">Posted on { (new Date(project.date)).toLocaleDateString() }</span>
+                <EditSelection canEdit={this.props.canEdit} editMode={this.state.edit} edit={this.edit} dropup="dropup"/>
             </div>
         );
     }
 });
 
 
-/* Project > ProjectSidebar > ProjectOverview > VoteButton */
-var VoteButton = React.createClass({
+var ProjectVotes = React.createClass({
     getInitialState: function() {
+        var votes = this.props.votes;
         var user = this.props.user;
-        var voted = user && this.props.votes.filter(function(el) {
+        var myVote = user && votes.filter(function(el) {
             return el.user._id === user._id;
         }).length === 1;
-        return { voted: voted };
+        return { votes: votes, myVote: myVote };
     },
+    updateVotes: function(votes, myVote) {
+        this.setState({ votes: votes, myVote: myVote });
+    },
+    componentDidMount: function() {
+        this.updateModal();
+    },
+    componentDidUpdate: function() {
+        this.updateModal();
+    },
+    showModal: function() {
+        $("#user-votes").modal('show');
+    },
+    updateModal: function() {
+        var voteNodes = this.state.votes.map(function(vote) {
+            var user = this.props.user;
+            if (!user || (vote.user._id != user._id)) {
+                return (
+                    <li className="list-group-item">
+                        <a href={"/profile/" + vote.user._id}>
+                            <img className="img-circle" width="30px" src={vote.user.picture}/>
+                            {vote.user.fname + " " + vote.user.lname}
+                        </a>
+                    </li>
+                );
+            }
+        }.bind(this));
+        React.render(<ul className="list-group">{voteNodes}</ul>, document.getElementById('user-votes-content'));
+    },
+    render: function() {
+        var votes = this.state.votes;
+        var myVote = this.state.myVote;
+        var votesNode = (<span>Be the first to upvote this!</span>);
+        if (votes.length) {
+            var otherVotes = votes.length - (myVote ? 1: 0);
+            votesNode = (
+                <span>
+                    {myVote ? (<span><a href="/profile">You</a>{otherVotes > 0 ? " and " : ""}</span>) : ""}
+                    {otherVotes > 0 ? (<a onClick={this.showModal}>{otherVotes} other{otherVotes != 1 ? "s": ""}</a>) : ""}
+                    <span> upvoted this project</span>
+                </span>
+            );
+        }
+        return (
+            <div className="col-xs-4">
+                <VoteButton update={this.updateVotes} myVote={myVote} {...this.props} />
+                <span className="status-item" id="votes-container">{votesNode}</span>
+            </div>
+        );
+    }
+});
+
+var VoteButton = React.createClass({
     handleClick: function() {
         if (this.props.user) {
-            $.get(this.props.url + '/vote', function(data) {
-                this.setState({
-                    voted: data.voteStatus
-                });
-                this.props.update(data.votes);
+            $.get(url + '/vote', function(data) {
+                this.props.update(data.votes, data.voteStatus);
             }.bind(this), 'json')
         }
     },
+    componentDidMount: function() {
+        if (!this.props.user) {
+            $(".vote-large").tooltip({
+                title: 'You must sign in to vote on projects!',
+                placement: 'top'
+            });
+        }
+    },
     render: function() {
-        var user = this.props.user;
-        var className = "vote-large" + (this.state.voted ? " user-voted" : " user-not-voted");
-        if (!user) return (<div></div>);
+        var myVote = this.props.myVote;
+        var className = "vote-large" + (myVote ? " user-voted" : " user-not-voted");
         return (
             <div onClick={this.handleClick} className={className}>
                 <span className="glyphicon glyphicon-heart"></span>
-                <span className="vote-count">Upvote</span>
+                <span className="vote-count hidden-xs">Upvote</span>
             </div>
         );
     }
 });
 
-
-/* Project > ProjectFeed > ProjectVotes */
-var ProjectVotes = React.createClass({
-    updateTooltips: function() {
-        for (index in this.props.votes) {
-            var user = this.props.votes[index].user;
-            $("img." + user._id).tooltip({
-                title: user.fname,
-                placement: 'bottom',
-            });
-        }
-    },
-    componentDidMount: function() {
-        this.updateTooltips();
-    },
-    componentDidUpdate: function() {
-        this.updateTooltips();
-    },
-    render: function() {
-        var votes = this.props.votes;
-        var voteNodes = (<h2>Be the first to upvote this!</h2>);
-        if (votes.length) {
-            voteNodes = votes.map(function(vote) {
-                return (
-                    <a key={vote._id} href={"/profile/" + vote.user._id}>
-                        <div className="col-xs-3 col-sm-3 voter">
-                            <img className={"img-circle " + vote.user._id} src={vote.user.picture}></img>
-                        </div>            
-                    </a>
-                );
-            });
-        }
-        return (
-            <div className="panel panel-default">
-                <div className="panel-heading">Upvotes &bull; { votes.length }</div>
-                <div className="panel-body">
-                    {voteNodes}
-                </div>
-            </div>
-        );
-    }
-});
-
-/* Project > ProjectSidebar > ProjectOverview > SocialShares*/
+/* 
 var SocialMedia = React.createClass({
     render: function() {
         return (
-            <div className="panel panel-default">
-                <div className="panel-heading">Social Media</div>
-                <div className="panel-body" id="fb-social-shares">
-                    <div className="fb-send" data-href={window.location.href}></div>
-                    <div className="fb-like" data-href={window.location.href} data-layout="button_count" data-action="like" data-show-faces="false" data-share="true"></div>
-                </div>
+            <div id="fb-share">
+                <div className="fb-send" data-href={window.location.href}></div>
+                <div className="fb-like" data-href={window.location.href} data-layout="button_count" data-action="like" data-show-faces="false" data-share="true"></div>
             </div>
         )
     }
 })
 
-/* Project > ProjectSidebar > ProjectOverview > FacebookPage */
 var FacebookPage = React.createClass({
     render: function() {
         var page = this.props.page;
         if (page) {
             return (
-                <div className="fb-page" data-href={page} data-width="350" data-hide-cover="true" data-show-facepile="true" data-show-posts="false">
+                <div className="fb-page" data-href={page} data-width="300" data-hide-cover="true" data-show-facepile="true" data-show-posts="false">
                     <div className="fb-xfbml-parse-ignore">
                         <blockquote cite={page}><a href={page}></a></blockquote>
                     </div>
@@ -343,14 +594,4 @@ var FacebookPage = React.createClass({
         return (<div></div>);
     }
 });
-
-google.load('visualization', '1.1', {
-    packages: ['timeline'],
-    callback: function() {
-        React.render(
-            <Project url={"/api/project/" + $("#project-id").val()}/>,
-            document.getElementById('project-container')
-        );
-    }
-});
-
+*/

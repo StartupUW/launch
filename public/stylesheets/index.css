@@ -5,14 +5,18 @@ html, body {
     padding: 0;
 }
 
-body {
+body, a {
     font-family: "Source Sans Pro", sans-serif;
-    color: #565a5c;
 }
 
 a, a:hover, a:visited, a:active {
     text-decoration: none;
     transition: all .1s linear;
+    cursor: pointer;
+}
+
+ul {
+    padding-left: 0;
 }
 
 .btn, .btn:focus, .btn:active:focus, button {
@@ -188,7 +192,7 @@ textarea {
 #showcase {
     max-width: 950px;
     text-align: center;
-    padding: 50px 0;
+    padding: 30px 0;
     margin: auto;
 }
 
@@ -207,7 +211,7 @@ textarea {
 /* Control Panel */
 
 #control-panel.row {
-    padding: 20px 0;
+    padding: 12px 0;
     margin-top: 45px;
     background-color: #ecf0f1;
     border-radius: 5px;
@@ -271,6 +275,7 @@ textarea {
 .votes.user-voted {
     background-color: #e74c3c;
     border: 1px solid #e74c4c;
+    border-left: none;
     color: white;
 }
 
@@ -324,12 +329,15 @@ textarea {
     margin-bottom: 18px;
 }
 
+.project-title .title {
+    margin-right: 8px;
+}
+
 .project-labels {
     display: inline-block;
     font-size: 15px;
     vertical-align: middle;
     padding-bottom: 5px;
-    margin-left: 8px;
 }
 
 .project-labels .label {
@@ -445,66 +453,95 @@ span#admin-logout {
     margin: 50px auto;
 }
 
-#profile-container .ih-item {
-    width: 100%;
-    height: auto;
-    box-shadow: none;
+#profile-overview { 
+    text-align: center;
+}
+
+#profile-overview img {
+    width: 150px;
+}
+
+#profile-overview .bio {
+    font-size: 18px;
+    margin-bottom: 25px;
+    color: #888;
+}
+
+#profile-overview h1 {
+    font-size: 40px;
+    font-weight: 600;
+}
+
+#profile-overview li {
+    display: inline-block;
+    width: 175px;
+}
+
+#profile-overview .title {
+    font-weight: 300;
+    font-size: 12px;
+    letter-spacing: 1px;    
+}
+
+#profile-overview li p, #profile-overview li i {
+    font-size: 18px;
+}
+
+#profile-feed h2 {
+    text-align: center;
+    font-size: 18px;
+}
+
+#profile-feed {
+    max-width: 650px;
+    margin: 50px auto;
+}
+
+#profile-voted img {
+    margin: 10px 20px 10px 0;
+}
+
+#profile-feed .media {
+    margin: 15px 0;
+}
+
+#profile-feed .media-heading, #profile-container .fa {
+    color: #565a5c;
+}
+
+#profile-feed .media-heading:hover, #profile-container .fa:hover {
+    color: #33ccff;
 }
 
 #profile-container .fa {
     margin-right: 10px;
 }
 
-#profile-container h2 {
-    font-size: 18px;
-    font-weight: 600;
-}
-
-#profile-container h1 {
-    font-size: 24px;
-    margin-bottom: 15px;
-}
-
-#profile-container .thumbnail {
-    border: 1px solid #ddd;
-    padding: 30px 10px 10px 10px;
-}
-
-#profile-sidebar {
-    padding: 0 50px;
-}
-
-.vote-card {
-    padding: 10px 20px 5px 20px;
-    margin: 10px 0;
-    border-radius: 3px;
-    border: 1px solid #eee;
-}
-
-.vote-card .name {
-    font-weight: 600;
-    font-size: 20px;
-}
-
-.vote-card .description {
-    color: #565a5c;
-}
-
-.vote-card .date {
-    font-size: 12px;
-    color: #34495e;
-    margin-left: 10px;
-}
-
 /* Project page */
 #project-container {
-    max-width: 1000px;
-    padding: 55px 0;
+    max-width: 800px;
+    padding: 50px 0 100px 0;
     margin: auto;
 }
 
 #project-container .logo {
     max-width: 100%;
+}
+
+.video-container {
+    position:relative;
+    padding-bottom:56.25%;
+    padding-top:30px;
+    height:0;
+    overflow:hidden;
+}
+
+.video-container iframe, .video-container object, .video-container embed {
+    position:absolute;
+    top:0;
+    left:0;
+    width:100%;
+    height:100%;
 }
 
 #project-container h2 {
@@ -515,6 +552,41 @@ span#admin-logout {
 #project-container .vote-row {
     border: 1px solid #eeeeee;
     padding: 20px;
+}
+
+#project-container .dropdown-toggle {
+    cursor: pointer;
+    padding: 0 10px;
+}
+
+#project-container textarea {
+    width: 100%;
+    height: 100px;
+}
+
+#project-container input[type=text] {
+    width: 100%;
+}
+
+#project-feed .project-demo input[type=text] {
+    margin-bottom: 15px;
+}
+
+#project-feed .member {
+    padding: 10px 0;
+}
+
+#project-feed .member .media-heading {
+    color: #565a5c;
+    font-weight: 600;
+}
+
+#project-container .save-edit {
+    margin-bottom: 10px;
+}
+
+#project-container .save-edit .btn {
+    margin-right: 5px;
 }
 
 #project-feed > div, #project-sidebar > div {
@@ -528,6 +600,22 @@ span#admin-logout {
 #project-feed .basic-info h1 {
     margin-top: 0;
     font-weight: 600;
+}
+
+#project-feed .basic-info p {
+    font-size: 16px;
+    font-weight: 300;
+}
+
+#project-feed #tagEditor {
+    border: 1px solid #aaa;
+    padding: 3px 5px 5px 5px;
+}
+
+#project-feed #inputTags {
+    width: auto;
+    border: none;
+    outline: none;
 }
 
 #project-feed .tags .label {
@@ -544,37 +632,53 @@ span#admin-logout {
     margin: 5px 0;
 }
 
-#project-feed .timeline-tooltip p {
-    
-}
-
-#project-feed .timeline-tooltip p.date {
-    
-}
-
 #project-feed .tags {
     margin-bottom: 15px;
 }
 
-#project-feed .members .member {
-    padding-left: 0;
+#status-bar {
+    position: fixed;
+    background-color: white;
+    height: 55px;
+    border-top: 1px solid #ddd;
+    bottom: 0;
+    z-index: 1;
+    width: 100%;
 }
 
-#project-feed .members .member .media-heading {
-    font-size: 20px;
+#status-bar .post-date {
+    color: #aaa;
+    font-weight: 300;
 }
 
-#project-feed .members .member p.email {
-    font-size: 12px;
+#status-bar .status-item {
+    display: inline-block;
+    padding: 15px;
 }
 
-#project-feed .members .member span.grad {
-    font-size: 14px;
-    margin-left: 10px;
-    color: black;
+#user-votes-content {
+    padding: 0;
 }
 
-#project-sidebar .vote-large {
+#user-votes-content img {
+    margin-right: 10px;
+}
+
+#user-votes-content ul {
+    margin-bottom: 0;
+}
+
+#status-bar .save-edit {
+    display: inline-block;
+    padding: 10px;
+}
+
+#status-bar .status-item .text {
+    margin-right: 10px;
+    font-size: 16px;
+}
+
+#status-bar .vote-large {
     padding: 10px;
     transition: all .1s linear;
     display: inline-block;
@@ -582,37 +686,32 @@ span#admin-logout {
     background-color: white;
     border: 1px solid #E08283;
     color: #E08283;
+    margin-left: 20px;
+    margin-top: 5px;
 }
 
-#project-sidebar .vote-container {
-    text-align: center;
-}
-
-#project-sidebar .vote-large .glyphicon {
+#status-bar .vote-large .glyphicon {
     top: 2px;
-    margin-right: 5px;
 }
 
-#project-sidebar .vote-large.user-not-voted:hover {
+#status-bar .vote-large .vote-count {
+    margin-left: 5px;
+}
+
+#status-bar .vote-large.user-not-voted:hover {
     background-color: #E08283;
     border: 1px solid #E08283;
     color: white;
 }
 
-#project-sidebar .vote-large.user-voted {
+#status-bar .vote-large.user-voted {
     background-color: #e74c3c;
     border: 1px solid #e74c4c;
     color: white;
 }
 
-#project-sidebar .voter {
-    text-align: center;
-}
-
-#project-sidebar .voter img {
-    width: 100%;
-    max-width: 80px;
-    margin: 10px 0;
+#status-bar .vote-large, #votes-container {
+    float: right;
 }
 
 /* CREATE PROJECT */
@@ -685,7 +784,7 @@ span#admin-logout {
     height: 35px;
 }
 
-#inputTags, #memberInput {
+#create-form #inputTags, #memberInput {
     border: none;
     outline: none;
 }
@@ -748,20 +847,20 @@ span#admin-logout {
         width: 100%;
     }
 
-    #login-bar {
-        text-align: center;
-    }
-
-    #logo {
-        text-align: right;
-    }
-
     #header {
         padding: 20px 0;
     }
 
     #splash {
         min-height: 400px;
+    }
+
+    #fb-login .fa {
+        margin-right: 0;
+    }
+
+    .profile-picture.small {
+        margin-right: 0;
     }
 
     #title-container {
@@ -776,9 +875,5 @@ span#admin-logout {
 
     #subtitle {
         font-size: 18px;
-    }
-
-    #profile-feed {
-        padding: 0 20px;
     }
 }

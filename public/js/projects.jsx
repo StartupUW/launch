@@ -122,13 +122,14 @@ var ProjectInfo = React.createClass({
 
         return (
             <div className="project-info col-xs-9">
-                <h2 className="project-title"> {this.props.project.name}  
+                <h2 className="project-title">
+                    <span className="title">{this.props.project.name}</span>
                     <div className="project-labels">
                         {labelNodes}
                     </div>
                 </h2>
                 <div className="posted">{diff}</div>
-                <p className="project-description"> {this.props.project.description} </p>
+                <p className="project-description"> {this.props.project.description.split(".")[0] + "."} </p>
                 <a href={"/project/" + this.props.project._id}>
                     <div className="more"> SEE MORE </div>
                 </a>
