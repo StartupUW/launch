@@ -424,7 +424,7 @@ var ProjectOverview = React.createClass({
                 <SaveEditable editMode={editMode} submit={this.submit} cancel={this.cancel}/>
                 {editableWebsite}
                 <span className="status-item"><span className="text">Hiring</span>{editableHiring}</span>
-                <span className="status-item hidden-xs">Posted on { (new Date(project.date)).toLocaleDateString() }</span>
+                <span className="status-item hidden-xs post-date">Posted on { (new Date(project.date)).toLocaleDateString() }</span>
                 <EditSelection canEdit={this.props.canEdit} editMode={this.state.edit} edit={this.edit} dropup="dropup"/>
             </div>
         );

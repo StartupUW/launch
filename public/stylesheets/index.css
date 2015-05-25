@@ -5,9 +5,8 @@ html, body {
     padding: 0;
 }
 
-body {
+body, a {
     font-family: "Source Sans Pro", sans-serif;
-    color: #565a5c;
 }
 
 a, a:hover, a:visited, a:active {
@@ -616,15 +615,9 @@ span#admin-logout {
     width: 100%;
 }
 
-#founders-tag {
-    position: fixed;
-    bottom: 55px;
-    left: 0;
-    width: 85px;
-    height: 25px;
-    padding: 2px 8px;
-    background-color: #33ccff;
-    color: white;
+#status-bar .post-date {
+    color: #aaa;
+    font-weight: 300;
 }
 
 #status-bar .status-item {

@@ -39,8 +39,9 @@ block append content
                                         .media-body
                                             a(href="/project/#{project._id}")
                                                 h3.media-heading= project.name
-                                            p= project.tags
-                                        .media-right.media-middle
+                                            if project.tags.length
+                                                p Tags: #{project.tags}
+                                        .media-right.media-middle.hidden-xs
                                             a(href="/project/#{project._id}")
                                                 img.media-object(width="80px" src="/uploads/#{project.images[0]}")
                                     hr
@@ -54,6 +55,12 @@ block append content
                         .row
                             each vote in votes
                                 a(href="/project/#{vote.project._id}")
-                                    img(src="/uploads/#{vote.project.images[0]}" height="50px")
+                                    img(src="/uploads/#{vote.project.images[0]}" data-toggle="tooltip" data-placement="bottom" title="#{vote.project.name}" height="50px")
         else
             h1 No such user exists!
+
+block append scripts
+    script.
+        $(document).ready(function() {
+            $('[data-toggle="tooltip"]').tooltip();
+        });
