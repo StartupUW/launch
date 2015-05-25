@@ -4,9 +4,7 @@
 
 var Editable = React.createClass({
     render: function() {
-        if (this.props.editMode) {
-            return this.props.input;
-        }
+        if (this.props.editMode) return this.props.input;
         return (<span>{this.props.value}</span>);
     }
 });
@@ -19,7 +17,7 @@ var SaveEditable = React.createClass({
                     <button onClick={this.props.submit} className="btn btn-primary">Save</button>
                     <button onClick={this.props.cancel} className="btn btn-default">Cancel</button>
                 </div>
-                );
+            );
         }
         return (<span></span>);
     }
@@ -27,42 +25,38 @@ var SaveEditable = React.createClass({
 
 var EditSelection = React.createClass({
     render: function() {
-        if (!this.props.canEdit || this.props.editMode) {
-            return (<div></div>);
-        }
+        if (!this.props.canEdit || this.props.editMode) return (<div></div>);
         return (
-            <span className="dropdown">
+            <span className={"dropdown " + this.props.dropup}>
                 <span className="dropdown-toggle" type="button" id="dropdown" data-toggle="dropdown" aria-expanded="true">
                     <span className="edit-project caret"></span>
                 </span>
                 <ul className="dropdown-menu" role="menu" aria-labelledby="dropdown">
-                <li onClick={this.props.edit} role="presentation"><a role="menuitem" tabIndex="-1" href="#">Edit</a></li>
+                <li onClick={this.props.edit} role="presentation"><a role="menuitem" tabIndex="-1">Edit</a></li>
                 </ul>
             </span>
         );
     }
 })
 
-var genericSubmit = function(data) {
+////////////////////////////////
+//          MAIN              //
+////////////////////////////////
+
+var url = "/api/project/" + $("#project-id").val();
+
+var updateProject = function(data) {
     $.ajax({
-        url: this.props.url,
+        url: url,
         method: "PUT",
         data: data,
     }).done(function() {
-        this.setState({ 
-            saved: data,
-            edit: false,
-        });
+        this.setState({ saved: data, edit: false });
     }.bind(this)).fail(function(err) {
         this.setState({ edit: false });
         console.log(err);
     }.bind(this));
 };
-
-///////////////////////////////////
-//////////////////////////////////
-
-var url = "/api/project/" + $("#project-id").val();
 
 $.get(url, function(data) {
     var user = data.user;
@@ -86,26 +80,22 @@ $.get(url, function(data) {
     loadFacebook();
 });
 
-/* Project */
+////////////////////////////////
+//      REACT COMPONENTS      //
+////////////////////////////////
+
 var Project = React.createClass({
     componentDidMount: function() {
         loadFacebook();
     },
     render: function() {
         var project = this.props.project;
-        if (!project) {
-            return (<div className="row"><div className="col-xs-12"><h1>Project Not Found</h1></div></div>);
-        }
-        return (
-            <div className="row">
-                <ProjectFeed {...this.props} />
-                <ProjectSidebar {...this.props} />
-            </div>
-        );
+        if (!project) return <div className="row"><div className="col-xs-12"><h1>Project Not Found</h1></div></div>;
+        return <div className="row"><ProjectFeed {...this.props} /></div>;
     }
 });
 
-/* Project > ProjectFeed */
+
 var ProjectFeed = React.createClass({
     mixins: [React.addons.LinkedStateMixin],
     getInitialState: function() {
@@ -122,7 +112,7 @@ var ProjectFeed = React.createClass({
         this.setState({ edit: true });
     },
     submit: function() {
-        genericSubmit.bind(this, {
+        updateProject.bind(this, {
             name: this.state.inputName,
             description: this.state.inputDescription,
             tags: this.state.inputTags,
@@ -135,6 +125,45 @@ var ProjectFeed = React.createClass({
         var project = this.props.project;
         var user = this.props.user;
         var canEdit = this.props.canEdit;
+        return (
+            <div id="project-feed" className="col-md-12">
+                <ProjectBasicInfo user={user} project={project} canEdit={canEdit} />
+                <ProjectDemo user={user} project={project} canEdit={canEdit} />
+                <GoogleTimeline graphName="timeline" timeline={project.timeline} canEdit={canEdit} />
+                <ProjectMembers members={project.members} canEdit={canEdit} />
+            </div>
+        );
+    }
+});
+
+var ProjectBasicInfo = React.createClass({
+    mixins: [React.addons.LinkedStateMixin],
+    getInitialState: function() {
+        var project = this.props.project;
+        return { 
+            edit: false,
+            saved: { name: project.name, tags: project.tags, description: project.description },
+            inputName: project.name,
+            inputTags: project.tags,
+            inputDescription: project.description,
+        }
+    },
+    edit: function() {
+        this.setState({ edit: true });
+    },
+    submit: function() {
+        updateProject.bind(this, {
+            name: this.state.inputName,
+            description: this.state.inputDescription,
+            tags: this.state.inputTags,
+        })();
+    },
+    cancel: function() {
+        this.setState({ edit: false });
+    },
+    render: function() {
+        var project = this.props.project;
+        var canEdit = this.props.canEdit;
         var saved = this.state.saved;
         var editMode = this.state.edit;
         var imgSrc = project.images[0] ? "/uploads/" + project.images[0] : "/img/suw-logo.png";
@@ -144,29 +173,25 @@ var ProjectFeed = React.createClass({
             return index == 0 ? (<p>{p}</p>) : (<p>{p}<br/></p>);
         });
         return (
-            <div id="project-feed" className="col-md-8">
-                <div className="row basic-info">
-                    <div className="title">
-                        <div className="col-md-9">
-                            <h1>
-                                <Editable editMode={editMode} value={saved.name} input={editName}/>
-                                <EditSelection canEdit={this.props.canEdit} editMode={editMode} edit={this.edit} />
-                            </h1>
-                            <ProjectTags tags={project.tags}/>
-                            <Editable editMode={editMode} value={descriptionNode} input={editDescription}/>
-                            <SaveEditable editMode={editMode} submit={this.submit} cancel={this.cancel}/>
-                        </div>
-                        <div className="hidden-xs hidden-sm col-md-3">
-                            <div className="img-responsive"><img className="logo" src={imgSrc}/></div>
-                        </div>
+            <div className="row basic-info">
+                <div className="title">
+                    <div className="col-md-9">
+                        <h1>
+                            <Editable editMode={editMode} value={saved.name} input={editName}/>
+                            <EditSelection canEdit={canEdit} editMode={editMode} edit={this.edit} />
+                        </h1>
+                        <ProjectTags tags={project.tags}/>
+                        <Editable editMode={editMode} value={descriptionNode} input={editDescription}/>
+                        <SaveEditable editMode={editMode} submit={this.submit} cancel={this.cancel}/>
+                    </div>
+                    <div className="hidden-xs hidden-sm col-md-3">
+                        <div className="img-responsive"><img className="logo" src={imgSrc}/></div>
                     </div>
                 </div>
-                <ProjectDemo user={user} project={project} canEdit={canEdit} url={this.props.url}/>
-                <GoogleTimeline graphName="timeline" timeline={project.timeline} canEdit={canEdit} url={this.props.url}/>
             </div>
-        );
+    );
     }
-});
+})
 
 /* Project > ProjectFeed > ProjectTags*/
 var ProjectTags = React.createClass({
@@ -193,7 +218,7 @@ var ProjectDemo = React.createClass({
         this.setState({edit: true});
     },
     submit: function() {
-        genericSubmit.bind(this, {
+        updateProject.bind(this, {
             demo: this.state.demoInput
         })();
     }, 
@@ -299,18 +324,53 @@ var GoogleTimeline = React.createClass({
     }
 });
 
-/* Project > ProjectSidebar */
-var ProjectSidebar = React.createClass({
+/* Project > ProjectFeed > ProjectMembers */
+var ProjectMembers = React.createClass({
     render: function() {
-        var project = this.props.project;
+        var memberNodes = this.props.members.map(function(member) {
+            return (<ProjectMember key={member._id} member={member.user} />)
+        });
         return (
-            <div id="project-sidebar" className="col-md-4">
-                <ProjectOverview project={project} {...this.props} />
-                <FacebookPage page={project.fbPage} />
+            <div>
+                <h2>Founders</h2>
+                <div className="members row">{ memberNodes }</div>
             </div>
         );
     }
 });
+
+
+/* Project > ProjectFeed > ProjectMembers > ProjectMember  */
+var ProjectMember = React.createClass({
+    render: function() {
+        var member = this.props.member;
+        return (
+            <div className="member col-xs-12 media">
+                <div className="media-left"><img className="img-circle media-object" src={member.picture} height="60px" width="60px"></img></div>
+                <div className="media-body">
+                    <a href={"/profile/" + member._id}>
+                        <h4 className="media-heading">{member.fname + " " + member.lname}</h4>
+                    </a>
+                    <p className="bio">{member.bio}</p>
+                </div>
+            </div>
+        );
+    }
+});
+
+var StatusBar = React.createClass({
+    render: function() {
+        var project = this.props.project;
+        var canEdit = this.props.canEdit;
+        return (
+            <div className="row">
+                <ProjectOverview project={project} {...this.props} />
+                <ProjectVotes {...this.props} />
+            </div>
+        );
+               
+    }
+})
 
 /* Project > ProjectSidebar > ProjectOverview */
 var ProjectOverview = React.createClass({
@@ -331,7 +391,7 @@ var ProjectOverview = React.createClass({
         this.setState({ edit: true });
     },
     submit: function() {
-        genericSubmit.bind(this, {
+        updateProject.bind(this, {
             website: this.state.inputWebsite,
             hiring: this.state.inputHiring,
         })();
@@ -342,88 +402,36 @@ var ProjectOverview = React.createClass({
     render: function() {
         var project = this.props.project;
         var saved = this.state.saved;
-        var editWebsite = (<input type="text" name="website" valueLink={this.linkState('inputWebsite')}/>);
-        var editHiring = (<input type="checkbox" name="hiring" checkedLink={this.linkState('inputHiring')}/>);
-        var editWebsiteNode = (<Editable editMode={this.state.edit} value={"Visit"} input={editWebsite}/>);
-        var websiteNode = (                        
-            <a target="_blank" href={saved.website}>{editWebsiteNode}</a>
-        );
-        if (this.state.edit) {
-            websiteNode = editWebsiteNode;
-        }
-        return (
-            <div className="panel panel-default">
-                <div className="panel-heading">
-                    Overview
-                    <EditSelection canEdit={this.props.canEdit} editMode={this.state.edit} edit={this.edit}/>
-                </div>
-                <div className="panel-body">
-                    <p>Website:&nbsp;
-                        {websiteNode}
-                    </p>
-                    <p>Hiring:&nbsp;
-                        <Editable editMode={this.state.edit} value={saved.hiring ? "Yes": "No"} input={editHiring}/>
-                    </p>
-                    <p>Posted On: { (new Date(project.date)).toLocaleDateString() }</p>
-                    <SaveEditable editMode={this.state.edit} submit={this.submit} cancel={this.cancel}/>
-                </div>
-            </div>
-        );
-    }
-});
+        var editMode = this.state.edit;
 
-var StatusBar = React.createClass({
-    render: function() {
-        var project = this.props.project;
-        var canEdit = this.props.canEdit;
-        return (
-            <div className="row">
-                <ProjectMembers members={project.members} project={project} canEdit={canEdit} url={this.props.url} />
-                <div className="col-xs-4 col-md-4 social">
-                    <ProjectVotes {...this.props} />
-                </div>
-            </div>
+        var editWebsite = <input type="text" name="website" valueLink={this.linkState('inputWebsite')}/>;
+        var defaultWebsite = (
+            <a target="_blank" href={saved.website}>
+                <span className="status-item">
+                    <span className="text hidden-xs">Website</span>
+                    <i className="fa fa-external-link"></i>
+                </span>
+            </a>
         );
-               
-    }
-})
+        var editableWebsite = <Editable editMode={editMode} value={defaultWebsite} input={editWebsite}/>;
 
-/* Project > ProjectFeed > ProjectMembers */
-var ProjectMembers = React.createClass({
-    render: function() {
-        var memberNodes = this.props.members.map(function(member) {
-            return (<ProjectMember key={member._id} member={member.user} />)
-        });
+        var editHiring = <input type="checkbox" name="hiring" checkedLink={this.linkState('inputHiring')}/>;
+        var defaultHiring = <i className={"fa " + (saved.hiring ? "fa-check-circle-o" : "fa-circle-o")}></i>;
+        var editableHiring = <Editable editMode={editMode} value={defaultHiring} input={editHiring}/>
+
         return (
-            <div className="members col-xs-8 col-md-8">
-                { memberNodes }
+            <div className="col-xs-8">
+                <SaveEditable editMode={editMode} submit={this.submit} cancel={this.cancel}/>
+                {editableWebsite}
+                <span className="status-item"><span className="text">Hiring</span>{editableHiring}</span>
+                <span className="status-item hidden-xs">Posted on { (new Date(project.date)).toLocaleDateString() }</span>
+                <EditSelection canEdit={this.props.canEdit} editMode={this.state.edit} edit={this.edit} dropup="dropup"/>
             </div>
         );
     }
 });
 
 
-/* Project > ProjectFeed > ProjectMembers > ProjectMember  */
-var ProjectMember = React.createClass({
-    render: function() {
-        var member = this.props.member;
-        return (
-            <div className="member media">
-                <div className="media-left"><img className="img-circle media-object" src={member.picture} width="30px"></img></div>
-                <div className="media-body hidden-xs hidden-sm">
-                    <a href={"/profile/" + member._id}>
-                        <p className="media-heading">
-                            {member.fname + " " + member.lname}
-                        </p>
-                    </a>
-                </div>
-            </div>
-        );
-    }
-});
-
-
-/* Project > ProjectFeed > ProjectVotes */
 var ProjectVotes = React.createClass({
     getInitialState: function() {
         var votes = this.props.votes;
@@ -436,27 +444,57 @@ var ProjectVotes = React.createClass({
     updateVotes: function(votes, myVote) {
         this.setState({ votes: votes, myVote: myVote });
     },
+    componentDidMount: function() {
+        this.updateModal();
+    },
+    componentDidUpdate: function() {
+        this.updateModal();
+    },
+    showModal: function() {
+        $("#user-votes").modal('show');
+    },
+    updateModal: function() {
+        var voteNodes = this.state.votes.map(function(vote) {
+            var user = this.props.user;
+            if (!user || (vote.user._id != user._id)) {
+                return (
+                    <li className="list-group-item">
+                        <a href={"/profile/" + vote.user._id}>
+                            <img className="img-circle" width="30px" src={vote.user.picture}/>
+                            {vote.user.fname + " " + vote.user.lname}
+                        </a>
+                    </li>
+                );
+            }
+        }.bind(this));
+        React.render(<ul className="list-group">{voteNodes}</ul>, document.getElementById('user-votes-content'));
+    },
     render: function() {
         var votes = this.state.votes;
-        var voteNodes = (<span>Be the first to upvote this!</span>);
         var myVote = this.state.myVote;
+        var votesNode = (<span>Be the first to upvote this!</span>);
         if (votes.length) {
-            voteNodes = (<span className="hidden-xs hidden-sm">{myVote ? "You and " : ""} {votes.length - (myVote ? 1: 0) } other{votes.length > 1 ? "s": ""} upvoted this project</span>);
+            votesNode = (
+                <span>
+                    {myVote ? (<span><a href="/profile">You</a> and </span>) : ""}
+                    <a onClick={this.showModal}>{votes.length - (myVote ? 1: 0) } other{votes.length > 1 ? "s": ""}</a>
+                    <span> upvoted this project</span>
+                </span>
+            );
         }
         return (
-            <div id="votes-container">
-                {voteNodes}
+            <div className="col-xs-4">
                 <VoteButton update={this.updateVotes} myVote={myVote} {...this.props} />
+                <span className="status-item" id="votes-container">{votesNode}</span>
             </div>
         );
     }
 });
 
-/* Project > ProjectSidebar > ProjectOverview > VoteButton */
 var VoteButton = React.createClass({
     handleClick: function() {
         if (this.props.user) {
-            $.get(this.props.url + '/vote', function(data) {
+            $.get(url + '/vote', function(data) {
                 this.props.update(data.votes, data.voteStatus);
             }.bind(this), 'json')
         }
@@ -473,7 +511,7 @@ var VoteButton = React.createClass({
     }
 });
 
-/* Project > ProjectSidebar > ProjectOverview > SocialShares*/
+/* 
 var SocialMedia = React.createClass({
     render: function() {
         return (
@@ -485,7 +523,6 @@ var SocialMedia = React.createClass({
     }
 })
 
-/* Project > ProjectSidebar > ProjectOverview > FacebookPage */
 var FacebookPage = React.createClass({
     render: function() {
         var page = this.props.page;
@@ -501,3 +538,4 @@ var FacebookPage = React.createClass({
         return (<div></div>);
     }
 });
+*/

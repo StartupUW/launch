@@ -13,6 +13,7 @@ body {
 a, a:hover, a:visited, a:active {
     text-decoration: none;
     transition: all .1s linear;
+    cursor: pointer;
 }
 
 .btn, .btn:focus, .btn:active:focus, button {
@@ -502,7 +503,7 @@ span#admin-logout {
 
 /* Project page */
 #project-container {
-    max-width: 1000px;
+    max-width: 800px;
     padding: 50px 0 100px 0;
     margin: auto;
 }
@@ -537,6 +538,15 @@ span#admin-logout {
 
 #project-feed .project-demo input[type=text] {
     margin-bottom: 15px;
+}
+
+#project-feed .member {
+    padding: 10px 0;
+}
+
+#project-feed .member .media-heading {
+    color: #565a5c;
+    font-weight: 600;
 }
 
 #project-container .save-edit {
@@ -604,28 +614,31 @@ span#admin-logout {
     color: white;
 }
 
-#status-bar .members {
-    padding: 12px;
-}
-
-#status-bar .members .member {
+#status-bar .status-item {
     display: inline-block;
-    margin-right: 15px;
+    padding: 15px;
 }
 
-#status-bar .members .media {
-    margin-top: 0;
+#user-votes-content {
+    padding: 0;
 }
 
-#fb-share, #votes-container {
+#user-votes-content img {
+    margin-right: 10px;
+}
+
+#user-votes-content ul {
+    margin-bottom: 0;
+}
+
+#status-bar .save-edit {
     display: inline-block;
-    float: right;
-    padding-top: 5px;
+    padding: 10px;
 }
 
-#status-bar .members .media-body {
-    width: auto;
-    vertical-align: middle;
+#status-bar .status-item .text {
+    margin-right: 10px;
+    font-size: 16px;
 }
 
 #status-bar .vote-large {
@@ -637,10 +650,7 @@ span#admin-logout {
     border: 1px solid #E08283;
     color: #E08283;
     margin-left: 20px;
-}
-
-#status-bar .vote-container {
-    text-align: center;
+    margin-top: 5px;
 }
 
 #status-bar .vote-large .glyphicon {
@@ -663,14 +673,8 @@ span#admin-logout {
     color: white;
 }
 
-#project-sidebar .voter {
-    text-align: center;
-}
-
-#project-sidebar .voter img {
-    width: 100%;
-    max-width: 80px;
-    margin: 10px 0;
+#status-bar .vote-large, #votes-container {
+    float: right;
 }
 
 /* CREATE PROJECT */
