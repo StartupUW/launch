@@ -378,7 +378,7 @@ var StatusBar = React.createClass({
         var canEdit = this.props.canEdit;
         return (
             <div className="row">
-                <ProjectMembers members={project.members} canEdit={canEdit} url={this.props.url} />
+                <ProjectMembers members={project.members} project={project} canEdit={canEdit} url={this.props.url} />
                 <div className="col-xs-4 col-md-4 social">
                     <ProjectVotes {...this.props} />
                 </div>
@@ -467,7 +467,7 @@ var VoteButton = React.createClass({
         return (
             <div onClick={this.handleClick} className={className}>
                 <span className="glyphicon glyphicon-heart"></span>
-                <span className="vote-count">Upvote</span>
+                <span className="vote-count hidden-xs">Upvote</span>
             </div>
         );
     }

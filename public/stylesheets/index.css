@@ -593,6 +593,17 @@ span#admin-logout {
     width: 100%;
 }
 
+#founders-tag {
+    position: fixed;
+    bottom: 55px;
+    left: 0;
+    width: 85px;
+    height: 25px;
+    padding: 2px 8px;
+    background-color: #33ccff;
+    color: white;
+}
+
 #status-bar .members {
     padding: 12px;
 }
@@ -634,7 +645,10 @@ span#admin-logout {
 
 #status-bar .vote-large .glyphicon {
     top: 2px;
-    margin-right: 5px;
+}
+
+#status-bar .vote-large .vote-count {
+    margin-left: 5px;
 }
 
 #status-bar .vote-large.user-not-voted:hover {
