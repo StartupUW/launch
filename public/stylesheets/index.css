@@ -472,18 +472,17 @@ span#admin-logout {
     font-weight: 600;
 }
 
-#profile-overview li {
-    display: inline-block;
-    width: 175px;
+#profile-overview .summary {
+    max-width: 600px;
+    margin: auto;
 }
-
 #profile-overview .title {
     font-weight: 300;
     font-size: 12px;
     letter-spacing: 1px;    
 }
 
-#profile-overview li p, #profile-overview li i {
+#profile-overview .summary p, #profile-overview .summary i {
     font-size: 18px;
 }
 

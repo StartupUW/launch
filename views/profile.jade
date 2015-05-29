@@ -9,14 +9,14 @@ block append content
                     h1 #{profile.fname} #{profile.lname} 
                     p.bio= profile.bio
 
-                    ul
-                        li
+                    .row.summary
+                        .col-md-4
                             span.title MAJOR
                             p= profile.major
-                        li 
+                        .col-md-4
                             span.title GRADUDATING
                             p= profile.gradyr
-                        li
+                        .col-md-4
                             span.title ELSEWHERE
                             p.social-media
                                 a(href="mailto:#{profile.email}")
