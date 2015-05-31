@@ -2,10 +2,36 @@ var express = require('express');
 var router = express.Router();
 var Users = require('../models/users');
 var Votes = require('../models/votes');
+var Projects = require('../models/projects');
 
-router.get('/', function(req, res, next) {
-  res.send('User profiles');
-});
+router.route('/')
+    .get(function(req, res, next){
+        Users.findById(req.session.user._id, function(err, me){
+            if(err) {
+                res.send(err);
+            }
+            Votes.find({ user: me._id }).populate('project', '_id name images').exec(function(err, votes) {
+                Projects.find({ "members.user" : req.session.user._id }, function(err, projects){
+                    res.render('profile', { votes: votes, profile: me, projects : projects, user: req.session.user });
+                });
+            });
+        });
+    })
+    .put(function(req, res, next){
+        User.findById(req.session.user._id,function(req,res) {
+            if(err) {
+                res.send(err);
+            }
+            if(req.body.email) user.email = req.body.email;
+            if(req.body.bio) user.bio = req.body.bio;
+            if(req.body.major) user.major = req.body.major;
+            if(req.body.gradyr) user.gradyr = req.body.gradyr;
+            user.save(function(err) {
+                if(err) res.send(err);
+                res.send('User updated');
+            });
+        });
+    });
 
 router.route('/create')
 	.post(function(req,res) {
@@ -39,7 +65,7 @@ router.route('users/:user_id')
 		user.save(function(err) {
 			if(err) { 
                 res.send(err); 
-                return; 
+                return;
             }
             req.session.user = user;
             res.redirect('/');
@@ -48,13 +74,19 @@ router.route('users/:user_id')
 
 router.route('/:user_id')
     .get(function(req, res) {
+        if(req.params.user_id  == req.session.user._id){
+            res.redirect('/profile'); return;
+        }
         Users.findOne({ _id: req.params.user_id }, function(err, profile) {
             if(err || !profile) { 
                 res.json(err);
                 return;
             }
-            Votes.find({ user: profile._id }).populate('project', '_id name description').exec(function(err, votes) {
-                res.render('profile', { votes: votes, profile: profile, user: req.session.user });
+            Votes.find({ user: profile._id }).populate('project', '_id name images').exec(function(err, votes) {
+                Projects.find({ "members.user" : req.session.user._id }, function(err, projects) {
+                    console.log(projects);
+                    res.render('profile', { votes: votes, profile: profile, projects : projects, user: req.session.user });
+                });
             });
         });
     });

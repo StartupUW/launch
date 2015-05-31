@@ -1,41 +1,60 @@
 extends ./layout.jade
 
+block css
+    link(rel="stylesheet" href="/stylesheets/ihover.css")
+
 block append content
     #profile-container.container
         if profile
             .row
                 .col-md-3
-
                     .thumbnail
                         img(src=profile.picture ? profile.picture : "/img/default-profile.png")
                         .caption
-                            h1 #{profile.fname} #{profile.lname}
+                            h1 #{profile.fname} #{profile.lname} 
+                                if user && profile._id == user._id
+                                    i.fa.fa-pencil
                             p
                                 i.fa.fa-envelope
                                 | #{profile.email}
+                                
                             p
                                 i.fa.fa-quote-left
                                 | #{profile.bio}
+
                             p
                                 i.fa.fa-graduation-cap
-                                | #{profile.major} &bull; Class of #{profile.gradyr}
+                                | #{profile.major} &bull; Class of #{profile.gradyr} &nbsp;
 
                 #profile-feed.col-md-9
-                    h2#profile-projects Projects
-                    if !projects
-                        .panel
-                            .panel-body This user has no public projects yet.
-                    h2#profile-voted Upvoted
-                    if !votes
-                        .panel 
-                            .panel-body This user has not voted on any projects yet.
-                    else
-                        .row
-                            each vote in votes
-                                a(href="/project/#{vote.project._id}")
-                                    .vote-card
-                                        p.name #{vote.project.name}
-                                            span.date #{(new Date(vote.date)).toLocaleDateString()}
-                                        p.description #{vote.project.description}
+                    h2 Projects
+
+                    #profile-projects
+                        if !projects
+                            .panel
+                                .panel-body This user has no public projects yet.
+                        else
+                            .row
+                                each project in projects
+                                    .col-md-3
+                                        .ih-item.square.effect6.from_top_and_bottom
+                                            a(href="/project/#{project._id}")
+                                                .img
+                                                    img(src="/uploads/#{project.images[0]}")
+                                                .info
+                                                    h3= project.name
+                                                    p= project.tags
+
+                    h2 Upvoted
+                    #profile-voted
+                        if !votes
+                            .panel 
+                                .panel-body This user has not voted on any projects yet.
+                        else
+                            .row
+                                each vote in votes
+                                    .col-md-1.col-xs-1.projectlogo
+                                        a(href="/project/#{vote.project._id}")
+                                            img(src="/uploads/#{vote.project.images[0]}" height="50px")
         else
             h1 No such user exists!

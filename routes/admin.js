@@ -39,12 +39,20 @@ router.route('/console')
         renderProjects([], res);
     })
     .post(function(req, res) {
-        if (req.body.hasOwnProperty("id")) {
-            Projects.update({ _id: req.body.id }, { approved: true }, function(err, updated) {
-                var errors = [];
-                if (err) errors.append(err);
-                renderProjects(errors, res);
-            });
+        if (req.body.action) {
+            if (req.body.action == "delete") {
+                Projects.remove({ _id: req.body.id }, function(err, updated) {
+                    var errors = [];
+                    if (err) errors.append(err);
+                    renderProjects(errors, res);
+                });
+            } else {
+                Projects.update({ _id: req.body.id }, { approved: true }, function(err, updated) {
+                    var errors = [];
+                    if (err) errors.append(err);
+                    renderProjects(errors, res);
+                });
+            }
         } else {
             renderProjects(['Did not receive a project id to delete'], res);
         }
@@ -57,8 +65,9 @@ router.get('/logout', function(req, res) {
 });
 
 var renderProjects = function(errors, res) {
-     Projects.find({ approved: false }, function(err, projects){
+     Projects.find({ approved: false }).populate('members.user', 'fname lname _id').exec(function(err, projects){
         if (err) errors.append(err);
+        console.log(projects);
         res.render('admin-console', { projects: projects, errors: errors });
         return;
     });

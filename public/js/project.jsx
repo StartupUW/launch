@@ -1,22 +1,13 @@
 var Member = React.createClass({
     componentDidMount: function() {
-        var member = this.props.member.member;
-        var role = this.props.member.role;
+        var user = this.props.member.user;
         var html = React.renderToString(
             <div>
-                <div className="row">
-                    <div className="col-md-6">
-                        <img src={member.picture}></img>
-                    </div>
-                    <div className="col-md-6">
-                        <p className="name">{member.fname} {member.lname}</p>
-                        <p className="grad">{member.major}</p>
-                    </div>
-                </div>
-                <p className="role">{role}</p>
+                <p>{user.bio}</p>
+                <span className="grad">{user.major}</span>
             </div>
         );
-        $('#' + member._id).popover({
+        $('#' + user._id).popover({
             html: true,
             content: html,
             trigger: 'hover active focus',
@@ -24,12 +15,69 @@ var Member = React.createClass({
         });
     },
     render: function() {
-        var member = this.props.member.member;
-        var role = this.props.member.role;
+        var user = this.props.member.user;
         return (
-            <a href={"/profile/" + member._id} className="member" id={member._id}>
-                {member.fname} {member.lname}
+            <a href={"/profile/" + user._id} className="member col-xs-4 col-md-3" id={user._id}>
+                <div>
+                    <img src={user.picture}></img>
+                    <div>{user.fname} {user.lname}</div>
+                </div>
             </a>
+        );
+    }
+});
+
+var ProjectInfo = React.createClass({
+    render: function() {
+        var project = this.props.project;
+
+        var memberNodes = project.members.map(function(member) {
+            return (<Member member={member} />);
+        });
+
+        var voteNodes = this.props.votes.map(function(vote) {
+            return (
+                <div className="col-xs-3 col-sm-2 voter">
+                    <img className="img-circle" src={vote.user.picture}></img>
+                    <span>{vote.user.fname}</span>
+                </div>            
+            );
+        });
+
+        var tagNodes = project.tags.map(function(tag, index) {
+            return(<span className="label label-primary">{tag}</span>);
+        });
+
+        var imgSrc = project.images[0] ? "/uploads/" + project.images[0] : "/img/suw-logo.png";
+
+        return (
+            <div id="project-info" className="col-md-8">
+                <div className="row basic-info">
+                    <div className="title">
+                        <div className="col-md-9">
+                            <h1>{project.name}</h1>
+                            <div className="tags"> { tagNodes }</div>
+                            <p>{project.description}</p>
+                        </div>
+                        <div className="hidden-xs hidden-sm col-md-3">
+                            <div className="img-responsive">
+                                <img src={imgSrc}/>
+                            </div>
+                        </div>
+                    </div>
+                    <div className="col-md-12 members">
+                        <h2>Founders</h2>
+                        { memberNodes }
+                    </div>
+
+                </div>
+                <div className="panel panel-default">
+                    <div className="panel-heading">Upvotes</div>
+                    <div className="panel-body">
+                        {voteNodes}
+                    </div>
+                </div>
+            </div>
         );
     }
 });
@@ -40,68 +88,30 @@ var VoteButton = React.createClass({
         var voted = false;
         if (user) {
             voted = this.props.votes.filter(function(el) {
-                return el.user === user._id;
+                return el.user._id === user._id;
             }).length === 1;
         }
         return {
-            numVotes: this.props.votes.length || 0,
             voted: voted
         };
     },
-    componentDidMount: function() {
-        $(".cannot-vote").tooltip({
-            title: 'You must sign in to vote on projects!',
-            placement: 'bottom'
-        });
-    },
     handleClick: function() {
         if (this.props.user) {
-            $.get('/api/project/' + this.props.id + '/vote')
-                .done(function(data) {
-                    //this.props.refreshVotes(data.voteStatus);
-                    this.setState({
-                        numVotes: this.state.numVotes + (data.voteStatus ? 1: -1),
-                        voted: data.voteStatus
-                    });
-                }.bind(this))
+            $.get(this.props.url + '/vote', function(data) {
+                this.setState({
+                    voted: data.voteStatus
+                });
+            }.bind(this), 'json')
         }
     },
     render: function() {
         var user = this.props.user;
-        var numVotes = this.state.numVotes;
-        var className = "votes-large";
-        className += this.state.voted ? " user-voted" : " user-not-voted";
-        className += user ? " can-vote" : " cannot-vote";
+        var className = "vote-large" + (this.state.voted ? " user-voted" : " user-not-voted");
 
         return (
-            <a onClick={this.handleClick} className={className}>
+            <div onClick={this.handleClick} className={className}>
                 <span className="glyphicon glyphicon-heart"></span>
-                <span className="vote-count"> {numVotes > 0 ? numVotes : ""}</span>
-            </a>
-        );
-    }
-});
-
-
-var ProjectInfo = React.createClass({
-    render: function() {
-        var project = this.props.project;
-        var memberNodes = this.props.members.map(function(member) {
-            return (<Member member={member} />);
-        });
-        return (
-            <div id="project-info" className="col-md-8">
-                <h1>{project.name}
-                </h1>
-                <VoteButton id={project._id} user={this.props.user} votes={this.props.votes}></VoteButton>
-                <div className="members">
-                    <h2>Members</h2>
-                    { memberNodes }
-                </div>
-                <div className="description">
-                    <h2>About</h2>
-                    <p>{project.description}</p>
-                </div>
+                <span className="vote-count">Upvote</span>
             </div>
         );
     }
@@ -123,14 +133,20 @@ var ProjectFeed = React.createClass({
                 </div>
             );
         }
+        var voteNode = this.props.user ? (<VoteButton {...this.props} />) : (<div></div>);
         return (
             <div id="project-feed" className="col-md-4">
-                <div className="contact-info">
-                    <p> Website: 
-                        <a target="_blank" href={"http://" + project.website}> {project.website} </a>
-                    </p>
-                    <p> Hiring: {project.hiring ? "Yes": "No"} </p>
-                    <p> Posted On: { (new Date(project.date)).toLocaleDateString()} </p>
+                <div className="panel panel-default">
+                    <div className="panel-heading">Overview</div>
+                        <div className="panel-body">
+                            <p> Website: 
+                                <a target="_blank" href={project.website}> {project.website} </a>
+                            </p>
+                            <p> Hiring: {project.hiring ? "Yes": "No"} </p>
+                            <p> Posted On: { (new Date(project.date)).toLocaleDateString()} </p>
+                            { voteNode }
+
+                        </div>
                 </div>
                 { fbNode }
             </div>
@@ -153,7 +169,6 @@ var Project = React.createClass({
             console.log(data);
             this.setState({
                 project: data.project,
-                members: data.members,
                 votes: data.votes,
                 user: data.user,
             });
@@ -170,8 +185,8 @@ var Project = React.createClass({
         }
         return (
             <div className="row">
-                <ProjectInfo user={this.state.user} votes={this.state.votes} project={this.state.project} members={this.state.members} />
-                <ProjectFeed project={this.state.project} fbPage={this.state.project.fbPage} />
+                <ProjectInfo user={this.state.user} votes={this.state.votes} project={this.state.project} />
+                <ProjectFeed url={this.props.url} user={this.state.user} votes={this.state.votes} project={this.state.project} fbPage={this.state.project.fbPage} />
             </div>
         );
     }

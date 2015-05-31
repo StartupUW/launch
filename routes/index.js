@@ -53,7 +53,7 @@ router.get('/project/:pid', function(req, res) {
 
 router.route('/project')
     .all(function(req, res, next) {
-        //if (checkLogin('You must be logged in to create a project', req, res, '/')) return;
+        if (checkLogin('You must be logged in to create a project', req, res, '/')) return;
         next();
     })
     .get(function(req, res) {

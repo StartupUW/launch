@@ -29,3 +29,18 @@ block append content
 
 block append scripts
     script(src="/js/create-projects.jsx" type="text/jsx")
+
+
+    #create-success.modal.fade
+        .modal-dialog
+            .modal-content
+                .modal-header
+                    h2.modal-title Congratulations!
+                .modal-body
+                    p Your project has been successfully added. We'll review it and you should see it published soon!
+                    p We'll contact you if there are any issues regarding your project.
+                .modal-footer
+                    .btn.btn-default(data-dismiss="modal") Close
+                    
+block append scripts
+    script(src="/js/create-project.jsx" type="text/jsx")

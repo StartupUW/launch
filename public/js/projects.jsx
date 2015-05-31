@@ -42,10 +42,10 @@ React.render(
 
 var ProjectImage = React.createClass({
     render: function() {
-        var srcUrl = this.props.src ? this.props.src : '/img/suw-logo.png';
+        var srcUrl = this.props.src ? "/uploads/" + this.props.src : '/img/suw-logo.png';
         return (
-            <div className="img-container col-sm-3 hidden-xs">
-                <img className="project-logo" src={srcUrl} />
+            <div className="img-container col-sm-3 hidden-xs hidden-sm">
+                <img className="project-logo" src={srcUrl}/>
             </div>
         );
     }
@@ -75,7 +75,6 @@ var VoteButton = React.createClass({
         if (this.props.user) {
             $.get('/api/project/' + this.props.project._id + '/vote')
                 .done(function(data) {
-                    //this.props.refreshVotes(data.voteStatus);
                     this.setState({
                         numVotes: this.state.numVotes + (data.voteStatus ? 1: -1),
                         voted: data.voteStatus
@@ -119,23 +118,16 @@ var ProjectInfo = React.createClass({
             return (<span key={tag} className="label label-default">{tag}</span>);
         });
 
-        var memberNodes = this.props.project.contact.map(function(member) {
-            return (<span key={member} className="member">{member}</span>);
-        });
-
         var diff = this.getDate(this.props.project.date);
 
         return (
-            <div className="project-info col-sm-9">
+            <div className="project-info col-xs-12">
                 <h2 className="project-title"> {this.props.project.name}  
                     <div className="project-labels">
                         {labelNodes}
                     </div>
                 </h2>
                 <div className="posted">{diff}</div>
-                <div className="project-members">
-                    {memberNodes}
-                </div>
                 <p className="project-description"> {this.props.project.description} </p>
                 <a href={"/project/" + this.props.project._id}>
                     <div className="more"> SEE MORE </div>
@@ -173,20 +165,6 @@ var ProjectList = React.createClass({
             votes: {}, projects: [], user: {}, filter: '',
             sort: DEFAULT_SORT, pageLimit: DEFAULT_PAGE_LIMIT, currentPage: 0
         };
-    },
-    refreshVotes: function(projectId, voteStatus) {
-        var update = {}
-        if (voteStatus) {
-            update[projectId] = {$push: [{user: this.state.user}]}
-        } else {
-            update[projectId] = {
-                $set: this.state.votes[projectId].filter(function(el) {
-                    return el.user._id !== this.state.user._id;
-                }.bind(this))
-            }
-        }
-        var votes = React.addons.update(this.state.votes, update);
-        this.setState({ votes: votes });
     },
     componentDidMount: function() {
         $.ajax({
@@ -239,16 +217,22 @@ var ProjectList = React.createClass({
                     project.tags.join(' ').toLowerCase().indexOf(filter) != -1;
             })
 
+        var totalLength = projectNodes.length;
+        
         projectNodes.sort(SORT_OPTIONS[sort].bind(this))
 
         projectNodes = projectNodes
             .map(function(project, index) {
                 var votes = this.state.votes[project._id] || [];
-                return (<Project key={project._id} project={project} refreshVotes={this.refreshVotes.bind(this, project._id)} votes={votes} index={index % pageLimit} user={user} />);
+                return (
+                    <div className="project col-xs-12">
+                        <ProjectImage src={project.images[0]}></ProjectImage>
+                        <ProjectInfo key={project._id} project={project} votes={votes} user={user}></ProjectInfo>
+                    </div>
+                );
             }.bind(this))
             .slice(firstEl, firstEl + pageLimit);
 
-        var totalLength = projectNodes.length;
         var pageNodes = [];
 
         for (var i = 0; i < totalLength / pageLimit; i++) {
