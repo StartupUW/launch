@@ -22,6 +22,10 @@ block append content
                     input(type="text" name="type")
                 +input('Tags')
                     input(type="text" name="tags")
+                +input('Member')
+                    input(type="text" name="tags")
                 button.btn.btn-primary(type="submit") Submit
 
 
+block append scripts
+    script(src="/js/create-projects.jsx" type="text/jsx")

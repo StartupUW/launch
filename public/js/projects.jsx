@@ -151,7 +151,7 @@ var Project = React.createClass({
         var index = this.props.index;
         if (index % 2 == 0) {
             return (
-                <div className="project col-md-12">
+                <d iv className="project col-md-12">
                     <ProjectImage url={''}></ProjectImage>
                     <ProjectInfo {...this.props}></ProjectInfo>
                 </div>
@@ -276,8 +276,5 @@ var ProjectList = React.createClass({
     }
 });
 
-React.render(
-    <ProjectList url="/api/projects"/>,
-    document.getElementById('projects-container')
-);
+ 
 

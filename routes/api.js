@@ -63,7 +63,7 @@ router.post('/login', function(req, res) {
 });
 
 router.get('/users', function(req, res) {
-    Users.find({}, 'fname lname picture', function(err, users) {
+    Users.find({}, '_id fname lname picture', function(err, users) {
         if (err) return handleError(err, res, true);
         res.json({ users: users });
         return;
