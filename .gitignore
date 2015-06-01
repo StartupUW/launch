@@ -2,6 +2,9 @@
 .DS_STORE
 uploads
 
+# Minified JS
+*.min.js
+
 # Logs
 logs
 *.log
