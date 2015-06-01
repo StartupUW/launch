@@ -78,6 +78,7 @@ $.get(url, function(data) {
 }, 'json')
 .fail(function(xhr, status, err) {
     console.log(err);
+    $('#project-container h1').html('Project not found');
     loadFacebook();
 });
 
