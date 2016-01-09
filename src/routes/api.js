@@ -26,6 +26,34 @@ var Votes = require('../models/votes');
 var request = require('request');
 var handleError = require('../util/util').handleError;
 
+// File uploads
+var multer  = require('multer');
+var crypto = require('crypto');
+var mime = require('mime');
+
+var IMG_MIMES = ['image/jpeg', 'image/pjpeg', 'image/png', 'image/bmp', 'image/svg+xml', 'image/tiff'];
+
+var upload = multer({ 
+    storage: multer.diskStorage({
+        destination: function(req, file, cb) {
+            cb(null, 'src/public/uploads/');
+        },
+        filename: function (req, file, cb) {
+            crypto.pseudoRandomBytes(16, function (err, raw) {
+                cb(null, raw.toString('hex') + Date.now() + '.' + mime.extension(file.mimetype));
+            });
+        }
+     }),
+    limits: {fileSize: 2000000},
+    fileFilter: function(req, file, cb) {
+        if (IMG_MIMES.indexOf(file.mimetype) == -1) {
+            cb(null, false);
+            return;
+        }
+        cb(null, true);
+    }
+});
+
 var FB_URL = 'https://graph.facebook.com/';
 
 var graphAPI = function(route, token) {
@@ -45,8 +73,14 @@ router.post('/login', function(req, res) {
 
                 // Check whether user exists in our system.
                 if (user) {
-                    req.session.user = user;
-                    res.json({ user: true });
+                    var picUrl = graphAPI('me/picture', token) + '&width=200&height=200';
+                    request(picUrl, function(err, response, data) {
+                        if (err || response.statusCode != 200) return handleError(err, res, true);
+                        user.picture = response.request.uri.href;
+                        user.save();
+                        req.session.user = user;
+                        res.json({ user: true });
+                    });
                 } else {
                     var picUrl = graphAPI('me/picture', token) + '&width=200&height=200';
                     request(picUrl, function(err, response, data) {
@@ -63,7 +97,7 @@ router.post('/login', function(req, res) {
     }
 });
 
-router.post('/project', function(req, res) {
+router.post('/project', upload.single('logo'), function(req, res) {
     if (!req.session.user) {
         res.status(401).json({ error: 'You must be logged in to create a project.'});
         return;
@@ -78,7 +112,7 @@ router.post('/project', function(req, res) {
     if (req.body.hiring) project.hiring = req.body.hiring;
     if (req.body.tags) project.tags = JSON.parse(req.body.tags);
     if (req.body.demo) project.demo = req.body.demo;
-    if (req.files.logo) project.images = [req.files.logo.name];
+    if (req.file) project.images = [req.file.filename];
     project.save(function(err, project) {
         if (err) return handleError(err, res, true);
         res.json({ success: true });

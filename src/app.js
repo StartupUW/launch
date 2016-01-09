@@ -7,7 +7,6 @@ var bodyParser = require('body-parser');
 var mongoose = require('mongoose');
 var session = require('express-session');
 var RedisStore = require('connect-redis')(session);
-var multer  = require('multer')
 
 var port = process.env.PORT || 8080;
 
@@ -21,10 +20,7 @@ var admin = require('./routes/admin');
 var ADMIN_PASS = process.env.ADMIN_PASS;
 if (!ADMIN_PASS) throw Error("Environment variable ADMIN_PASS required");
 
-var fs = require('fs');
 var app = express();
-
-var IMG_MIMES = ['image/jpeg', 'image/pjpeg', 'image/png', 'image/bmp', 'image/svg+xml', 'image/tiff'];
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -37,17 +33,6 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
-
-app.use(multer({ 
-    dest: __dirname + '/public/uploads/',
-    limits: {fileSize: 2000000},
-    onFileUploadStart: function(file, req, res) {
-        if (IMG_MIMES.indexOf(file.mimetype) == -1) {
-            return false;
-        }
-    }
-}));
-
 app.use(session({                                         
     store: new RedisStore({                               
         host: 'localhost',                                
