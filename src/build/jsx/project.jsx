@@ -66,12 +66,12 @@ $.get(url, function(data) {
         return member.user._id == data.user._id;
     }).length == 1;
 
-    React.render(
+    ReactDOM.render(
         <Project url={url} project={project} user={user} canEdit={canEdit}/>,
         document.getElementById('project-container')
     );
 
-    React.render(
+    ReactDOM.render(
         <StatusBar url={url} project={project} votes={data.votes} user={user} canEdit={canEdit} />,
         document.getElementById('status-bar')
     );
@@ -317,13 +317,11 @@ var GoogleTimeline = React.createClass({
         this.drawCharts();
     },
     getTooltip: function(event, date) {
-        return React.renderToString((
-            <div className="timeline-tooltip">
-                <h1>{event.title}</h1>
-                <p>{event.description}</p>
-                <p>{event.date.toDateString()}</p>
-            </div>
-        ));
+        return '<div className="timeline-tooltip">' + 
+            '<h1>' + event.title + '</h1>' +
+            '<p>' + event.description + '</p>' + 
+            '<p>' + event.date.toDateString() + '</p>' +
+        '</div>';
     },
     drawCharts: function() {
         if (this.state.loaded && this.props.timeline.length) {
@@ -515,7 +513,7 @@ var ProjectVotes = React.createClass({
                 );
             }
         }.bind(this));
-        React.render(<ul className="list-group">{voteNodes}</ul>, document.getElementById('user-votes-content'));
+        ReactDOM.render(<ul className="list-group">{voteNodes}</ul>, document.getElementById('user-votes-content'));
     },
     render: function() {
         var votes = this.state.votes;

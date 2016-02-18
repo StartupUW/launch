@@ -275,7 +275,7 @@ var MemberInput = React.createClass( {
 			this.setState({ selectIndex: 0 })
 		}
 
-		if (filter) React.render(
+		if (filter) ReactDOM.render(
 			<ul className="list-group">{memberNodes}</ul>,
 			document.getElementById('popover-content')
 		);
@@ -347,7 +347,7 @@ var SelectedUsers = React.createClass({
 	}
 })
 
-React.render(
+ReactDOM.render(
     <ProjectForm url="/api/project" />,
     document.getElementById('create-form')
 );

@@ -66,12 +66,12 @@ $.get(url, function(data) {
         return member.user._id == data.user._id;
     }).length == 1;
 
-    React.render(
+    ReactDOM.render(
         React.createElement(Project, {url: url, project: project, user: user, canEdit: canEdit}),
         document.getElementById('project-container')
     );
 
-    React.render(
+    ReactDOM.render(
         React.createElement(StatusBar, {url: url, project: project, votes: data.votes, user: user, canEdit: canEdit}),
         document.getElementById('status-bar')
     );
@@ -317,13 +317,11 @@ var GoogleTimeline = React.createClass({displayName: "GoogleTimeline",
         this.drawCharts();
     },
     getTooltip: function(event, date) {
-        return React.renderToString((
-            React.createElement("div", {className: "timeline-tooltip"}, 
-                React.createElement("h1", null, event.title), 
-                React.createElement("p", null, event.description), 
-                React.createElement("p", null, event.date.toDateString())
-            )
-        ));
+        return '<div className="timeline-tooltip">' + 
+            '<h1>' + event.title + '</h1>' +
+            '<p>' + event.description + '</p>' + 
+            '<p>' + event.date.toDateString() + '</p>' +
+        '</div>';
     },
     drawCharts: function() {
         if (this.state.loaded && this.props.timeline.length) {
@@ -515,7 +513,7 @@ var ProjectVotes = React.createClass({displayName: "ProjectVotes",
                 );
             }
         }.bind(this));
-        React.render(React.createElement("ul", {className: "list-group"}, voteNodes), document.getElementById('user-votes-content'));
+        ReactDOM.render(React.createElement("ul", {className: "list-group"}, voteNodes), document.getElementById('user-votes-content'));
     },
     render: function() {
         var votes = this.state.votes;

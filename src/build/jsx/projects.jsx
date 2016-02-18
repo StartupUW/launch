@@ -35,7 +35,7 @@ var SortControl = React.createClass({
     }
 });
 
-React.render(
+ReactDOM.render(
     <SortControl />,
     document.getElementById('sort')
 );
@@ -226,7 +226,7 @@ var ProjectList = React.createClass({
     }
 });
 
-React.render(
+ReactDOM.render(
     <ProjectList url="/api/projects"/>,
     document.getElementById('projects-container')
 );
